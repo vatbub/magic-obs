@@ -42,13 +42,12 @@ class HealthPointsView {
         fun show(): HealthPointsView {
             val stage = Stage(StageStyle.UNDECORATED)
 
-            val fxmlLoader = FXMLLoader(javaClass.getResource("HealthPointsView.fxml"))
+            val fxmlLoader = FXMLLoader(HealthPointsView::class.java.getResource("HealthPointsView.fxml"))
             val root = fxmlLoader.load<Parent>()
             val controllerInstance = fxmlLoader.getController<HealthPointsView>()
             controllerInstance.stage = stage
 
             val scene = Scene(root)
-            // scene.stylesheets.add("com/github/vatbub/magic/ObsView.css");
 
             stage.title = "Magic OBS Health Points"
             // stage.icons.add(Image(javaClass.getResourceAsStream("icon.png")))

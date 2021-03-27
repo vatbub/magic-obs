@@ -19,8 +19,6 @@
  */
 package com.github.vatbub.magic
 
-import com.github.vatbub.magic.logging.LoggingHandlers
-import com.github.vatbub.magic.logging.exceptionHandler
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
@@ -29,19 +27,18 @@ import javafx.stage.Stage
 
 class App private constructor(callLaunch: Boolean, private vararg val args: String?) : Application() {
     companion object {
-        const val appId = "com.github.vatbub.openthesaurus"
-
         lateinit var instance: App
             private set
 
 
         fun actualMain(vararg args: String) {
-            Thread.setDefaultUncaughtExceptionHandler(exceptionHandler)
-            LoggingHandlers.initializeIfUninitialized()
             App(true, *args)
         }
     }
 
+    /**
+     * Required for JavaFX
+     */
     @Suppress("unused")
     constructor() : this(false, null)
 
