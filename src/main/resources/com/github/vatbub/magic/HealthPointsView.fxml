@@ -13,7 +13,7 @@
    <children>
       <ImageView fitHeight="400.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <image>
-            <Image url="@MagicObs.png" />
+            <Image url="@HealthPointsFrame.png" />
          </image>
       </ImageView>
       <Label fx:id="healthPointsLabel" alignment="CENTER" layoutX="286.0" layoutY="208.0" styleClass="healthPoints" text="20" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
