@@ -19,9 +19,6 @@
  */
 package com.github.vatbub.magic.util
 
-import javafx.scene.Node
 import javafx.scene.paint.Color
 
-infix fun Color.applyTo(node: Node){
-    node.style = "-fx-background-color: ${this.toHexValue()};"
-}
+fun Color.asBackgroundStyle() = "-fx-background-color: ${this.toHexValue()};"

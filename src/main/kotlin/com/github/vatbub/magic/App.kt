@@ -68,11 +68,14 @@ class App private constructor(callLaunch: Boolean, private vararg val args: Stri
 
         primaryStage.scene = scene
 
-        val healthPointsView = HealthPointsView.show()
+        val auxiliaryStages = listOf(
+            HealthPointsView.show().stage,
+            CardStatisticsView.show().stage
+        )
 
         primaryStage.setOnCloseRequest {
             controllerInstance?.close()
-            healthPointsView.stage.hide()
+            auxiliaryStages.forEach { stage -> stage.hide() }
         }
 
         primaryStage.show()

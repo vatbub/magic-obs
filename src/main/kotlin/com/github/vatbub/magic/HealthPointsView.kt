@@ -19,7 +19,8 @@
  */
 package com.github.vatbub.magic
 
-import com.github.vatbub.magic.util.applyTo
+import com.github.vatbub.magic.util.asBackgroundStyle
+import com.github.vatbub.magic.util.bindAndMap
 import javafx.animation.Interpolator.EASE_IN
 import javafx.animation.Interpolator.EASE_OUT
 import javafx.animation.KeyFrame
@@ -32,6 +33,7 @@ import javafx.scene.Scene
 import javafx.scene.control.Label
 import javafx.scene.effect.MotionBlur
 import javafx.scene.layout.AnchorPane
+import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.util.Duration
@@ -78,9 +80,7 @@ class HealthPointsView {
     fun initialize() {
         healthPointsLabel.font = Fonts.magic(240.0)
 
-        DataHolder.backgroundColorProperty.addListener { _, _, newValue ->
-            newValue applyTo rootPane
-        }
+        rootPane.styleProperty().bindAndMap(DataHolder.backgroundColorProperty, Color::asBackgroundStyle)
 
         DataHolder.healthPointsProperty.addListener { _, oldValue, newValue ->
             if (newValue.toInt() == oldValue.toInt()) return@addListener
@@ -89,7 +89,6 @@ class HealthPointsView {
             healthPointsAnimation(oldValue.toInt(), newValue.toInt())
         }
 
-        DataHolder.backgroundColorProperty.value applyTo rootPane
         healthPointsLabel.text = DataHolder.healthPointsProperty.value.toString()
     }
 

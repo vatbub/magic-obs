@@ -25,6 +25,8 @@ import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
+import javafx.collections.FXCollections
+import javafx.collections.ObservableList
 import javafx.scene.paint.Color
 
 object DataHolder {
@@ -33,9 +35,12 @@ object DataHolder {
             preferences[BackgroundColor] = newValue
         }
     }
+
     val healthPointsProperty: IntegerProperty = SimpleIntegerProperty(preferences[HealthPoints]).apply {
         addListener { _, _, newValue ->
             preferences[HealthPoints] = newValue.toInt()
         }
     }
+
+    val cardList:ObservableList<Card> = FXCollections.observableArrayList()
 }

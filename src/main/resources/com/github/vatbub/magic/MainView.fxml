@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane hgap="8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" vgap="8.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.vatbub.magic.MainView">
+<GridPane hgap="8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="327.0" prefWidth="492.0" vgap="8.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.vatbub.magic.MainView">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -15,7 +15,8 @@
   <rowConstraints>
     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="ALWAYS" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
       <ColorPicker fx:id="backgroundColorPicker" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
@@ -23,9 +24,24 @@
       <Label text="Health points:" GridPane.rowIndex="1" />
       <HBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
-            <TextField fx:id="healthPointsBox" prefHeight="25.0" prefWidth="39.0" />
+            <TextField fx:id="healthPointsBox" prefHeight="25.0" prefWidth="39.0" HBox.hgrow="ALWAYS" />
             <Button mnemonicParsing="false" onAction="#healthPointsAddOnAction" text="+" />
             <Button mnemonicParsing="false" onAction="#healthPointsSubtractOnAction" text="-" />
+         </children>
+      </HBox>
+      <TableView fx:id="cardsTableView" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+         <columns>
+            <TableColumn fx:id="attackColumn" prefWidth="75.0" sortable="false" text="Attack" />
+            <TableColumn fx:id="defenseColumn" prefWidth="75.0" sortable="false" text="Defense" />
+            <TableColumn fx:id="tappedColumn" prefWidth="75.0" sortable="false" text="Tapped" />
+            <TableColumn fx:id="flyingColumn" prefWidth="75.0" text="Flying" />
+            <TableColumn fx:id="buttonsColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="75.0" sortable="false" text="Controls" />
+         </columns>
+      </TableView>
+      <HBox spacing="8.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+         <children>
+            <Button mnemonicParsing="false" onAction="#addCardButtonOnAction" text="Add card" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+            <Button mnemonicParsing="false" onAction="#untapAllCardsButtonOnAction" text="Untap all cards" />
          </children>
       </HBox>
    </children>
