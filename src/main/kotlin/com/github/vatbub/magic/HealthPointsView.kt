@@ -37,9 +37,10 @@ import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.util.Duration
+import java.io.Closeable
 
 
-class HealthPointsView {
+class HealthPointsView : Closeable {
     companion object {
         fun show(): HealthPointsView {
             val stage = Stage(StageStyle.UNDECORATED)
@@ -124,5 +125,9 @@ class HealthPointsView {
                 healthPointsLabel.effect = null
             }
         })
+    }
+
+    override fun close() {
+        stage.hide()
     }
 }

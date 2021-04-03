@@ -41,7 +41,7 @@ class StatisticCard {
         private const val fontToWidthFactor = 0.3
     }
 
-    private var card: Card? by Delegates.observable(null) { _, _, newValue ->
+    var card: Card? by Delegates.observable(null) { _, _, newValue ->
         if (newValue == null) return@observable
         with(newValue) {
             updateStatisticLabel(
@@ -65,6 +65,7 @@ class StatisticCard {
             }
         }
     }
+        private set
 
     @FXML
     lateinit var rootPane: AnchorPane

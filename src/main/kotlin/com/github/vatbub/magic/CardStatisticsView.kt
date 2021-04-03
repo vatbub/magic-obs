@@ -21,19 +21,18 @@ package com.github.vatbub.magic
 
 import com.github.vatbub.magic.util.asBackgroundStyle
 import com.github.vatbub.magic.util.bindAndMap
+import javafx.collections.ListChangeListener
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
-import javafx.scene.control.ListCell
-import javafx.scene.control.ListView
+import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.stage.StageStyle
-import javafx.util.Callback
-import kotlin.properties.Delegates
+import java.io.Closeable
 
-class CardStatisticsView {
+class CardStatisticsView : Closeable {
     companion object {
         fun show(): CardStatisticsView {
             val stage = Stage(StageStyle.UNDECORATED)
@@ -63,33 +62,45 @@ class CardStatisticsView {
         private set
 
     @FXML
-    private lateinit var cardContainer: ListView<Card>
+    private lateinit var cardContainer: HBox
 
     @FXML
     fun initialize() {
         cardContainer.styleProperty().bindAndMap(DataHolder.backgroundColorProperty, Color::asBackgroundStyle)
-        cardContainer.items = DataHolder.cardList
-        cardContainer.cellFactory = Callback {
-            CardCell()
-                .also {
-                    it.styleProperty().bindAndMap(DataHolder.backgroundColorProperty, Color::asBackgroundStyle)
+        DataHolder.cardList.addListener(itemListener)
+    }
+
+    override fun close() {
+        stage.hide()
+        DataHolder.cardList.removeListener(itemListener)
+    }
+
+    private val itemListener = ListChangeListener<Card> { change ->
+        while (change.next()) {
+            if (change.wasPermutated()) {
+                change.permutations.filterNot { it.newIndex == it.oldIndex }
+                    .forEach { permutation ->
+                        val child = cardContainer.children.removeAt(permutation.oldIndex)
+                        if (permutation.newIndex > permutation.oldIndex)
+                            cardContainer.children.add(permutation.newIndex - 1, child)
+                        else cardContainer.children.add(permutation.newIndex, child)
+
+                    }
+            } else {
+                change.removed.forEach { removedItem ->
+                    viewList.firstOrNull { it.card == removedItem }?.let { view ->
+                        viewList.remove(view)
+                        cardContainer.children.remove(view.rootPane)
+                    }
                 }
-        }
-    }
-
-    private class CardCell : ListCell<Card>() {
-        var statisticCard: StatisticCard? by Delegates.observable(null) { _, _, newValue ->
-            graphic = newValue?.rootPane
-        }
-            private set
-
-        override fun updateItem(item: Card?, empty: Boolean) {
-            super.updateItem(item, empty)
-            if (empty || item == null) {
-                statisticCard = null
-                return
+                change.addedSubList.forEachIndexed { index, addedItem ->
+                    val statisticCard = StatisticCard.newInstance(addedItem)
+                    viewList.add(statisticCard)
+                    cardContainer.children.add(index + change.from, statisticCard.rootPane)
+                }
             }
-            statisticCard = StatisticCard.newInstance(item)
         }
     }
+
+    private val viewList = mutableListOf<StatisticCard>()
 }

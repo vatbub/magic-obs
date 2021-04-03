@@ -21,11 +21,11 @@ package com.github.vatbub.magic
 
 import com.github.vatbub.magic.PreferenceKeys.BackgroundColor
 import com.github.vatbub.magic.PreferenceKeys.HealthPoints
+import com.github.vatbub.magic.util.PermutatingObservableList
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
-import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.scene.paint.Color
 
@@ -42,5 +42,5 @@ object DataHolder {
         }
     }
 
-    val cardList:ObservableList<Card> = FXCollections.observableArrayList()
+    val cardList:ObservableList<Card> = PermutatingObservableList(mutableListOf())
 }

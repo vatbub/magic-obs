@@ -17,16 +17,18 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.magic.util
+package com.github.vatbub.magic
 
-import com.github.vatbub.magic.Permutation
-import java.util.*
+import javafx.collections.ListChangeListener
 
-fun <T> MutableList<T>.swap(i: Int, j: Int): List<T> = when (this) {
-    is PermutatingObservableList -> this.apply {
-        this.permute(Permutation(oldIndex = i, newIndex = j))
-    }
-    else -> this.apply {
-        Collections.swap(this, i, j)
-    }
+data class Permutation(val oldIndex: Int, val newIndex: Int) {
+    override fun toString() = "oldIndex: $oldIndex, newIndex: $newIndex"
 }
+
+val ListChangeListener.Change<*>.permutations: List<Permutation>
+    get() {
+        require(wasPermutated())
+        return (from until to).map { i ->
+            Permutation(i, getPermutation(i))
+        }
+    }

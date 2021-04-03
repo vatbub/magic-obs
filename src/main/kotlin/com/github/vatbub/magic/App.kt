@@ -24,6 +24,7 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.stage.Stage
+import java.io.Closeable
 
 class App private constructor(callLaunch: Boolean, private vararg val args: String?) : Application() {
     companion object {
@@ -68,14 +69,14 @@ class App private constructor(callLaunch: Boolean, private vararg val args: Stri
 
         primaryStage.scene = scene
 
-        val auxiliaryStages = listOf(
-            HealthPointsView.show().stage,
-            CardStatisticsView.show().stage
+        val auxiliaryViews:List<Closeable> = listOf(
+            HealthPointsView.show(),
+            CardStatisticsView.show()
         )
 
         primaryStage.setOnCloseRequest {
             controllerInstance?.close()
-            auxiliaryStages.forEach { stage -> stage.hide() }
+            auxiliaryViews.forEach { view -> view.close() }
         }
 
         primaryStage.show()

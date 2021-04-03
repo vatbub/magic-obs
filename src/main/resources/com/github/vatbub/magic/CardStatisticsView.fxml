@@ -6,4 +6,4 @@
 <?import javafx.scene.layout.HBox?>
 
 
-<ListView fx:id="cardContainer" orientation="HORIZONTAL" prefHeight="200.0" prefWidth="1578.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.vatbub.magic.CardStatisticsView" />
+<HBox fx:id="cardContainer" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="1572.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.vatbub.magic.CardStatisticsView" />
