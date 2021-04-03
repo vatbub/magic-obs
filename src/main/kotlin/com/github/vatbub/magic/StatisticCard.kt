@@ -19,12 +19,14 @@
  */
 package com.github.vatbub.magic
 
-import com.github.vatbub.magic.util.bindAndMap
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.control.Label
-import javafx.scene.layout.AnchorPane
+import javafx.scene.image.ImageView
+import javafx.scene.layout.GridPane
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.properties.Delegates
 
 
@@ -38,7 +40,8 @@ class StatisticCard {
             }
         }
 
-        private const val fontToWidthFactor = 0.3
+        private const val maxFontSize = 90.0
+        private const val minFontSize = 50.0
     }
 
     var card: Card? by Delegates.observable(null) { _, _, newValue ->
@@ -68,16 +71,29 @@ class StatisticCard {
         private set
 
     @FXML
-    lateinit var rootPane: AnchorPane
+    lateinit var rootPane: GridPane
 
     @FXML
     private lateinit var statisticLabel: Label
 
     @FXML
+    private lateinit var middleImageView: ImageView
+
+    @FXML
     fun initialize() {
-        statisticLabel.fontProperty().bindAndMap(rootPane.widthProperty()) {
-            Fonts.magic(it.toDouble() * fontToWidthFactor)
+        updateMiddleWidth()
+        rootPane.widthProperty().addListener { _, _, _ ->
+            updateMiddleWidth()
         }
+    }
+
+    fun updateMiddleWidth() {
+        val newMiddleWidth =
+            rootPane.prefWidth - rootPane.getCellBounds(0, 0).width - rootPane.getCellBounds(2, 0).width + 2
+        val fontSize = max(minFontSize, min(maxFontSize, newMiddleWidth - 135))
+
+        middleImageView.fitWidth = newMiddleWidth
+        statisticLabel.font = Fonts.magic(fontSize)
     }
 
     private fun updateStatisticLabel(

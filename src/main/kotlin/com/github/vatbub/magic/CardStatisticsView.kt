@@ -21,6 +21,7 @@ package com.github.vatbub.magic
 
 import com.github.vatbub.magic.util.asBackgroundStyle
 import com.github.vatbub.magic.util.bindAndMap
+import javafx.application.Platform
 import javafx.collections.ListChangeListener
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
@@ -31,11 +32,13 @@ import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import java.io.Closeable
+import kotlin.math.max
+import kotlin.math.min
 
 class CardStatisticsView : Closeable {
     companion object {
         fun show(): CardStatisticsView {
-            val stage = Stage(StageStyle.UNDECORATED)
+            val stage = Stage(StageStyle.UNIFIED)
 
             val fxmlLoader = FXMLLoader(HealthPointsView::class.java.getResource("CardStatisticsView.fxml"))
             val root = fxmlLoader.load<Parent>()
@@ -46,8 +49,6 @@ class CardStatisticsView : Closeable {
 
             stage.title = "Magic OBS Card Statistics"
             // stage.icons.add(Image(javaClass.getResourceAsStream("icon.png")))
-            stage.minWidth = root.minWidth(0.0) + 70
-            stage.minHeight = root.minHeight(0.0) + 70
 
             stage.scene = scene
 
@@ -56,6 +57,10 @@ class CardStatisticsView : Closeable {
         }
 
         private const val animationDuration = 500.0
+        private const val maxCardWidth = 280.0
+        private const val minCardWidth = 160.0
+        private const val maxSpacing = 10.0
+        private const val minSpacing = 8.0
     }
 
     lateinit var stage: Stage
@@ -68,6 +73,27 @@ class CardStatisticsView : Closeable {
     fun initialize() {
         cardContainer.styleProperty().bindAndMap(DataHolder.backgroundColorProperty, Color::asBackgroundStyle)
         DataHolder.cardList.addListener(itemListener)
+        cardContainer.widthProperty().addListener { _, _, newValue ->
+            updateSpacing(newValue.toDouble())
+        }
+    }
+
+    private fun updateSpacing(width: Double = cardContainer.width) {
+        if (viewList.isEmpty()) {
+            cardContainer.spacing = 0.0
+            return
+        }
+        val cardWidth = max(
+            minCardWidth, min(
+                maxCardWidth, (width - minSpacing * (viewList.size - 1)) / viewList.size
+            )
+        )
+        viewList.forEach {
+            it.rootPane.prefWidth = cardWidth
+            it.rootPane.maxWidth = cardWidth
+            it.updateMiddleWidth()
+        }
+        cardContainer.spacing = min(maxSpacing, (width - cardWidth * viewList.size) / (viewList.size - 1))
     }
 
     override fun close() {
@@ -91,12 +117,14 @@ class CardStatisticsView : Closeable {
                     viewList.firstOrNull { it.card == removedItem }?.let { view ->
                         viewList.remove(view)
                         cardContainer.children.remove(view.rootPane)
+                        Platform.runLater { updateSpacing() }
                     }
                 }
                 change.addedSubList.forEachIndexed { index, addedItem ->
                     val statisticCard = StatisticCard.newInstance(addedItem)
                     viewList.add(statisticCard)
                     cardContainer.children.add(index + change.from, statisticCard.rootPane)
+                    Platform.runLater { updateSpacing() }
                 }
             }
         }
