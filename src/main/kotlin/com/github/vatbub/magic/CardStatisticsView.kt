@@ -21,6 +21,10 @@ package com.github.vatbub.magic
 
 import com.github.vatbub.magic.util.asBackgroundStyle
 import com.github.vatbub.magic.util.bindAndMap
+import javafx.animation.Interpolator
+import javafx.animation.KeyFrame
+import javafx.animation.KeyValue
+import javafx.animation.Timeline
 import javafx.application.Platform
 import javafx.collections.ListChangeListener
 import javafx.fxml.FXML
@@ -31,6 +35,7 @@ import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.stage.StageStyle
+import javafx.util.Duration
 import java.io.Closeable
 import kotlin.math.max
 import kotlin.math.min
@@ -69,6 +74,8 @@ class CardStatisticsView : Closeable {
     @FXML
     private lateinit var cardContainer: HBox
 
+    private val animationQueue = AnimationQueue()
+
     @FXML
     fun initialize() {
         cardContainer.styleProperty().bindAndMap(DataHolder.backgroundColorProperty, Color::asBackgroundStyle)
@@ -104,13 +111,15 @@ class CardStatisticsView : Closeable {
     private val itemListener = ListChangeListener<Card> { change ->
         while (change.next()) {
             if (change.wasPermutated()) {
+                val noInverses = mutableListOf<Permutation>()
                 change.permutations.filterNot { it.newIndex == it.oldIndex }
                     .forEach { permutation ->
-                        val child = cardContainer.children.removeAt(permutation.oldIndex)
-                        if (permutation.newIndex > permutation.oldIndex)
-                            cardContainer.children.add(permutation.newIndex - 1, child)
-                        else cardContainer.children.add(permutation.newIndex, child)
-
+                        if (noInverses.map { it.newIndex }.contains(permutation.oldIndex)) {
+                            permutation.animate()
+                            return@forEach
+                        }
+                        noInverses.add(permutation)
+                        permutation.doPermutation()
                     }
             } else {
                 change.removed.forEach { removedItem ->
@@ -127,6 +136,35 @@ class CardStatisticsView : Closeable {
                     Platform.runLater { updateSpacing() }
                 }
             }
+        }
+    }
+
+    private fun Permutation.animate() {
+        doPermutation()
+        animationQueue.runInQueue {
+            val child1 = cardContainer.children[oldIndex]
+            val child2 = cardContainer.children[newIndex]
+            val xDifference = child2.layoutX - child1.layoutX
+
+            val keyValue11 = KeyValue(child1.translateXProperty(), -xDifference, Interpolator.EASE_BOTH)
+            val keyValue12 = KeyValue(child2.translateXProperty(), xDifference, Interpolator.EASE_BOTH)
+            val keyFrame1 = KeyFrame(Duration.ZERO, keyValue11, keyValue12)
+
+
+            val keyValue21 = KeyValue(child1.translateXProperty(), 0.0, Interpolator.EASE_BOTH)
+            val keyValue22 = KeyValue(child2.translateXProperty(), 0.0, Interpolator.EASE_BOTH)
+            val keyFrame2 = KeyFrame(Duration(animationDuration), keyValue21, keyValue22)
+
+            animationQueue.add(Timeline(keyFrame1, keyFrame2))
+        }
+    }
+
+    private fun Permutation.doPermutation() {
+        animationQueue.runInQueue {
+            val child = cardContainer.children.removeAt(oldIndex)
+            if (newIndex > oldIndex)
+                cardContainer.children.add(newIndex - 1, child)
+            else cardContainer.children.add(newIndex, child)
         }
     }
 

@@ -31,6 +31,8 @@ class AnimationQueue {
             playNextIfApplicable()
     }
 
+    fun runInQueue(block: () -> Unit) = add(Timeline().apply { setOnFinished { block() } })
+
     private fun Timeline.wrapOnFinished() = apply {
         val previousOnFinished = onFinished
         setOnFinished { event ->
