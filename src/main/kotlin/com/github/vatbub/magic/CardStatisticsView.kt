@@ -99,11 +99,18 @@ class CardStatisticsView : Closeable {
             )
         )
         viewList.forEach {
-            it.rootPane.prefWidth = cardWidth
-            it.rootPane.maxWidth = cardWidth
+            val keyValuePrefWidth = KeyValue(it.rootPane.prefWidthProperty(), cardWidth, Interpolator.EASE_BOTH)
+            val keyValueMaxWidth = KeyValue(it.rootPane.maxWidthProperty(), cardWidth, Interpolator.EASE_BOTH)
+            val keyFrame = KeyFrame(Duration(animationDuration), keyValueMaxWidth, keyValuePrefWidth)
+            Timeline(keyFrame).play()
+
             it.updateMiddleWidth()
         }
-        cardContainer.spacing = min(maxSpacing, (width - cardWidth * viewList.size) / (viewList.size - 1))
+
+        val cardSpacing = min(maxSpacing, (width - cardWidth * viewList.size) / (viewList.size - 1))
+        val keyValueSpacing = KeyValue(cardContainer.spacingProperty(), cardSpacing, Interpolator.EASE_BOTH)
+        val keyFrameSpacing = KeyFrame(Duration(animationDuration), keyValueSpacing)
+        Timeline(keyFrameSpacing).play()
     }
 
     override fun close() {
