@@ -142,8 +142,9 @@ class CardStatisticsView : Closeable {
     private fun Permutation.animate() {
         doPermutation()
         animationQueue.runInQueue {
-            val child1 = cardContainer.children[oldIndex]
-            val child2 = cardContainer.children[newIndex]
+            val children = listOf(cardContainer.children[oldIndex], cardContainer.children[newIndex])
+            val child1 = children.minByOrNull { it.layoutX }!!
+            val child2 = children.maxByOrNull { it.layoutX }!!
             val xDifference = child2.layoutX - child1.layoutX
 
             val keyValue11 = KeyValue(child1.translateXProperty(), -xDifference, Interpolator.EASE_BOTH)
