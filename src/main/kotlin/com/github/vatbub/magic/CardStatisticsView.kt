@@ -21,6 +21,7 @@ package com.github.vatbub.magic
 
 import com.github.vatbub.magic.util.asBackgroundStyle
 import com.github.vatbub.magic.util.bindAndMap
+import com.github.vatbub.magic.util.runOnUiThread
 import javafx.animation.Interpolator
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue
@@ -66,6 +67,8 @@ class CardStatisticsView : Closeable {
         private const val minCardWidth = 160.0
         private const val maxSpacing = 10.0
         private const val minSpacing = 8.0
+
+        private const val additionAnimationLayoutYOffset = 0.0
     }
 
     lateinit var stage: Stage
@@ -134,9 +137,18 @@ class CardStatisticsView : Closeable {
                     viewList.add(statisticCard)
                     cardContainer.children.add(index + change.from, statisticCard.rootPane)
                     Platform.runLater { updateSpacing() }
+                    runOnUiThread { statisticCard.animateAddition() }
                 }
             }
         }
+    }
+
+    private fun StatisticCard.animateAddition() {
+        rootPane.translateY = cardContainer.height + additionAnimationLayoutYOffset
+
+        val keyValue1 = KeyValue(rootPane.translateYProperty(), 0, Interpolator.EASE_OUT)
+        val keyFrame1 = KeyFrame(Duration(1.5 * animationDuration), keyValue1)
+        animationQueue.add(Timeline(keyFrame1))
     }
 
     private fun Permutation.animate() {
