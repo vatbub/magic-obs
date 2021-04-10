@@ -148,7 +148,7 @@ class CardStatisticsView : Closeable {
 
         val keyValue1 = KeyValue(rootPane.translateYProperty(), 0, Interpolator.EASE_OUT)
         val keyFrame1 = KeyFrame(Duration(1.5 * animationDuration), keyValue1)
-        animationQueue.add(Timeline(keyFrame1))
+        Timeline(keyFrame1).play()
     }
 
     private fun Permutation.animate() {
