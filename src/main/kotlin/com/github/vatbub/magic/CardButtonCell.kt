@@ -24,13 +24,21 @@ import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.scene.control.Button
 import javafx.scene.control.TableCell
+import javafx.scene.image.Image
+import javafx.scene.image.ImageView
 import javafx.scene.layout.HBox
 
 class CardButtonCell : TableCell<Card, Card>() {
     private val hBox = HBox(
         Button("Kill").also { it.setOnAction(this::killButtonOnAction) },
-        Button("Up").also { it.setOnAction(this::upButtonOnAction) },
-        Button("Down").also { it.setOnAction(this::downButtonOnAction) }
+        Button().also {
+            it.graphic = ImageView(Image(javaClass.getResourceAsStream("up-arrow.png")))
+            it.setOnAction(this::upButtonOnAction)
+        },
+        Button().also {
+            it.graphic = ImageView(Image(javaClass.getResourceAsStream("down-arrow.png")))
+            it.setOnAction(this::downButtonOnAction)
+        }
     ).apply {
         spacing = 8.0
     }
