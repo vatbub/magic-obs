@@ -32,6 +32,7 @@ import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
+import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
 import javafx.stage.Stage
@@ -75,13 +76,16 @@ class CardStatisticsView : Closeable {
         private set
 
     @FXML
+    private lateinit var anchorPane: AnchorPane
+
+    @FXML
     private lateinit var cardContainer: HBox
 
     private val animationQueue = AnimationQueue()
 
     @FXML
     fun initialize() {
-        cardContainer.styleProperty().bindAndMap(DataHolder.backgroundColorProperty, Color::asBackgroundStyle)
+        anchorPane.styleProperty().bindAndMap(DataHolder.backgroundColorProperty, Color::asBackgroundStyle)
         DataHolder.cardList.addListener(itemListener)
         cardContainer.widthProperty().addListener { _, _, newValue ->
             updateSpacing(newValue.toDouble())
@@ -135,8 +139,9 @@ class CardStatisticsView : Closeable {
                 change.removed.forEach { removedItem ->
                     viewList.firstOrNull { it.card == removedItem }?.let { view ->
                         viewList.remove(view)
-                        cardContainer.children.remove(view.rootPane)
-                        Platform.runLater { updateSpacing() }
+                        view.playKillAnimation {
+                            it.animateRemoval()
+                        }
                     }
                 }
                 change.addedSubList.forEachIndexed { index, addedItem ->
@@ -156,6 +161,33 @@ class CardStatisticsView : Closeable {
         val keyValue1 = KeyValue(rootPane.translateYProperty(), 0, Interpolator.EASE_OUT)
         val keyFrame1 = KeyFrame(Duration(1.5 * animationDuration), keyValue1)
         Timeline(keyFrame1).play()
+    }
+
+    private fun StatisticCard.animateRemoval() {
+        rootPane.translateY = 0.0
+
+        val keyValueTranslateY1 = KeyValue(
+            rootPane.translateYProperty(),
+            cardContainer.height + additionAnimationLayoutYOffset,
+            Interpolator.EASE_IN
+        )
+        val keyValuePrefWidth1 = KeyValue(rootPane.prefWidthProperty(), rootPane.width, Interpolator.EASE_BOTH)
+        val keyValueMaxWidth1 = KeyValue(rootPane.maxWidthProperty(), rootPane.width, Interpolator.EASE_BOTH)
+        val keyFrame1 =
+            KeyFrame(Duration(1.5 * animationDuration), keyValueTranslateY1, keyValueMaxWidth1, keyValuePrefWidth1)
+
+        val keyValuePrefWidth2 = KeyValue(rootPane.prefWidthProperty(), 0, Interpolator.EASE_BOTH)
+        val keyValueMaxWidth2 = KeyValue(rootPane.maxWidthProperty(), 0, Interpolator.EASE_BOTH)
+        val keyFrame2 = KeyFrame(Duration(2.5 * animationDuration), keyValueMaxWidth2, keyValuePrefWidth2)
+
+        Timeline(keyFrame1, keyFrame2)
+            .apply {
+                setOnFinished {
+                    cardContainer.children.remove(this@animateRemoval.rootPane)
+                    Platform.runLater { updateSpacing() }
+                }
+            }
+            .play()
     }
 
     private fun Permutation.animate() {

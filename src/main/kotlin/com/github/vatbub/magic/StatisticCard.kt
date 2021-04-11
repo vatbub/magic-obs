@@ -19,12 +19,22 @@
  */
 package com.github.vatbub.magic
 
+import com.github.vatbub.magic.util.bindAndMap
+import com.github.vatbub.magic.util.times
+import javafx.animation.Interpolator
+import javafx.animation.KeyFrame
+import javafx.animation.KeyValue
+import javafx.animation.Timeline
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
+import javafx.scene.Node
 import javafx.scene.Parent
 import javafx.scene.control.Label
+import javafx.scene.effect.GaussianBlur
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
+import javafx.scene.shape.Rectangle
+import javafx.util.Duration
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.properties.Delegates
@@ -42,6 +52,7 @@ class StatisticCard {
 
         private const val maxFontSize = 90.0
         private const val minFontSize = 50.0
+        private val killAnimationDuration = Duration(1000.0)
     }
 
     var card: Card? by Delegates.observable(null) { _, _, newValue ->
@@ -80,6 +91,12 @@ class StatisticCard {
     private lateinit var middleImageView: ImageView
 
     @FXML
+    private lateinit var killCrossLeftBottomToRightTop: ImageView
+
+    @FXML
+    private lateinit var killCrossLeftTopToRightBottom: ImageView
+
+    @FXML
     fun initialize() {
         updateMiddleWidth()
         rootPane.widthProperty().addListener { _, _, _ ->
@@ -94,6 +111,79 @@ class StatisticCard {
 
         middleImageView.fitWidth = newMiddleWidth
         statisticLabel.font = Fonts.magic(fontSize)
+    }
+
+    fun playKillAnimation(onFinished: (StatisticCard) -> Unit) {
+        killCrossLeftTopToRightBottom.prepareKillAnimation()
+        killCrossLeftBottomToRightTop.prepareKillAnimation()
+
+        val leftTopToRightBottomClip = Rectangle(0.0, 0.0, 0.0, 0.0).addGaussianBlurForClip()
+        val leftBottomToRightTopClip = Rectangle(0.0, 0.0, 0.0, 0.0).addGaussianBlurForClip().apply {
+            xProperty().bindAndMap(widthProperty()) { killCrossLeftBottomToRightTop.fitWidth - it.toDouble() }
+        }
+
+        killCrossLeftTopToRightBottom.clip = leftTopToRightBottomClip
+        killCrossLeftBottomToRightTop.clip = leftBottomToRightTopClip
+
+        val keyValueWidthLeftTopToRightBottom1 = KeyValue(
+            leftTopToRightBottomClip.widthProperty(),
+            rootPane.width,
+            Interpolator.EASE_BOTH
+        )
+        val keyValueHeightLeftTopToRightBottom1 = KeyValue(
+            leftTopToRightBottomClip.heightProperty(),
+            rootPane.height,
+            Interpolator.EASE_BOTH
+        )
+        val keyValueWidthLeftBottomToRightTop1 = KeyValue(
+            leftBottomToRightTopClip.widthProperty(),
+            0,
+            Interpolator.EASE_BOTH
+        )
+        val keyValueHeightLeftBottomToRightTop1 = KeyValue(
+            leftBottomToRightTopClip.heightProperty(),
+            0,
+            Interpolator.EASE_BOTH
+        )
+        val keyFrame1 =
+            KeyFrame(
+                killAnimationDuration, keyValueWidthLeftTopToRightBottom1, keyValueHeightLeftTopToRightBottom1,
+                keyValueWidthLeftBottomToRightTop1, keyValueHeightLeftBottomToRightTop1
+            )
+
+        val keyValueWidthLeftBottomToRightTop2 = KeyValue(
+            leftBottomToRightTopClip.widthProperty(),
+            rootPane.width,
+            Interpolator.EASE_BOTH
+        )
+        val keyValueHeightLeftBottomToRightTop2 = KeyValue(
+            leftBottomToRightTopClip.heightProperty(),
+            rootPane.height,
+            Interpolator.EASE_BOTH
+        )
+        val keyFrame2 =
+            KeyFrame(
+                2.0 * killAnimationDuration,
+                keyValueWidthLeftBottomToRightTop2,
+                keyValueHeightLeftBottomToRightTop2
+            )
+
+        rootPane.shakeAnimation(2.0 * killAnimationDuration).play()
+
+        Timeline(keyFrame1, keyFrame2)
+            .apply { setOnFinished { onFinished(this@StatisticCard) } }
+            .play()
+    }
+
+    private fun ImageView.prepareKillAnimation() {
+        isPreserveRatio = false
+        isVisible = true
+        fitHeightProperty().bind(rootPane.heightProperty())
+        fitWidthProperty().bind(rootPane.widthProperty())
+    }
+
+    private fun <T : Node> T.addGaussianBlurForClip() = apply {
+        effect = GaussianBlur(10.0)
     }
 
     private fun updateStatisticLabel(
