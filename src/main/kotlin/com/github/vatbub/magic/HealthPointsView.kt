@@ -34,6 +34,7 @@ import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.control.Label
 import javafx.scene.effect.MotionBlur
+import javafx.scene.image.ImageView
 import javafx.scene.layout.AnchorPane
 import javafx.scene.paint.Color
 import javafx.stage.Stage
@@ -45,7 +46,7 @@ import java.io.Closeable
 class HealthPointsView : Closeable {
     companion object {
         fun show(): HealthPointsView {
-            val stage = Stage(StageStyle.UNDECORATED)
+            val stage = Stage(StageStyle.UNIFIED)
 
             val fxmlLoader = FXMLLoader(HealthPointsView::class.java.getResource("HealthPointsView.fxml"))
             val root = fxmlLoader.load<Parent>()
@@ -66,6 +67,7 @@ class HealthPointsView : Closeable {
         }
 
         private const val animationDuration = 500.0
+        private const val fontSizeFactor = 0.55
     }
 
     lateinit var stage: Stage
@@ -77,13 +79,25 @@ class HealthPointsView : Closeable {
     @FXML
     private lateinit var healthPointsLabel: Label
 
+    @FXML
+    private lateinit var backgroundImageView: ImageView
+
     private val animationQueue = AnimationQueue()
 
     @FXML
     fun initialize() {
-        healthPointsLabel.font = Fonts.magic(240.0)
-
         rootPane.styleProperty().bindAndMap(DataHolder.backgroundColorProperty, Color::asBackgroundStyle)
+
+        backgroundImageView.fitWidthProperty().bind(rootPane.widthProperty())
+        backgroundImageView.fitHeightProperty().bind(rootPane.heightProperty())
+
+        healthPointsLabel.font = Fonts.magic(240.0)
+        backgroundImageView.fitWidthProperty().addListener { _, _, newValue ->
+            updateFontSize(fitWidth = newValue.toDouble())
+        }
+        backgroundImageView.fitHeightProperty().addListener { _, _, newValue ->
+            updateFontSize(fitHeight = newValue.toDouble())
+        }
 
         DataHolder.healthPointsProperty.addListener { _, oldValue, newValue ->
             if (newValue.toInt() == oldValue.toInt()) return@addListener
@@ -93,6 +107,14 @@ class HealthPointsView : Closeable {
         }
 
         healthPointsLabel.text = DataHolder.healthPointsProperty.value.toString()
+    }
+
+    private fun updateFontSize(
+        fitWidth: Double = backgroundImageView.fitWidth,
+        fitHeight: Double = backgroundImageView.fitHeight
+    ) {
+        val minSize = minOf(fitWidth, fitHeight)
+        healthPointsLabel.font = Fonts.magic(minSize * fontSizeFactor)
     }
 
     private fun healthPointsAnimation(oldHealthPoints: Int, newHealthPoints: Int) {

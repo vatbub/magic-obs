@@ -11,14 +11,24 @@
 
 <AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.vatbub.magic.HealthPointsView">
    <children>
-      <ImageView fitHeight="400.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <image>
-            <Image url="@HealthPointsFrame.png" />
-         </image>
-      </ImageView>
-      <Label fx:id="healthPointsLabel" alignment="CENTER" layoutX="286.0" layoutY="208.0" styleClass="healthPoints" text="20" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+            AnchorPane.topAnchor="0.0">
+         <children>
+            <ImageView fx:id="backgroundImageView" fitHeight="400.0" fitWidth="400.0" pickOnBounds="true"
+                       preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                       AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
+               <image>
+                  <Image url="@HealthPointsFrame.png"/>
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
+      <Label fx:id="healthPointsLabel" alignment="CENTER" layoutX="286.0" layoutY="208.0" styleClass="healthPoints"
+             text="20" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+             AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <font>
-            <Font size="200.0" />
+            <Font size="200.0"/>
          </font>
       </Label>
    </children>
