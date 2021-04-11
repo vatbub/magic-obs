@@ -21,7 +21,7 @@ package com.github.vatbub.magic.util
 
 import javafx.application.Platform
 
-fun runOnUiThread(block:() -> Unit){
+fun runOnUiThread(block: () -> Unit) {
     if (Platform.isFxApplicationThread())
         block()
     else

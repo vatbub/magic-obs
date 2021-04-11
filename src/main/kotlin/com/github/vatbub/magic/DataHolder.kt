@@ -42,5 +42,5 @@ object DataHolder {
         }
     }
 
-    val cardList:ObservableList<Card> = PermutatingObservableList(mutableListOf())
+    val cardList: ObservableList<Card> = PermutatingObservableList(mutableListOf())
 }

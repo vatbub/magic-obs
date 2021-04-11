@@ -31,7 +31,7 @@ import java.util.stream.IntStream
  */
 class PermutatingObservableList<E>(private val source: MutableList<E>) :
     ModifiableObservableListBase<E>() {
-    fun permute(permutation: Permutation){
+    fun permute(permutation: Permutation) {
         val permutationArray = (0 until size).toMutableList()
         permutationArray.swap(permutation.oldIndex, permutation.newIndex)
         this.permute(permutationArray.toIntArray())

@@ -69,7 +69,7 @@ class App private constructor(callLaunch: Boolean, private vararg val args: Stri
 
         primaryStage.scene = scene
 
-        val auxiliaryViews:List<Closeable> = listOf(
+        val auxiliaryViews: List<Closeable> = listOf(
             HealthPointsView.show(),
             CardStatisticsView.show()
         )
