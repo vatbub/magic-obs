@@ -19,6 +19,9 @@
  */
 package com.github.vatbub.magic
 
+import com.github.vatbub.magic.animation.queue.AnimationQueue
+import com.github.vatbub.magic.animation.queue.CodeBlockQueueItem
+import com.github.vatbub.magic.animation.queue.toQueueItem
 import com.github.vatbub.magic.util.asBackgroundStyle
 import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.runOnUiThread
@@ -139,17 +142,18 @@ class CardStatisticsView : Closeable {
                 change.removed.forEach { removedItem ->
                     viewList.firstOrNull { it.card == removedItem }?.let { view ->
                         viewList.remove(view)
-                        view.playKillAnimation {
-                            it.animateRemoval()
-                        }
+                        animationQueue.add(view.createKillAnimation())
+                        view.animateRemoval()
                     }
                 }
                 change.addedSubList.forEachIndexed { index, addedItem ->
-                    val statisticCard = StatisticCard.newInstance(addedItem)
-                    viewList.add(statisticCard)
-                    cardContainer.children.add(index + change.from, statisticCard.rootPane)
-                    Platform.runLater { updateSpacing() }
-                    runOnUiThread { statisticCard.animateAddition() }
+                    animationQueue.add(CodeBlockQueueItem {
+                        val statisticCard = StatisticCard.newInstance(addedItem)
+                        viewList.add(statisticCard)
+                        cardContainer.children.add(index + change.from, statisticCard.rootPane)
+                        Platform.runLater { updateSpacing() }
+                        runOnUiThread { statisticCard.animateAddition() }
+                    })
                 }
             }
         }
@@ -160,7 +164,7 @@ class CardStatisticsView : Closeable {
 
         val keyValue1 = KeyValue(rootPane.translateYProperty(), 0, Interpolator.EASE_OUT)
         val keyFrame1 = KeyFrame(Duration(1.5 * animationDuration), keyValue1)
-        Timeline(keyFrame1).play()
+        animationQueue.add(Timeline(keyFrame1).toQueueItem())
     }
 
     private fun StatisticCard.animateRemoval() {
@@ -176,23 +180,25 @@ class CardStatisticsView : Closeable {
         val keyFrame1 =
             KeyFrame(Duration(1.5 * animationDuration), keyValueTranslateY1, keyValueMaxWidth1, keyValuePrefWidth1)
 
-        val keyValuePrefWidth2 = KeyValue(rootPane.prefWidthProperty(), 0, Interpolator.EASE_BOTH)
-        val keyValueMaxWidth2 = KeyValue(rootPane.maxWidthProperty(), 0, Interpolator.EASE_BOTH)
+        val targetWidth = -cardContainer.spacing
+        val keyValuePrefWidth2 = KeyValue(rootPane.prefWidthProperty(), targetWidth, Interpolator.EASE_BOTH)
+        val keyValueMaxWidth2 = KeyValue(rootPane.maxWidthProperty(), targetWidth, Interpolator.EASE_BOTH)
         val keyFrame2 = KeyFrame(Duration(2.5 * animationDuration), keyValueMaxWidth2, keyValuePrefWidth2)
 
-        Timeline(keyFrame1, keyFrame2)
-            .apply {
-                setOnFinished {
-                    cardContainer.children.remove(this@animateRemoval.rootPane)
-                    Platform.runLater { updateSpacing() }
-                }
-            }
-            .play()
+        animationQueue.add(
+            Timeline(keyFrame1, keyFrame2)
+                .apply {
+                    setOnFinished {
+                        cardContainer.children.remove(this@animateRemoval.rootPane)
+                        Platform.runLater { updateSpacing() }
+                    }
+                }.toQueueItem()
+        )
     }
 
     private fun Permutation.animate() {
         doPermutation()
-        animationQueue.runInQueue {
+        animationQueue.add(CodeBlockQueueItem {
             val children = listOf(cardContainer.children[oldIndex], cardContainer.children[newIndex])
             val child1 = children.minByOrNull { it.layoutX }!!
             val child2 = children.maxByOrNull { it.layoutX }!!
@@ -207,17 +213,17 @@ class CardStatisticsView : Closeable {
             val keyValue22 = KeyValue(child2.translateXProperty(), 0.0, Interpolator.EASE_BOTH)
             val keyFrame2 = KeyFrame(Duration(animationDuration), keyValue21, keyValue22)
 
-            animationQueue.add(Timeline(keyFrame1, keyFrame2))
-        }
+            animationQueue.add(Timeline(keyFrame1, keyFrame2).toQueueItem())
+        })
     }
 
     private fun Permutation.doPermutation() {
-        animationQueue.runInQueue {
+        animationQueue.add(CodeBlockQueueItem {
             val child = cardContainer.children.removeAt(oldIndex)
             if (newIndex > oldIndex)
                 cardContainer.children.add(newIndex - 1, child)
             else cardContainer.children.add(newIndex, child)
-        }
+        })
     }
 
     private val viewList = mutableListOf<StatisticCard>()

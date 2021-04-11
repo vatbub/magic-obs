@@ -19,6 +19,7 @@
  */
 package com.github.vatbub.magic
 
+import com.github.vatbub.magic.animation.queue.ConcurrentTimelineQueueItem
 import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.times
 import javafx.animation.Interpolator
@@ -113,7 +114,7 @@ class StatisticCard {
         statisticLabel.font = Fonts.magic(fontSize)
     }
 
-    fun playKillAnimation(onFinished: (StatisticCard) -> Unit) {
+    fun createKillAnimation(): ConcurrentTimelineQueueItem {
         killCrossLeftTopToRightBottom.prepareKillAnimation()
         killCrossLeftBottomToRightTop.prepareKillAnimation()
 
@@ -168,11 +169,10 @@ class StatisticCard {
                 keyValueHeightLeftBottomToRightTop2
             )
 
-        rootPane.shakeAnimation(2.0 * killAnimationDuration).play()
-
-        Timeline(keyFrame1, keyFrame2)
-            .apply { setOnFinished { onFinished(this@StatisticCard) } }
-            .play()
+        return ConcurrentTimelineQueueItem(
+            rootPane.shakeAnimation(2.0 * killAnimationDuration),
+            Timeline(keyFrame1, keyFrame2)
+        )
     }
 
     private fun ImageView.prepareKillAnimation() {

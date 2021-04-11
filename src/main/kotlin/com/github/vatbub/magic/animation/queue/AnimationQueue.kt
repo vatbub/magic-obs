@@ -17,32 +17,25 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.magic
+package com.github.vatbub.magic.animation.queue
 
 import com.github.vatbub.magic.util.runOnUiThread
-import javafx.animation.Timeline
 
 class AnimationQueue {
-    private val currentQueue = mutableListOf<Timeline>()
+    private val currentQueue = mutableListOf<QueueItem<*>>()
 
-    fun add(timeline: Timeline) = runOnUiThread {
-        currentQueue.add(timeline.wrapOnFinished())
+    fun add(queueItem: QueueItem<*>) = runOnUiThread {
+        currentQueue.add(queueItem)
         if (currentQueue.size == 1)
             playNextIfApplicable()
     }
 
-    fun runInQueue(block: () -> Unit) = add(Timeline().apply { setOnFinished { block() } })
-
-    private fun Timeline.wrapOnFinished() = apply {
-        val previousOnFinished = onFinished
-        setOnFinished { event ->
-            previousOnFinished?.handle(event)
-            currentQueue.remove(this)
-            playNextIfApplicable()
-        }
+    private fun playNextIfApplicable() {
+        currentQueue
+            .firstOrNull()
+            ?.play {
+                currentQueue.remove(it)
+                playNextIfApplicable()
+            }
     }
-
-    private fun playNextIfApplicable() = currentQueue
-        .firstOrNull()
-        ?.play()
 }

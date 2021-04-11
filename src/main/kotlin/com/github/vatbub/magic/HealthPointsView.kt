@@ -19,6 +19,8 @@
  */
 package com.github.vatbub.magic
 
+import com.github.vatbub.magic.animation.queue.AnimationQueue
+import com.github.vatbub.magic.animation.queue.toQueueItem
 import com.github.vatbub.magic.util.asBackgroundStyle
 import com.github.vatbub.magic.util.bindAndMap
 import javafx.animation.Interpolator.EASE_IN
@@ -111,7 +113,7 @@ class HealthPointsView : Closeable {
                 healthPointsLabel.translateY = -moveDistance * direction
                 healthPointsLabel.text = newHealthPoints.toString()
             }
-        })
+        }.toQueueItem())
 
 
         val motionBlurKeyValue2 = KeyValue(motionBlur.radiusProperty(), 0.0, EASE_OUT)
@@ -124,7 +126,7 @@ class HealthPointsView : Closeable {
             setOnFinished {
                 healthPointsLabel.effect = null
             }
-        })
+        }.toQueueItem())
     }
 
     override fun close() {
