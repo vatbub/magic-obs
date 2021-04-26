@@ -25,11 +25,14 @@ import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.stage.Stage
 import java.io.Closeable
+import java.util.*
 
 class App private constructor(callLaunch: Boolean, private vararg val args: String?) : Application() {
     companion object {
         lateinit var instance: App
             private set
+
+        val resourceBundle by lazy { ResourceBundle.getBundle("com.github.vatbub.magic.strings") }
 
 
         fun actualMain(vararg args: String) {
@@ -57,7 +60,7 @@ class App private constructor(callLaunch: Boolean, private vararg val args: Stri
         instance = this
         currentStage = primaryStage
 
-        val fxmlLoader = FXMLLoader(javaClass.getResource("MainView.fxml"))
+        val fxmlLoader = FXMLLoader(javaClass.getResource("MainView.fxml"), resourceBundle)
         val root = fxmlLoader.load<Parent>()
         controllerInstance = fxmlLoader.getController()
 
