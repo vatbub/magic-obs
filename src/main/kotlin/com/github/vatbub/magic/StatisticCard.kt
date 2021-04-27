@@ -19,21 +19,28 @@
  */
 package com.github.vatbub.magic
 
+import com.github.vatbub.magic.animation.queue.AnimationQueue
+import com.github.vatbub.magic.animation.queue.CodeBlockQueueItem
 import com.github.vatbub.magic.animation.queue.ConcurrentTimelineQueueItem
+import com.github.vatbub.magic.animation.queue.toQueueItem
 import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.times
 import javafx.animation.Interpolator
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue
 import javafx.animation.Timeline
+import javafx.collections.ListChangeListener
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Node
 import javafx.scene.Parent
 import javafx.scene.control.Label
 import javafx.scene.effect.GaussianBlur
+import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
+import javafx.scene.layout.HBox
+import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
 import javafx.util.Duration
 import kotlin.math.max
@@ -54,16 +61,22 @@ class StatisticCard {
         private const val maxFontSize = 90.0
         private const val minFontSize = 50.0
         private val killAnimationDuration = Duration(1000.0)
+
+        private const val abilityIconSize = 40.0
+        private const val statisticsOffset = 20.0
+        private val statisticsOffsetAnimationDuration = Duration(500.0)
+
+        private const val abilityAnimationDuration = 500.0
     }
 
-    var card: Card? by Delegates.observable(null) { _, _, newValue ->
+    var card: Card? by Delegates.observable(null) { _, oldValue, newValue ->
+        oldValue?.abilities?.removeListener(abilitiesChangeListener)
         if (newValue == null) return@observable
+
         with(newValue) {
             updateStatisticLabel(
                 newValue.attackProperty.value,
-                newValue.defenseProperty.value,
-                newValue.tappedProperty.value,
-                newValue.flyingProperty.value
+                newValue.defenseProperty.value
             )
 
             attackProperty.addListener { _, _, newValue ->
@@ -72,12 +85,7 @@ class StatisticCard {
             defenseProperty.addListener { _, _, newValue ->
                 updateStatisticLabel(defense = newValue.toInt())
             }
-            tappedProperty.addListener { _, _, newValue ->
-                updateStatisticLabel(tapped = newValue)
-            }
-            flyingProperty.addListener { _, _, newValue ->
-                updateStatisticLabel(flying = newValue)
-            }
+            abilities.addListener(abilitiesChangeListener)
         }
     }
         private set
@@ -96,6 +104,13 @@ class StatisticCard {
 
     @FXML
     private lateinit var killCrossLeftTopToRightBottom: ImageView
+
+    @FXML
+    private lateinit var abilityIcons: HBox
+
+    private val abilityAnimationQueue = AnimationQueue()
+
+    private val abilityViewMap = mutableMapOf<Ability, ImageView>()
 
     @FXML
     fun initialize() {
@@ -188,16 +203,87 @@ class StatisticCard {
 
     private fun updateStatisticLabel(
         attack: Int = card!!.attackProperty.value,
-        defense: Int = card!!.defenseProperty.value,
-        tapped: Boolean = card!!.tappedProperty.value,
-        flying: Boolean = card!!.flyingProperty.value
+        defense: Int = card!!.defenseProperty.value
     ) {
-        statisticLabel.text = with(StringBuilder("$attack/$defense")) {
-            if (tapped)
-                append("*")
-            if (flying)
-                append("(f)")
-            toString()
+        statisticLabel.text = "$attack/$defense"
+        abilityIcons.children.clear()
+    }
+
+    private val abilitiesChangeListener = ListChangeListener<Ability> { change ->
+        if (change.list.isNotEmpty()) animateStatisticsOffset(statisticsOffset)
+
+        while (change.next()) {
+            change.removed.forEach { removedItem ->
+                abilityViewMap.remove(removedItem)?.let { view ->
+                    abilityAnimationQueue.add(CodeBlockQueueItem {
+                        view.animateRemoval(abilityIcons.children.indexOf(view))
+                    })
+                }
+            }
+            change.addedSubList.forEachIndexed { index, addedItem ->
+                abilityAnimationQueue.add(CodeBlockQueueItem {
+                    val iconStream =
+                        StatisticCard::class.java.getResourceAsStream("AbilityIcons/${addedItem.imageFileName}.png")
+                    val imageView = ImageView(Image(iconStream, abilityIconSize, abilityIconSize, false, true))
+
+                    abilityViewMap[addedItem] = imageView
+                    abilityAnimationQueue.add(CodeBlockQueueItem {
+                        imageView.animateAddition(index + change.from)
+                    })
+                })
+            }
         }
+
+        if (change.list.isEmpty()) animateStatisticsOffset(0.0)
+    }
+
+    private fun ImageView.animateAddition(indexToAddViewAt: Int) {
+        val targetWidth = image.width
+        val space = Rectangle(0.0, image.height, Color.TRANSPARENT)
+
+        val keyValueSpaceWidth = KeyValue(space.widthProperty(), targetWidth, Interpolator.EASE_BOTH)
+
+        val keyFrameWidth = KeyFrame(Duration(abilityAnimationDuration), keyValueSpaceWidth)
+
+        val keyValueOpacity = KeyValue(opacityProperty(), 1.0)
+        val keyFrameOpacity = KeyFrame(Duration(0.5 * abilityAnimationDuration), keyValueOpacity)
+
+        abilityAnimationQueue.add(CodeBlockQueueItem {
+            abilityIcons.children.add(indexToAddViewAt, space)
+        })
+        abilityAnimationQueue.add(Timeline(keyFrameWidth).toQueueItem())
+
+        abilityAnimationQueue.add(CodeBlockQueueItem {
+            opacity = 0.0
+            abilityIcons.children[indexToAddViewAt] = this
+        })
+        abilityAnimationQueue.add(Timeline(keyFrameOpacity).toQueueItem())
+    }
+
+    private fun ImageView.animateRemoval(indexInParent: Int) {
+        val keyValueOpacity = KeyValue(opacityProperty(), 0.0)
+        val keyFrameOpacity = KeyFrame(Duration(0.5 * abilityAnimationDuration), keyValueOpacity)
+
+        val targetWidth = -abilityIcons.spacing
+        val space = Rectangle(image.width, image.height, Color.TRANSPARENT)
+
+        val keyValueSpaceWidth = KeyValue(space.widthProperty(), targetWidth, Interpolator.EASE_BOTH)
+
+        val keyFrameWidth = KeyFrame(Duration(abilityAnimationDuration), keyValueSpaceWidth)
+
+        abilityAnimationQueue.add(Timeline(keyFrameOpacity).toQueueItem())
+        abilityAnimationQueue.add(CodeBlockQueueItem {
+            abilityIcons.children[indexInParent] = space
+        })
+        abilityAnimationQueue.add(Timeline(keyFrameWidth).toQueueItem())
+        abilityAnimationQueue.add(CodeBlockQueueItem {
+            abilityIcons.children.remove(space)
+        })
+    }
+
+    private fun animateStatisticsOffset(targetValue: Double) {
+        val keyValue = KeyValue(statisticLabel.translateYProperty(), -targetValue, Interpolator.EASE_BOTH)
+        val keyFrame = KeyFrame(statisticsOffsetAnimationDuration, keyValue)
+        abilityAnimationQueue.add(Timeline(keyFrame).toQueueItem())
     }
 }

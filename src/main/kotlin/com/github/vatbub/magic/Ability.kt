@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,13 +19,10 @@
  */
 package com.github.vatbub.magic
 
-import javafx.beans.property.IntegerProperty
-import javafx.beans.property.SimpleIntegerProperty
-import javafx.collections.FXCollections
-import javafx.collections.ObservableList
+enum class Ability(imageFileName: String? = null, translationKey: String? = null) {
+    Annihilator, CantBeBlocked, CantBlock, Deathtouch, Defender, DoesntUntap, DoubleFacedCard, DoubleStrike, Exile,
+    FirstStrike, Flying, ForestWalk;
 
-class Card(attack: Int = 1, defense: Int = 1, abilities: List<Ability> = listOf()) {
-    val attackProperty: IntegerProperty = SimpleIntegerProperty(attack)
-    val defenseProperty: IntegerProperty = SimpleIntegerProperty(defense)
-    val abilities: ObservableList<Ability> = FXCollections.observableArrayList(abilities)
+    val imageFileName = imageFileName ?: toString()
+    val translationKey = translationKey ?: toString()
 }

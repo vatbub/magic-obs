@@ -19,12 +19,10 @@
  */
 package com.github.vatbub.magic
 
-import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
 import javafx.beans.value.ObservableValue
 import javafx.fxml.FXML
 import javafx.scene.control.*
-import javafx.scene.control.cell.CheckBoxTableCell
 import javafx.util.Callback
 
 
@@ -45,10 +43,7 @@ class MainView {
     private lateinit var attackColumn: TableColumn<Card, Int>
 
     @FXML
-    private lateinit var tappedColumn: TableColumn<Card, Boolean>
-
-    @FXML
-    private lateinit var flyingColumn: TableColumn<Card, Boolean>
+    private lateinit var abilitiesColumn: TableColumn<Card, Card>
 
     @FXML
     private lateinit var buttonsColumn: TableColumn<Card, Card>
@@ -87,8 +82,7 @@ class MainView {
         cardsTableView.items = DataHolder.cardList
         attackColumn.setIntegerColumnFactories { attackProperty }
         defenseColumn.setIntegerColumnFactories { defenseProperty }
-        tappedColumn.setBooleanColumnFactories { tappedProperty }
-        flyingColumn.setBooleanColumnFactories { flyingProperty }
+        abilitiesColumn.cellFactory = Callback { CheckboxDropDownCell() }
         buttonsColumn.cellFactory = Callback { CardButtonCell() }
     }
 
@@ -104,12 +98,6 @@ class MainView {
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    private fun TableColumn<Card, Boolean>.setBooleanColumnFactories(objectProperty: Card.() -> BooleanProperty) {
-        cellValueFactory = Callback { objectProperty(it.value) }
-        cellFactory = CheckBoxTableCell.forTableColumn(this)
-    }
-
     @FXML
     fun healthPointsAddOnAction() {
         DataHolder.healthPointsProperty.value++
@@ -123,11 +111,6 @@ class MainView {
     @FXML
     fun addCardButtonOnAction() {
         DataHolder.cardList.add(Card())
-    }
-
-    @FXML
-    fun untapAllCardsButtonOnAction() {
-        DataHolder.cardList.forEach { it.tappedProperty.value = false }
     }
 
     fun close() {
