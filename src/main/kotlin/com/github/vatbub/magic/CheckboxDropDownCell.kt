@@ -19,7 +19,6 @@
  */
 package com.github.vatbub.magic
 
-import com.github.vatbub.magic.util.get
 import javafx.application.Platform
 import javafx.collections.FXCollections
 import javafx.collections.ListChangeListener
@@ -30,28 +29,36 @@ import kotlin.properties.Delegates
 
 
 class CheckboxDropDownCell : TableCell<Card, Card>() {
-    private val dropDown = CheckComboBox(FXCollections.observableArrayList(*Ability.values())).apply {
+    private var refreshInProgress = false
+    private val dropDown = CheckComboBox(FXCollections.observableArrayList(Ability.sortedValues())).apply {
         checkModel.checkedItems.addListener(ListChangeListener { change ->
             val currentCard = currentCard ?: return@ListChangeListener
+            if (refreshInProgress) return@ListChangeListener
+
             while (change.next()) {
                 currentCard.abilities.removeAll(change.removed)
                 currentCard.abilities.addAll(change.addedSubList)
+                change.addedSubList.forEach { Ability.addToHistory(it) }
             }
         })
 
         converter = object : StringConverter<Ability>() {
-            override fun toString(ability: Ability): String = App.resourceBundle["ability.${ability.translationKey}"]
+            override fun toString(ability: Ability): String =ability.localizedLabel
 
             override fun fromString(string: String): Ability = Ability.valueOf(string)
         }
     }
 
     private var currentCard: Card? by Delegates.observable(null) { _, oldValue, newValue ->
+        refreshInProgress = true
         oldValue?.abilities?.removeListener(abilitiesChangeListener)
-        newValue?.abilities?.addListener(abilitiesChangeListener)
+        if (newValue == null) return@observable
 
+        newValue.abilities.addListener(abilitiesChangeListener)
         Platform.runLater {
             dropDown.checkModel.clearChecks()
+            newValue.abilities.forEach { ability -> dropDown.checkModel.check(ability) }
+            refreshInProgress = false
         }
     }
 

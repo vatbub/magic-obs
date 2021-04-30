@@ -19,10 +19,50 @@
  */
 package com.github.vatbub.magic
 
+import com.github.vatbub.magic.Ability.SortMode.*
+import com.github.vatbub.magic.PreferenceKeys.AbilityHistory
+import com.github.vatbub.magic.PreferenceKeys.AbilityHistoryLength
+import com.github.vatbub.magic.PreferenceKeys.AbilitySortMode
+import com.github.vatbub.magic.util.get
+import javafx.collections.FXCollections
+import javafx.collections.ListChangeListener
+
 enum class Ability(imageFileName: String? = null, translationKey: String? = null) {
     Annihilator, CantBeBlocked, CantBlock, Deathtouch, Defender, DoesntUntap, DoubleFacedCard, DoubleStrike, Exile,
     FirstStrike, Flying, ForestWalk;
 
     val imageFileName = imageFileName ?: toString()
     val translationKey = translationKey ?: toString()
+    val localizedLabel:String
+    get() = App.resourceBundle["ability.$translationKey"]
+
+    enum class SortMode{
+        Original, Usage, Alphabetical
+    }
+
+    companion object {
+        private val history = FXCollections.observableArrayList(preferences[AbilityHistory]).also {
+            it.addListener(ListChangeListener { change ->
+                preferences[AbilityHistory] = change.list
+            })
+        }
+
+        fun addToHistory(ability: Ability) {
+            history.add(ability)
+            val amountToDrop = history.size - preferences[AbilityHistoryLength]
+            if (amountToDrop > 0)
+                history.dropLast(amountToDrop)
+        }
+
+        fun sortedValues():List<Ability>{
+            return when(preferences[AbilitySortMode]){
+                Original -> values().toList()
+                Usage -> {
+                    val groupedHistory = history.groupBy { it }.mapValues { it.value.size }
+                    values().sortedBy { groupedHistory[it] }.reversed()
+                }
+                Alphabetical -> values().sortedBy { it.localizedLabel }
+            }
+        }
+    }
 }

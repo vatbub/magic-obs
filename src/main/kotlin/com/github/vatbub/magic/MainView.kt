@@ -19,11 +19,15 @@
  */
 package com.github.vatbub.magic
 
+import com.github.vatbub.magic.PreferenceKeys.AbilitySortMode
+import com.github.vatbub.magic.util.get
 import javafx.beans.property.IntegerProperty
 import javafx.beans.value.ObservableValue
+import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.util.Callback
+import javafx.util.StringConverter
 
 
 class MainView {
@@ -32,6 +36,9 @@ class MainView {
 
     @FXML
     private lateinit var healthPointsBox: TextField
+
+    @FXML
+    private lateinit var dropDownAbilitySortMode: ComboBox<Ability.SortMode>
 
     @FXML
     private lateinit var cardsTableView: TableView<Card>
@@ -79,7 +86,23 @@ class MainView {
 
         healthPointsBox.text = DataHolder.healthPointsProperty.value.toString()
 
+        dropDownAbilitySortMode.items = FXCollections.observableArrayList(*Ability.SortMode.values())
+        dropDownAbilitySortMode.selectionModel.select(preferences[AbilitySortMode])
+        dropDownAbilitySortMode.converter = object: StringConverter<Ability.SortMode>() {
+            override fun toString(sortMode: Ability.SortMode): String =App.resourceBundle["ability.sortMode.$sortMode"]
+
+            override fun fromString(string: String): Ability.SortMode = throw NotImplementedError("Not supported")
+        }
+        dropDownAbilitySortMode.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
+            preferences[AbilitySortMode] = newValue
+            refreshCardTableFactories()
+        }
+
         cardsTableView.items = DataHolder.cardList
+        refreshCardTableFactories()
+    }
+
+    private fun refreshCardTableFactories() {
         attackColumn.setIntegerColumnFactories { attackProperty }
         defenseColumn.setIntegerColumnFactories { defenseProperty }
         abilitiesColumn.cellFactory = Callback { CheckboxDropDownCell() }

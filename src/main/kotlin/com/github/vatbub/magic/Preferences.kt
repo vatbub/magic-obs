@@ -22,6 +22,8 @@ package com.github.vatbub.magic
 import com.github.vatbub.kotlin.preferences.Key
 import com.github.vatbub.kotlin.preferences.Preferences
 import com.github.vatbub.kotlin.preferences.PropertiesFileKeyValueProvider
+import com.github.vatbub.magic.Ability.SortMode
+import com.github.vatbub.magic.Ability.SortMode.Usage
 import javafx.scene.paint.Color
 import java.io.File
 
@@ -39,4 +41,13 @@ object PreferenceKeys {
     }, { "${it.red};${it.green};${it.blue};${it.opacity}" })
 
     object HealthPoints : Key<Int>("healthPoints", 20, { it.toInt() }, { it.toString() })
+
+    object AbilitySortMode : Key<SortMode>("abilitySortMode", Usage, { SortMode.valueOf(it)}, { it.toString() })
+    object AbilityHistoryLength : Key<Int>("abilityHistoryLength", 20, { it.toInt() }, { it.toString() })
+    object AbilityHistory : Key<List<Ability>>(
+        uniqueName = "abilityHistory",
+        defaultValue = listOf(),
+        parser = { it.split(",").map { element -> Ability.valueOf(element) } },
+        serializer = { it.joinToString(",") }
+    )
 }
