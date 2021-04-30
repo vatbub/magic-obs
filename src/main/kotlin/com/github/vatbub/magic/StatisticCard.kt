@@ -214,13 +214,15 @@ class StatisticCard {
 
         while (change.next()) {
             change.removed.forEach { removedItem ->
-                abilityViewMap.remove(removedItem)?.let { view ->
-                    abilityAnimationQueue.add(CodeBlockQueueItem {
-                        view.animateRemoval(abilityIcons.children.indexOf(view))
-                    })
-                }
+                abilityAnimationQueue.add(CodeBlockQueueItem {
+                    abilityViewMap.remove(removedItem)?.let { view ->
+                        abilityAnimationQueue.add(CodeBlockQueueItem {
+                            view.animateRemoval()
+                        })
+                    }
+                })
             }
-            change.addedSubList.forEachIndexed { index, addedItem ->
+            change.addedSubList.forEach { addedItem ->
                 abilityAnimationQueue.add(CodeBlockQueueItem {
                     val iconStream =
                         StatisticCard::class.java.getResourceAsStream("AbilityIcons/${addedItem.imageFileName}.png")
@@ -228,7 +230,7 @@ class StatisticCard {
 
                     abilityViewMap[addedItem] = imageView
                     abilityAnimationQueue.add(CodeBlockQueueItem {
-                        imageView.animateAddition(index + change.from)
+                        imageView.animateAddition()
                     })
                 })
             }
@@ -237,7 +239,7 @@ class StatisticCard {
         if (change.list.isEmpty()) animateStatisticsOffset(0.0)
     }
 
-    private fun ImageView.animateAddition(indexToAddViewAt: Int) {
+    private fun ImageView.animateAddition() {
         val targetWidth = image.width
         val space = Rectangle(0.0, image.height, Color.TRANSPARENT)
 
@@ -249,18 +251,19 @@ class StatisticCard {
         val keyFrameOpacity = KeyFrame(Duration(0.5 * abilityAnimationDuration), keyValueOpacity)
 
         abilityAnimationQueue.add(CodeBlockQueueItem {
-            abilityIcons.children.add(indexToAddViewAt, space)
+            abilityIcons.children.add(space)
         })
         abilityAnimationQueue.add(Timeline(keyFrameWidth).toQueueItem())
 
         abilityAnimationQueue.add(CodeBlockQueueItem {
             opacity = 0.0
-            abilityIcons.children[indexToAddViewAt] = this
+            val indexOfSpace = abilityIcons.children.indexOf(space)
+            abilityIcons.children[indexOfSpace] = this
         })
         abilityAnimationQueue.add(Timeline(keyFrameOpacity).toQueueItem())
     }
 
-    private fun ImageView.animateRemoval(indexInParent: Int) {
+    private fun ImageView.animateRemoval() {
         val keyValueOpacity = KeyValue(opacityProperty(), 0.0)
         val keyFrameOpacity = KeyFrame(Duration(0.5 * abilityAnimationDuration), keyValueOpacity)
 
@@ -273,6 +276,7 @@ class StatisticCard {
 
         abilityAnimationQueue.add(Timeline(keyFrameOpacity).toQueueItem())
         abilityAnimationQueue.add(CodeBlockQueueItem {
+            val indexInParent = abilityIcons.children.indexOf(this)
             abilityIcons.children[indexInParent] = space
         })
         abilityAnimationQueue.add(Timeline(keyFrameWidth).toQueueItem())
