@@ -143,14 +143,16 @@ class CardStatisticsView : Closeable {
                     }
             } else {
                 change.removed.forEach { removedItem ->
-                    viewList.firstOrNull { it.card == removedItem }?.let { view ->
-                        viewList.remove(view)
-                        cardViewsInRemovalQueue.add(view)
-                        animationQueue.add(DeferredQueueItem {
-                            view.createKillAnimation()
-                        })
-                        view.animateRemoval()
-                    }
+                    animationQueue.add(CodeBlockQueueItem {
+                        viewList.firstOrNull { it.card == removedItem }?.let { view ->
+                            viewList.remove(view)
+                            cardViewsInRemovalQueue.add(view)
+                            animationQueue.add(DeferredQueueItem {
+                                view.createKillAnimation()
+                            })
+                            view.animateRemoval()
+                        }
+                    })
                 }
                 change.addedSubList.forEachIndexed { index, addedItem ->
                     animationQueue.add(DeferredQueueItem {
