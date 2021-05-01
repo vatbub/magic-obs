@@ -75,6 +75,7 @@ class StatisticCard {
         oldValue?.abilities?.removeListener(abilitiesChangeListener)
         if (newValue == null) return@observable
 
+        cardAboutToBeKilled = false
         with(newValue) {
             updateStatisticLabel(
                 newValue.attackProperty.value,
@@ -87,7 +88,11 @@ class StatisticCard {
             defenseProperty.addListener { _, _, newValue ->
                 updateStatisticLabel(defense = newValue.toInt())
             }
+
             abilities.addListener(abilitiesChangeListener)
+            // animateStatisticsOffset(High)
+            abilityIcons.children.clear()
+            abilities.forEach { addAbility(it) }
         }
     }
         private set
@@ -124,6 +129,9 @@ class StatisticCard {
         rootPane.widthProperty().addListener { _, _, _ ->
             updateMiddleWidth()
         }
+        abilityIcons.children.addListener(ListChangeListener { change ->
+            animateStatisticsOffset(change.list.size)
+        })
     }
 
     fun updateMiddleWidth() {
@@ -259,33 +267,37 @@ class StatisticCard {
     }
 
     private val abilitiesChangeListener = ListChangeListener<Ability> { change ->
-        if (change.list.isNotEmpty()) animateStatisticsOffset(statisticsOffset)
+        // animateStatisticsOffset(High)
 
         while (change.next()) {
             change.removed.forEach { removedItem ->
-                abilityAnimationQueue.add(CodeBlockQueueItem {
-                    abilityViewMap.remove(removedItem)?.let { view ->
-                        abilityAnimationQueue.add(CodeBlockQueueItem {
-                            view.animateRemoval()
-                        })
-                    }
-                })
+                removeAbility(removedItem)
             }
             change.addedSubList.forEach { addedItem ->
-                abilityAnimationQueue.add(CodeBlockQueueItem {
-                    val iconStream =
-                        StatisticCard::class.java.getResourceAsStream("AbilityIcons/${addedItem.imageFileName}.png")
-                    val imageView = ImageView(Image(iconStream, abilityIconSize, abilityIconSize, false, true))
-
-                    abilityViewMap[addedItem] = imageView
-                    abilityAnimationQueue.add(CodeBlockQueueItem {
-                        imageView.animateAddition()
-                    })
-                })
+                addAbility(addedItem)
             }
         }
 
-        if (change.list.isEmpty()) animateStatisticsOffset(0.0)
+        // animateStatisticsOffset(Low)
+    }
+
+    private fun addAbility(ability: Ability) {
+        val iconStream =
+            StatisticCard::class.java.getResourceAsStream("AbilityIcons/${ability.imageFileName}.png")
+        val imageView = ImageView(Image(iconStream, abilityIconSize, abilityIconSize, false, true))
+
+        abilityViewMap[ability] = imageView
+        abilityAnimationQueue.add(CodeBlockQueueItem {
+            imageView.animateAddition()
+        })
+    }
+
+    private fun removeAbility(ability: Ability) {
+        abilityViewMap.remove(ability)?.let { view ->
+            abilityAnimationQueue.add(CodeBlockQueueItem {
+                view.animateRemoval()
+            })
+        }
     }
 
     private fun ImageView.animateAddition() {
@@ -334,9 +346,13 @@ class StatisticCard {
         })
     }
 
-    private fun animateStatisticsOffset(targetValue: Double) {
+    private fun animateStatisticsOffset(childCount: Int) {
+        val targetValue = if (childCount != 0) statisticsOffset else 0.0
+
+        if (statisticLabel.translateY == -targetValue) return
+
         val keyValue = KeyValue(statisticLabel.translateYProperty(), -targetValue, Interpolator.EASE_BOTH)
         val keyFrame = KeyFrame(statisticsOffsetAnimationDuration, keyValue)
-        abilityAnimationQueue.add(Timeline(keyFrame).toQueueItem())
+        Timeline(keyFrame).play()
     }
 }
