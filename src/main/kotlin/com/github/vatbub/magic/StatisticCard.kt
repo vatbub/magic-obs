@@ -277,6 +277,7 @@ class StatisticCard {
     }
 
     private fun addAbility(ability: Ability) {
+        if (abilityViewMap.containsKey(ability)) return
         val iconStream =
             StatisticCard::class.java.getResourceAsStream("AbilityIcons/${ability.imageFileName}.png")
         val imageView = ImageView(Image(iconStream, abilityIconSize, abilityIconSize, false, true))
