@@ -23,12 +23,14 @@ import com.github.vatbub.magic.animation.queue.AnimationQueue
 import com.github.vatbub.magic.animation.queue.CodeBlockQueueItem
 import com.github.vatbub.magic.animation.queue.ConcurrentTimelineQueueItem
 import com.github.vatbub.magic.animation.queue.toQueueItem
+import com.github.vatbub.magic.util.awaitLayoutCycles
 import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.times
 import javafx.animation.Interpolator
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue
 import javafx.animation.Timeline
+import javafx.application.Platform
 import javafx.collections.ListChangeListener
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
@@ -43,9 +45,11 @@ import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
 import javafx.util.Duration
-import kotlin.math.max
+import kotlin.math.abs
 import kotlin.math.min
 import kotlin.properties.Delegates
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
 
 class StatisticCard {
@@ -58,8 +62,6 @@ class StatisticCard {
             }
         }
 
-        private const val maxFontSize = 90.0
-        private const val minFontSize = 50.0
         private val killAnimationDuration = Duration(1000.0)
 
         private const val abilityIconSize = 40.0
@@ -112,6 +114,10 @@ class StatisticCard {
 
     private val abilityViewMap = mutableMapOf<Ability, ImageView>()
 
+    private var statisticsLabelFontSizeUpdateInProgress = false
+    private var statisticsLabelCancelFontSizeUpdate = false
+    private var cardAboutToBeKilled = false
+
     @FXML
     fun initialize() {
         updateMiddleWidth()
@@ -123,13 +129,54 @@ class StatisticCard {
     fun updateMiddleWidth() {
         val newMiddleWidth =
             rootPane.prefWidth - rootPane.getCellBounds(0, 0).width - rootPane.getCellBounds(2, 0).width + 2
-        val fontSize = max(minFontSize, min(maxFontSize, newMiddleWidth - 135))
 
         middleImageView.fitWidth = newMiddleWidth
-        statisticLabel.font = Fonts.magic(fontSize)
+
+        updateMiddleFontSize(newMiddleWidth - 10)
+    }
+
+    private fun updateMiddleFontSize(
+        targetWidth: Double = middleImageView.fitWidth,
+        targetHeight: Double = middleImageView.fitHeight,
+        tolerance: Double = 0.05
+    ) {
+        if (cardAboutToBeKilled) return
+        if (targetWidth < 0) return
+        if (targetHeight < 0) return
+
+        if (statisticsLabelFontSizeUpdateInProgress) {
+            statisticsLabelCancelFontSizeUpdate = true
+            Platform.runLater { updateMiddleFontSize(targetWidth, targetHeight, tolerance) }
+            return
+        }
+
+        Platform.runLater { statisticLabel.updateMiddleFontSize(targetWidth, targetHeight, tolerance) }
+    }
+
+    private fun Label.updateMiddleFontSize(targetWidth: Double, targetHeight: Double, tolerance: Double) {
+        if (statisticsLabelCancelFontSizeUpdate || cardAboutToBeKilled) {
+            statisticsLabelCancelFontSizeUpdate = false
+            statisticsLabelFontSizeUpdateInProgress = false
+            return
+        }
+
+        val widthStepSize = (targetWidth - width) / targetWidth
+        val heightStepSize = (targetHeight - height) / targetHeight
+        val stepSize = min(widthStepSize, heightStepSize)
+
+        if (abs(stepSize) < tolerance) {
+            statisticsLabelFontSizeUpdateInProgress = false
+            return
+        }
+
+        statisticsLabelFontSizeUpdateInProgress = true
+        val fontSize = font.size + 10 * stepSize
+        font = Fonts.magic(fontSize)
+        Platform.runLater { this.updateMiddleFontSize(targetWidth, targetHeight, tolerance) }
     }
 
     fun createKillAnimation(): ConcurrentTimelineQueueItem {
+        cardAboutToBeKilled = true
         killCrossLeftTopToRightBottom.prepareKillAnimation()
         killCrossLeftBottomToRightTop.prepareKillAnimation()
 
@@ -201,12 +248,14 @@ class StatisticCard {
         effect = GaussianBlur(10.0)
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun updateStatisticLabel(
         attack: Int = card!!.attackProperty.value,
         defense: Int = card!!.defenseProperty.value
     ) {
         statisticLabel.text = "$attack/$defense"
-        abilityIcons.children.clear()
+        // Laying out text apparently takes more than one layout cycle...
+        awaitLayoutCycles(5, 10.milliseconds) { updateMiddleFontSize() }
     }
 
     private val abilitiesChangeListener = ListChangeListener<Ability> { change ->
