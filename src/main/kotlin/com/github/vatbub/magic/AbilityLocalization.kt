@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,18 +19,13 @@
  */
 package com.github.vatbub.magic
 
-enum class Ability(imageFileName: String? = null, translationKey: String? = null) {
-    Annihilator, CantBeBlocked, CantBlock, Deathtouch, Defender, DoesntUntap, DoubleFacedCard, DoubleStrike, Exile,
-    FirstStrike, Flying, ForestWalk, Haste, Hexproof, Indestructible, Intimidate, Lifelink, Menace, MustAttack,
-    Planeswalker, Protection, Reach, Regenerate, Renown, TemporaryControl, Token, Trample, Undying, Vigilance, Rally,
-    Ingest, Cohort, Delirium, Skulk;
+import com.github.vatbub.magic.util.get
+import java.util.*
 
-    val imageFileName = imageFileName ?: toString()
-    val translationKey = translationKey ?: toString()
-
-    enum class SortMode {
-        Original, Usage, Alphabetical
-    }
-
-    companion object;
+private val abilityTranslations: ResourceBundle by lazy {
+    ResourceBundle.getBundle("com.github.vatbub.magic.abilities")
 }
+
+
+val Ability.localizedLabel: String
+    get() = abilityTranslations[translationKey] ?: toString()

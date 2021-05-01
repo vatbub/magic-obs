@@ -22,10 +22,10 @@ package com.github.vatbub.magic
 import com.github.vatbub.kotlin.preferences.Key
 import com.github.vatbub.kotlin.preferences.Preferences
 import com.github.vatbub.kotlin.preferences.PropertiesFileKeyValueProvider
-import com.github.vatbub.magic.Ability.SortMode
 import com.github.vatbub.magic.Ability.SortMode.Usage
 import javafx.scene.paint.Color
 import java.io.File
+import com.github.vatbub.magic.Ability.SortMode as SortModeEnum
 
 val preferences = Preferences(PropertiesFileKeyValueProvider(File("magicObsViewSettings.properties")))
 
@@ -42,12 +42,10 @@ object PreferenceKeys {
 
     object HealthPoints : Key<Int>("healthPoints", 20, { it.toInt() }, { it.toString() })
 
-    object AbilitySortMode : Key<SortMode>("abilitySortMode", Usage, { SortMode.valueOf(it)}, { it.toString() })
-    object AbilityHistoryLength : Key<Int>("abilityHistoryLength", 20, { it.toInt() }, { it.toString() })
-    object AbilityHistory : Key<List<Ability>>(
-        uniqueName = "abilityHistory",
-        defaultValue = listOf(),
-        parser = { it.split(",").map { element -> Ability.valueOf(element) } },
-        serializer = { it.joinToString(",") }
-    )
+    object AbilityKeys {
+        object SortMode : Key<SortModeEnum>("abilitySortMode", Usage, { SortModeEnum.valueOf(it) }, { it.toString() })
+
+        fun historyEntry(ability: Ability) =
+            Key("abilityHistory.$ability", 0, { it.toInt() }, { it.toString() })
+    }
 }

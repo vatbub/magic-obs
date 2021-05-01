@@ -19,7 +19,7 @@
  */
 package com.github.vatbub.magic
 
-import com.github.vatbub.magic.PreferenceKeys.AbilitySortMode
+import com.github.vatbub.magic.PreferenceKeys.AbilityKeys.SortMode
 import com.github.vatbub.magic.util.get
 import javafx.beans.property.IntegerProperty
 import javafx.beans.value.ObservableValue
@@ -87,7 +87,7 @@ class MainView {
         healthPointsBox.text = DataHolder.healthPointsProperty.value.toString()
 
         dropDownAbilitySortMode.items = FXCollections.observableArrayList(*Ability.SortMode.values())
-        dropDownAbilitySortMode.selectionModel.select(preferences[AbilitySortMode])
+        dropDownAbilitySortMode.selectionModel.select(preferences[SortMode])
         dropDownAbilitySortMode.converter = object : StringConverter<Ability.SortMode>() {
             override fun toString(sortMode: Ability.SortMode): String =
                 App.resourceBundle["ability.sortMode.$sortMode"] ?: sortMode.toString()
@@ -95,7 +95,7 @@ class MainView {
             override fun fromString(string: String): Ability.SortMode = throw NotImplementedError("Not supported")
         }
         dropDownAbilitySortMode.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
-            preferences[AbilitySortMode] = newValue
+            preferences[SortMode] = newValue
             refreshCardTableFactories()
         }
 
