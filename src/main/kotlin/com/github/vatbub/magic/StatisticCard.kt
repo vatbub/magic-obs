@@ -90,7 +90,6 @@ class StatisticCard {
             }
 
             abilities.addListener(abilitiesChangeListener)
-            // animateStatisticsOffset(High)
             abilityIcons.children.clear()
             abilities.forEach { addAbility(it) }
         }
@@ -267,8 +266,6 @@ class StatisticCard {
     }
 
     private val abilitiesChangeListener = ListChangeListener<Ability> { change ->
-        // animateStatisticsOffset(High)
-
         while (change.next()) {
             change.removed.forEach { removedItem ->
                 removeAbility(removedItem)
@@ -277,8 +274,6 @@ class StatisticCard {
                 addAbility(addedItem)
             }
         }
-
-        // animateStatisticsOffset(Low)
     }
 
     private fun addAbility(ability: Ability) {
