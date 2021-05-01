@@ -116,6 +116,11 @@ There are lots of ways to contribute to this project. In particular, I need help
 If you feel like helping me with any of these things, feel free to submit an issue in the
 issue [here](https://github.com/vatbub/magic-obs/issues) or create a pull request.
 
+## Translations
+
+- German: Mostly by myself, some translations are taken from [here](https://magic.freizeitspieler.de/MTGterms_EN-DE.txt)
+  .
+
 ## License
 
 Copyright (C) 2021 - 2021 Frederik Kammel
