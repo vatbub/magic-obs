@@ -32,7 +32,9 @@ class App private constructor(callLaunch: Boolean, private vararg val args: Stri
         lateinit var instance: App
             private set
 
-        val resourceBundle by lazy { ResourceBundle.getBundle("com.github.vatbub.magic.strings") }
+        val resourceBundle: ResourceBundle by lazy {
+            ResourceBundle.getBundle("com.github.vatbub.magic.strings")
+        }
 
 
         fun actualMain(vararg args: String) {

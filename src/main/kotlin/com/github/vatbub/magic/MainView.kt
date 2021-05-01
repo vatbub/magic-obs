@@ -88,8 +88,9 @@ class MainView {
 
         dropDownAbilitySortMode.items = FXCollections.observableArrayList(*Ability.SortMode.values())
         dropDownAbilitySortMode.selectionModel.select(preferences[AbilitySortMode])
-        dropDownAbilitySortMode.converter = object: StringConverter<Ability.SortMode>() {
-            override fun toString(sortMode: Ability.SortMode): String =App.resourceBundle["ability.sortMode.$sortMode"]
+        dropDownAbilitySortMode.converter = object : StringConverter<Ability.SortMode>() {
+            override fun toString(sortMode: Ability.SortMode): String =
+                App.resourceBundle["ability.sortMode.$sortMode"] ?: sortMode.toString()
 
             override fun fromString(string: String): Ability.SortMode = throw NotImplementedError("Not supported")
         }

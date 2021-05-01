@@ -31,7 +31,7 @@ import javafx.scene.layout.HBox
 
 class CardButtonCell : TableCell<Card, Card>() {
     private val hBox = HBox(
-        Button(App.resourceBundle["mainView.button.controls.kill"]).also { it.setOnAction(this::killButtonOnAction) },
+        Button(App.resourceBundle["mainView.button.controls.kill"]!!).also { it.setOnAction(this::killButtonOnAction) },
         Button().also {
             it.graphic = ImageView(Image(javaClass.getResourceAsStream("up-arrow.png")))
             it.setOnAction(this::upButtonOnAction)

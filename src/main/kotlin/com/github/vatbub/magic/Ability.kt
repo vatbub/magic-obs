@@ -26,21 +26,28 @@ import com.github.vatbub.magic.PreferenceKeys.AbilitySortMode
 import com.github.vatbub.magic.util.get
 import javafx.collections.FXCollections
 import javafx.collections.ListChangeListener
+import java.util.*
 
 enum class Ability(imageFileName: String? = null, translationKey: String? = null) {
     Annihilator, CantBeBlocked, CantBlock, Deathtouch, Defender, DoesntUntap, DoubleFacedCard, DoubleStrike, Exile,
-    FirstStrike, Flying, ForestWalk;
+    FirstStrike, Flying, ForestWalk, Haste, Hexproof, Indestructible, Intimidate, Lifelink, Menace, MustAttack,
+    Planeswalker, Protection, Reach, Regenerate, Renown, TemporaryControl, Token, Trample, Undying, Vigilance, Rally,
+    Ingest, Cohort, Delirium, Skulk;
 
     val imageFileName = imageFileName ?: toString()
-    val translationKey = translationKey ?: toString()
-    val localizedLabel:String
-    get() = App.resourceBundle["ability.$translationKey"]
+    private val translationKey = translationKey ?: toString()
+    val localizedLabel: String
+        get() = abilityTranslations[translationKey] ?: toString()
 
-    enum class SortMode{
+    enum class SortMode {
         Original, Usage, Alphabetical
     }
 
     companion object {
+        private val abilityTranslations: ResourceBundle by lazy {
+            ResourceBundle.getBundle("com.github.vatbub.magic.abilities")
+        }
+
         private val history = FXCollections.observableArrayList(preferences[AbilityHistory]).also {
             it.addListener(ListChangeListener { change ->
                 preferences[AbilityHistory] = change.list
@@ -54,8 +61,8 @@ enum class Ability(imageFileName: String? = null, translationKey: String? = null
                 history.dropLast(amountToDrop)
         }
 
-        fun sortedValues():List<Ability>{
-            return when(preferences[AbilitySortMode]){
+        fun sortedValues(): List<Ability> {
+            return when (preferences[AbilitySortMode]) {
                 Original -> values().toList()
                 Usage -> {
                     val groupedHistory = history.groupBy { it }.mapValues { it.value.size }

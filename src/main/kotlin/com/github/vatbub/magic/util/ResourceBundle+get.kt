@@ -21,4 +21,8 @@ package com.github.vatbub.magic.util
 
 import java.util.*
 
-operator fun ResourceBundle.get(key: String): String = this.getString(key)
+operator fun ResourceBundle.get(key: String): String? = try {
+    this.getString(key)
+} catch (_: MissingResourceException) {
+    null
+}
