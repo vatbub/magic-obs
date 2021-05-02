@@ -19,7 +19,7 @@
  */
 package com.github.vatbub.magic.util
 
-import com.github.vatbub.magic.Permutation
+import com.github.vatbub.magic.data.Permutation
 import java.util.*
 
 fun <T> MutableList<T>.swap(i: Int, j: Int): List<T> = when (this) {

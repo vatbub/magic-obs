@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.magic
+package com.github.vatbub.magic.data
 
 enum class Ability(imageFileName: String? = null, translationKey: String? = null) {
     Annihilator, CantBeBlocked, CantBlock, Deathtouch, Defender, DoesntUntap, DoubleFacedCard, DoubleStrike, Exile,
@@ -32,5 +32,5 @@ enum class Ability(imageFileName: String? = null, translationKey: String? = null
         Original, Usage, Alphabetical
     }
 
-    companion object;
+    companion object
 }

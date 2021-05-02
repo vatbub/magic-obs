@@ -17,12 +17,12 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.magic
+package com.github.vatbub.magic.data
 
-import com.github.vatbub.magic.Ability.SortMode
-import com.github.vatbub.magic.Ability.SortMode.*
-import com.github.vatbub.magic.PreferenceKeys.AbilityKeys
-import com.github.vatbub.magic.PreferenceKeys.AbilityKeys.historyEntry
+import com.github.vatbub.magic.data.Ability.SortMode
+import com.github.vatbub.magic.data.Ability.SortMode.*
+import com.github.vatbub.magic.data.PreferenceKeys.AbilityKeys
+import com.github.vatbub.magic.data.PreferenceKeys.AbilityKeys.historyEntry
 
 private object Lock
 

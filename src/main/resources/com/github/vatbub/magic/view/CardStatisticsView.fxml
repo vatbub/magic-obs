@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPane" xmlns="http://javafx.com/javafx/8"
+            fx:controller="com.github.vatbub.magic.view.CardStatisticsView">
+   <children>
+      <HBox fx:id="cardContainer" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity"
+            minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="1572.0"
+            AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
+            AnchorPane.topAnchor="10.0">
+         <opaqueInsets>
+            <Insets/>
+         </opaqueInsets>
+      </HBox>
+   </children>
+</AnchorPane>

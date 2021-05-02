@@ -17,10 +17,11 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.magic
+package com.github.vatbub.magic.view
 
 import com.github.vatbub.magic.animation.queue.AnimationQueue
 import com.github.vatbub.magic.animation.queue.toQueueItem
+import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.util.asBackgroundStyle
 import com.github.vatbub.magic.util.bindAndMap
 import javafx.animation.Interpolator.EASE_IN

@@ -17,10 +17,10 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.magic
+package com.github.vatbub.magic.data
 
-import com.github.vatbub.magic.PreferenceKeys.BackgroundColor
-import com.github.vatbub.magic.PreferenceKeys.HealthPoints
+import com.github.vatbub.magic.data.PreferenceKeys.BackgroundColor
+import com.github.vatbub.magic.data.PreferenceKeys.HealthPoints
 import com.github.vatbub.magic.util.PermutatingObservableList
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ObjectProperty

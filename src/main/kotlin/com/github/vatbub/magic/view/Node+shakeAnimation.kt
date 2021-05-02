@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.magic
+package com.github.vatbub.magic.view
 
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue

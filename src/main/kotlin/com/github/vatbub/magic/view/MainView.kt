@@ -17,9 +17,14 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.magic
+package com.github.vatbub.magic.view
 
-import com.github.vatbub.magic.PreferenceKeys.AbilityKeys.SortMode
+import com.github.vatbub.magic.App
+import com.github.vatbub.magic.data.Ability
+import com.github.vatbub.magic.data.Card
+import com.github.vatbub.magic.data.DataHolder
+import com.github.vatbub.magic.data.PreferenceKeys.AbilityKeys.SortMode
+import com.github.vatbub.magic.data.preferences
 import com.github.vatbub.magic.util.get
 import javafx.beans.property.IntegerProperty
 import javafx.beans.value.ObservableValue

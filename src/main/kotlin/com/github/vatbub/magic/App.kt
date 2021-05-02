@@ -19,6 +19,9 @@
  */
 package com.github.vatbub.magic
 
+import com.github.vatbub.magic.view.CardStatisticsView
+import com.github.vatbub.magic.view.HealthPointsView
+import com.github.vatbub.magic.view.MainView
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
@@ -27,7 +30,7 @@ import javafx.stage.Stage
 import java.io.Closeable
 import java.util.*
 
-class App private constructor(callLaunch: Boolean, private vararg val args: String?) : Application() {
+class App private constructor(callLaunch: Boolean, vararg args: String?) : Application() {
     companion object {
         lateinit var instance: App
             private set
@@ -62,7 +65,7 @@ class App private constructor(callLaunch: Boolean, private vararg val args: Stri
         instance = this
         currentStage = primaryStage
 
-        val fxmlLoader = FXMLLoader(javaClass.getResource("MainView.fxml"), resourceBundle)
+        val fxmlLoader = FXMLLoader(javaClass.getResource("view/MainView.fxml"), resourceBundle)
         val root = fxmlLoader.load<Parent>()
         controllerInstance = fxmlLoader.getController()
 

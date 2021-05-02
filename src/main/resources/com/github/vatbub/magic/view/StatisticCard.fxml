@@ -4,37 +4,39 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<GridPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.vatbub.magic.StatisticCard">
-  <columnConstraints>
-    <ColumnConstraints hgrow="NEVER" />
-      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0" />
-    <ColumnConstraints hgrow="SOMETIMES" />
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints vgrow="SOMETIMES" />
-  </rowConstraints>
-   <children>
-      <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@StatisticCardLeft.png" />
-         </image>
-          <GridPane.margin>
-              <Insets/>
-          </GridPane.margin>
-      </ImageView>
-       <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
-           <image>
-               <Image url="@StatisticCardRight.png"/>
-           </image>
-       </ImageView>
-       <ImageView fx:id="middleImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true"
-                  GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
-           <image>
-               <Image url="@StatisticCardMiddle.png"/>
-           </image>
-           <GridPane.margin>
-               <Insets left="-1.0"/>
-           </GridPane.margin>
+<GridPane xmlns:fx="http://javafx.com/fxml/1" fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity"
+          minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
+          fx:controller="com.github.vatbub.magic.view.StatisticCard">
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER"/>
+        <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0"/>
+        <ColumnConstraints hgrow="SOMETIMES"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="SOMETIMES"/>
+    </rowConstraints>
+    <children>
+        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@StatisticCardLeft.png"/>
+            </image>
+            <GridPane.margin>
+                <Insets/>
+            </GridPane.margin>
+        </ImageView>
+        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+            <image>
+                <Image url="@StatisticCardRight.png"/>
+            </image>
+        </ImageView>
+        <ImageView fx:id="middleImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true"
+                   GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+            <image>
+                <Image url="@StatisticCardMiddle.png"/>
+            </image>
+            <GridPane.margin>
+                <Insets left="-1.0"/>
+            </GridPane.margin>
        </ImageView>
        <Label fx:id="statisticLabel" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
               minWidth="-Infinity" text="Label" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER"

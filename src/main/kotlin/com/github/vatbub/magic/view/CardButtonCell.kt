@@ -17,8 +17,11 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.magic
+package com.github.vatbub.magic.view
 
+import com.github.vatbub.magic.App
+import com.github.vatbub.magic.data.Card
+import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.util.get
 import com.github.vatbub.magic.util.swap
 import javafx.application.Platform

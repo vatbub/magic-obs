@@ -17,12 +17,14 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.magic
+package com.github.vatbub.magic.view
 
 import com.github.vatbub.magic.animation.queue.AnimationQueue
 import com.github.vatbub.magic.animation.queue.CodeBlockQueueItem
 import com.github.vatbub.magic.animation.queue.ConcurrentTimelineQueueItem
 import com.github.vatbub.magic.animation.queue.toQueueItem
+import com.github.vatbub.magic.data.Ability
+import com.github.vatbub.magic.data.Card
 import com.github.vatbub.magic.util.awaitLayoutCycles
 import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.times

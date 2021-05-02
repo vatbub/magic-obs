@@ -17,15 +17,15 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.magic
+package com.github.vatbub.magic.data
 
 import com.github.vatbub.kotlin.preferences.Key
 import com.github.vatbub.kotlin.preferences.Preferences
 import com.github.vatbub.kotlin.preferences.PropertiesFileKeyValueProvider
-import com.github.vatbub.magic.Ability.SortMode.Usage
+import com.github.vatbub.magic.data.Ability.SortMode.Usage
 import javafx.scene.paint.Color
 import java.io.File
-import com.github.vatbub.magic.Ability.SortMode as SortModeEnum
+import com.github.vatbub.magic.data.Ability.SortMode as SortModeEnum
 
 val preferences = Preferences(PropertiesFileKeyValueProvider(File("magicObsViewSettings.properties")))
 

@@ -17,11 +17,18 @@
  * limitations under the License.
  * #L%
  */
-package com.github.vatbub.magic
+package com.github.vatbub.magic.data
 
-import javafx.scene.text.Font
+import javafx.collections.ListChangeListener
 
-object Fonts {
-    fun magic(size: Double): Font =
-        Font.loadFont(javaClass.getResourceAsStream("ArchitectsDaughterRegular.ttf"), size)
+data class Permutation(val oldIndex: Int, val newIndex: Int) {
+    override fun toString() = "oldIndex: $oldIndex, newIndex: $newIndex"
 }
+
+val ListChangeListener.Change<*>.permutations: List<Permutation>
+    get() {
+        require(wasPermutated())
+        return (from until to).map { i ->
+            Permutation(i, getPermutation(i))
+        }
+    }

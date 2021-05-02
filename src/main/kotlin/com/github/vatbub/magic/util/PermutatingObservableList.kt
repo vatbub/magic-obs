@@ -19,9 +19,8 @@
  */
 package com.github.vatbub.magic.util
 
-import com.github.vatbub.magic.Permutation
+import com.github.vatbub.magic.data.Permutation
 import javafx.collections.ModifiableObservableListBase
-import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 
