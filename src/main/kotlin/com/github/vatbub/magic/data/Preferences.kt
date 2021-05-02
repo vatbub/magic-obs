@@ -30,7 +30,20 @@ import com.github.vatbub.magic.data.Ability.SortMode as SortModeEnum
 val preferences = Preferences(PropertiesFileKeyValueProvider(File("magicObsViewSettings.properties")))
 
 object PreferenceKeys {
-    object BackgroundColor : Key<Color>("backgroundColor", Color.RED, {
+    object BackgroundColor : ColorKey("backgroundColor", Color.RED)
+
+    object HealthPoints : Key<Int>("healthPoints", 20, { it.toInt() }, { it.toString() })
+
+    object HealthPointsFontColor : ColorKey("healthPointsFontColor", Color.WHITE)
+
+    object AbilityKeys {
+        object SortMode : Key<SortModeEnum>("abilitySortMode", Usage, { SortModeEnum.valueOf(it) }, { it.toString() })
+
+        fun historyEntry(ability: Ability) =
+            Key("abilityHistory.$ability", 0, { it.toInt() }, { it.toString() })
+    }
+
+    abstract class ColorKey(uniqueName: String, defaultValue: Color) : Key<Color>(uniqueName, defaultValue, {
         val components = it.split(";")
         Color(
             components[0].toDouble(),
@@ -39,13 +52,4 @@ object PreferenceKeys {
             components[3].toDouble()
         )
     }, { "${it.red};${it.green};${it.blue};${it.opacity}" })
-
-    object HealthPoints : Key<Int>("healthPoints", 20, { it.toInt() }, { it.toString() })
-
-    object AbilityKeys {
-        object SortMode : Key<SortModeEnum>("abilitySortMode", Usage, { SortModeEnum.valueOf(it) }, { it.toString() })
-
-        fun historyEntry(ability: Ability) =
-            Key("abilityHistory.$ability", 0, { it.toInt() }, { it.toString() })
-    }
 }

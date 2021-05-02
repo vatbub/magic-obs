@@ -88,6 +88,7 @@ class HealthPointsView : Closeable {
     @FXML
     fun initialize() {
         rootPane.styleProperty().bindAndMap(DataHolder.backgroundColorProperty, Color::asBackgroundStyle)
+        healthPointsLabel.textFillProperty().bind(DataHolder.healthPointsFontColorProperty)
 
         backgroundImageView.fitWidthProperty().bind(rootPane.widthProperty())
         backgroundImageView.fitHeightProperty().bind(rootPane.heightProperty())

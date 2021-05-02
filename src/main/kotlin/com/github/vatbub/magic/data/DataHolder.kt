@@ -21,6 +21,7 @@ package com.github.vatbub.magic.data
 
 import com.github.vatbub.magic.data.PreferenceKeys.BackgroundColor
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPoints
+import com.github.vatbub.magic.data.PreferenceKeys.HealthPointsFontColor
 import com.github.vatbub.magic.util.PermutatingObservableList
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ObjectProperty
@@ -35,6 +36,13 @@ object DataHolder {
             preferences[BackgroundColor] = newValue
         }
     }
+
+    val healthPointsFontColorProperty: ObjectProperty<Color> =
+        SimpleObjectProperty(preferences[HealthPointsFontColor]).apply {
+            addListener { _, _, newValue ->
+                preferences[HealthPointsFontColor] = newValue
+            }
+        }
 
     val healthPointsProperty: IntegerProperty = SimpleIntegerProperty(preferences[HealthPoints]).apply {
         addListener { _, _, newValue ->
