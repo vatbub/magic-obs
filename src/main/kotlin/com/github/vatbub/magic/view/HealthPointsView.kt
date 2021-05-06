@@ -93,12 +93,15 @@ class HealthPointsView : Closeable {
         backgroundImageView.fitWidthProperty().bind(rootPane.widthProperty())
         backgroundImageView.fitHeightProperty().bind(rootPane.heightProperty())
 
-        healthPointsLabel.font = Fonts.magic(240.0)
+        healthPointsLabel.font = DataHolder.healthPointsFontSpecProperty.get().withSize(240.0)
         backgroundImageView.fitWidthProperty().addListener { _, _, newValue ->
-            updateFontSize(fitWidth = newValue.toDouble())
+            updateFont(fitWidth = newValue.toDouble())
         }
         backgroundImageView.fitHeightProperty().addListener { _, _, newValue ->
-            updateFontSize(fitHeight = newValue.toDouble())
+            updateFont(fitHeight = newValue.toDouble())
+        }
+        DataHolder.healthPointsFontSpecProperty.addListener { _, _, newValue ->
+            updateFont(fontSpec = newValue)
         }
 
         DataHolder.healthPointsProperty.addListener { _, oldValue, newValue ->
@@ -111,12 +114,13 @@ class HealthPointsView : Closeable {
         healthPointsLabel.text = DataHolder.healthPointsProperty.value.toString()
     }
 
-    private fun updateFontSize(
+    private fun updateFont(
+        fontSpec: FontSpec = DataHolder.healthPointsFontSpecProperty.get(),
         fitWidth: Double = backgroundImageView.fitWidth,
         fitHeight: Double = backgroundImageView.fitHeight
     ) {
         val minSize = minOf(fitWidth, fitHeight)
-        healthPointsLabel.font = Fonts.magic(minSize * fontSizeFactor)
+        healthPointsLabel.font = fontSpec.withSize(minSize * fontSizeFactor)
     }
 
     private fun healthPointsAnimation(oldHealthPoints: Int, newHealthPoints: Int) {

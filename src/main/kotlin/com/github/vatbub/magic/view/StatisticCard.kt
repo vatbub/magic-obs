@@ -25,6 +25,7 @@ import com.github.vatbub.magic.animation.queue.ConcurrentTimelineQueueItem
 import com.github.vatbub.magic.animation.queue.toQueueItem
 import com.github.vatbub.magic.data.Ability
 import com.github.vatbub.magic.data.Card
+import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.util.awaitLayoutCycles
 import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.times
@@ -133,6 +134,9 @@ class StatisticCard {
         abilityIcons.children.addListener(ListChangeListener { change ->
             animateStatisticsOffset(change.list.size)
         })
+        DataHolder.cardStatisticsFontSpecProperty.addListener { _, _, newValue ->
+            updateMiddleFontSize(fontSpec = newValue)
+        }
     }
 
     fun updateMiddleWidth() {
@@ -147,7 +151,8 @@ class StatisticCard {
     private fun updateMiddleFontSize(
         targetWidth: Double = middleImageView.fitWidth,
         targetHeight: Double = middleImageView.fitHeight,
-        tolerance: Double = 0.05
+        tolerance: Double = 0.05,
+        fontSpec: FontSpec = DataHolder.cardStatisticsFontSpecProperty.get()
     ) {
         if (cardAboutToBeKilled) return
         if (targetWidth < 0) return
@@ -159,10 +164,15 @@ class StatisticCard {
             return
         }
 
-        Platform.runLater { statisticLabel.updateMiddleFontSize(targetWidth, targetHeight, tolerance) }
+        Platform.runLater { statisticLabel.updateMiddleFontSize(targetWidth, targetHeight, tolerance, fontSpec) }
     }
 
-    private fun Label.updateMiddleFontSize(targetWidth: Double, targetHeight: Double, tolerance: Double) {
+    private fun Label.updateMiddleFontSize(
+        targetWidth: Double,
+        targetHeight: Double,
+        tolerance: Double,
+        fontSpec: FontSpec
+    ) {
         if (statisticsLabelCancelFontSizeUpdate || cardAboutToBeKilled) {
             statisticsLabelCancelFontSizeUpdate = false
             statisticsLabelFontSizeUpdateInProgress = false
@@ -180,8 +190,8 @@ class StatisticCard {
 
         statisticsLabelFontSizeUpdateInProgress = true
         val fontSize = font.size + 10 * stepSize
-        font = Fonts.magic(fontSize)
-        Platform.runLater { this.updateMiddleFontSize(targetWidth, targetHeight, tolerance) }
+        font = fontSpec.withSize(fontSize)
+        Platform.runLater { this.updateMiddleFontSize(targetWidth, targetHeight, tolerance, fontSpec) }
     }
 
     fun createKillAnimation(): ConcurrentTimelineQueueItem {

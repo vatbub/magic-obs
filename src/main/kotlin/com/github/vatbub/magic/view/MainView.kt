@@ -25,6 +25,7 @@ import com.github.vatbub.magic.data.Card
 import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.data.PreferenceKeys.AbilityKeys.SortMode
 import com.github.vatbub.magic.data.preferences
+import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.get
 import javafx.beans.property.IntegerProperty
 import javafx.beans.value.ObservableValue
@@ -38,6 +39,9 @@ import javafx.util.StringConverter
 class MainView {
     @FXML
     private lateinit var backgroundColorPicker: ColorPicker
+
+    @FXML
+    private lateinit var healthPointsFontColorPicker: ColorPicker
 
     @FXML
     private lateinit var healthPointsBox: TextField
@@ -60,11 +64,22 @@ class MainView {
     @FXML
     private lateinit var buttonsColumn: TableColumn<Card, Card>
 
+    @FXML
+    private lateinit var healthPointsFontSpecLabel: Label
+
+    @FXML
+    private lateinit var cardStatisticsFontSpecLabel: Label
+
     private var healthPointUpdateInProgress = false
 
     @FXML
     fun initialize() {
         backgroundColorPicker.valueProperty().bindBidirectional(DataHolder.backgroundColorProperty)
+        healthPointsFontColorPicker.valueProperty().bindBidirectional(DataHolder.healthPointsFontColorProperty)
+        healthPointsFontSpecLabel.textProperty()
+            .bindAndMap(DataHolder.healthPointsFontSpecProperty) { it.toHumanReadableName() }
+        cardStatisticsFontSpecLabel.textProperty()
+            .bindAndMap(DataHolder.healthPointsFontSpecProperty) { it.toHumanReadableName() }
         healthPointsBox.textProperty().addListener { _, oldValue, newValue ->
             val newIntValue = newValue.toIntOrNull()
 
@@ -108,6 +123,11 @@ class MainView {
         refreshCardTableFactories()
     }
 
+    private fun FontSpec.toHumanReadableName() = when (this) {
+        is FontSpec.BuiltIn -> BuiltInFontSpecs.forSpec(this).humanReadableName
+        is FontSpec.System -> family
+    }
+
     private fun refreshCardTableFactories() {
         attackColumn.setIntegerColumnFactories { attackProperty }
         defenseColumn.setIntegerColumnFactories { defenseProperty }
@@ -140,6 +160,16 @@ class MainView {
     @FXML
     fun addCardButtonOnAction() {
         DataHolder.cardList.add(Card())
+    }
+
+    @FXML
+    fun healthPointsFontSpecChangeButtonOnAction() {
+        FontSpecSelectionView.show(DataHolder.healthPointsFontSpecProperty.value)
+    }
+
+    @FXML
+    fun cardStatisticsFontSpecChangeButtonOnAction() {
+        FontSpecSelectionView.show(DataHolder.cardStatisticsFontSpecProperty.value)
     }
 
     fun close() {

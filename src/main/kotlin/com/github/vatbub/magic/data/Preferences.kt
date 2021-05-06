@@ -23,7 +23,13 @@ import com.github.vatbub.kotlin.preferences.Key
 import com.github.vatbub.kotlin.preferences.Preferences
 import com.github.vatbub.kotlin.preferences.PropertiesFileKeyValueProvider
 import com.github.vatbub.magic.data.Ability.SortMode.Usage
+import com.github.vatbub.magic.view.BuiltInFontSpecs
+import com.github.vatbub.magic.view.FontSpec
+import com.github.vatbub.magic.view.FontSpec.BuiltIn
+import com.github.vatbub.magic.view.FontSpec.System
 import javafx.scene.paint.Color
+import javafx.scene.text.FontPosture
+import javafx.scene.text.FontWeight
 import java.io.File
 import com.github.vatbub.magic.data.Ability.SortMode as SortModeEnum
 
@@ -35,6 +41,16 @@ object PreferenceKeys {
     object HealthPoints : Key<Int>("healthPoints", 20, { it.toInt() }, { it.toString() })
 
     object HealthPointsFontColor : ColorKey("healthPointsFontColor", Color.WHITE)
+
+    object HealthPointsFontSpec : FontSpecKey(
+        "healthPointsFontSpec",
+        BuiltInFontSpecs.ArchitectsDaughterRegular.fontSpec
+    )
+
+    object CardStatisticsFontSpec : FontSpecKey(
+        "cardStatisticsFontSpec",
+        BuiltInFontSpecs.ArchitectsDaughterRegular.fontSpec
+    )
 
     object AbilityKeys {
         object SortMode : Key<SortModeEnum>("abilitySortMode", Usage, { SortModeEnum.valueOf(it) }, { it.toString() })
@@ -52,4 +68,28 @@ object PreferenceKeys {
             components[3].toDouble()
         )
     }, { "${it.red};${it.green};${it.blue};${it.opacity}" })
+
+    abstract class FontSpecKey(uniqueName: String, defaultValue: FontSpec) : Key<FontSpec>(uniqueName, defaultValue, {
+        val parts = it.split(";")
+        when (parts[0]) {
+            "BuiltIn" -> BuiltInFontSpecs.valueOf(parts[1]).fontSpec
+            "System" -> System(parts[1], parts[2].toFontWeightOrNull(), parts[3].toPostureOrNull())
+            else -> throw IllegalArgumentException("Illegal FontSpecType found in preferences")
+        }
+    }, {
+        when (it) {
+            is BuiltIn -> "BuiltIn;${BuiltInFontSpecs.forSpec(it)}"
+            is System -> "System;${it.family};${it.weight};${it.posture}"
+        }
+    })
+
+    private fun String.toFontWeightOrNull(): FontWeight? = when (this) {
+        "null" -> null
+        else -> FontWeight.valueOf(this)
+    }
+
+    private fun String.toPostureOrNull(): FontPosture? = when (this) {
+        "null" -> null
+        else -> FontPosture.valueOf(this)
+    }
 }
