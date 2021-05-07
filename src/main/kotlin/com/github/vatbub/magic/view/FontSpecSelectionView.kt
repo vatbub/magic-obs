@@ -28,16 +28,18 @@ import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.control.ComboBox
 import javafx.scene.control.Tab
+import javafx.scene.control.TabPane
 import javafx.scene.text.FontPosture
 import javafx.scene.text.FontWeight
 import javafx.stage.Modality
 import javafx.stage.Stage
 import javafx.stage.StageStyle
+import kotlin.properties.Delegates
 
 
 class FontSpecSelectionView {
     companion object {
-        fun show(initialSpec: FontSpec?): FontSpecSelectionView {
+        fun show(initialSpec: FontSpec?, onFontSelectedCallback: (FontSpec) -> Unit): FontSpecSelectionView {
             val stage = Stage(StageStyle.UNIFIED)
             stage.initModality(Modality.APPLICATION_MODAL)
 
@@ -51,6 +53,7 @@ class FontSpecSelectionView {
             controllerInstance.stage = stage
             if (initialSpec != null)
                 controllerInstance.initialSpec = initialSpec
+            controllerInstance.onFontSelectedCallback = onFontSelectedCallback
 
             val scene = Scene(root)
 
@@ -79,6 +82,9 @@ class FontSpecSelectionView {
     private lateinit var systemPostureDropDown: ComboBox<FontPosture>
 
     @FXML
+    private lateinit var tabPane: TabPane
+
+    @FXML
     private lateinit var builtInTab: Tab
 
     @FXML
@@ -86,7 +92,22 @@ class FontSpecSelectionView {
 
     lateinit var stage: Stage
         private set
-    private var initialSpec: FontSpec = BuiltInFontSpecs.ArchitectsDaughterRegular.fontSpec
+    private var initialSpec: FontSpec by Delegates.observable(BuiltInFontSpecs.ArchitectsDaughterRegular.fontSpec) { _, _, newValue ->
+        when (newValue) {
+            is FontSpec.BuiltIn -> {
+                tabPane.selectionModel.select(builtInTab)
+                builtInFontSpecDropDown.selectionModel.select(BuiltInFontSpecs.forSpec(newValue))
+            }
+            is FontSpec.System -> {
+                tabPane.selectionModel.select(systemTab)
+                systemFamilyDropDown.selectionModel.select(newValue.family)
+                systemPostureDropDown.selectionModel.select(newValue.posture)
+                systemWeightDropDown.selectionModel.select(newValue.weight)
+            }
+        }
+    }
+
+    private lateinit var onFontSelectedCallback: (FontSpec) -> Unit
 
     @FXML
     fun initialize() {
@@ -94,13 +115,29 @@ class FontSpecSelectionView {
         systemPostureDropDown.items = FXCollections.observableArrayList(*FontPosture.values())
         systemFamilyDropDown.items = FXCollections.observableArrayList(FontSpec.systemFonts)
         builtInFontSpecDropDown.items = FXCollections.observableArrayList(*BuiltInFontSpecs.values())
+
+        listOf(systemWeightDropDown, systemPostureDropDown, systemFamilyDropDown, builtInFontSpecDropDown)
+            .forEach { it.selectionModel.select(0) }
+    }
+
+    private fun generateFontSpecFromView(): FontSpec = when (tabPane.selectionModel.selectedItem) {
+        builtInTab -> builtInFontSpecDropDown.selectionModel.selectedItem.fontSpec
+        systemTab -> FontSpec.System(
+            family = systemFamilyDropDown.selectionModel.selectedItem,
+            weight = systemWeightDropDown.selectionModel.selectedItem,
+            posture = systemPostureDropDown.selectionModel.selectedItem
+        )
+        else -> throw IllegalStateException("Illegal tab selected")
     }
 
     @FXML
     fun okButtonOnAction() {
+        onFontSelectedCallback(generateFontSpecFromView())
+        stage.hide()
     }
 
     @FXML
     fun cancelButtonOnAction() {
+        stage.hide()
     }
 }

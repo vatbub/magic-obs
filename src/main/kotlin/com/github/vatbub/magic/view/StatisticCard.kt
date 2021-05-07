@@ -135,7 +135,7 @@ class StatisticCard {
             animateStatisticsOffset(change.list.size)
         })
         DataHolder.cardStatisticsFontSpecProperty.addListener { _, _, newValue ->
-            updateMiddleFontSize(fontSpec = newValue)
+            updateMiddleFontSize(fontSpec = newValue, forceAtLeastOneUpdate = true)
         }
     }
 
@@ -152,7 +152,8 @@ class StatisticCard {
         targetWidth: Double = middleImageView.fitWidth,
         targetHeight: Double = middleImageView.fitHeight,
         tolerance: Double = 0.05,
-        fontSpec: FontSpec = DataHolder.cardStatisticsFontSpecProperty.get()
+        fontSpec: FontSpec = DataHolder.cardStatisticsFontSpecProperty.get(),
+        forceAtLeastOneUpdate: Boolean = false
     ) {
         if (cardAboutToBeKilled) return
         if (targetWidth < 0) return
@@ -160,18 +161,35 @@ class StatisticCard {
 
         if (statisticsLabelFontSizeUpdateInProgress) {
             statisticsLabelCancelFontSizeUpdate = true
-            Platform.runLater { updateMiddleFontSize(targetWidth, targetHeight, tolerance) }
+            Platform.runLater {
+                updateMiddleFontSize(
+                    targetWidth,
+                    targetHeight,
+                    tolerance,
+                    fontSpec,
+                    forceAtLeastOneUpdate
+                )
+            }
             return
         }
 
-        Platform.runLater { statisticLabel.updateMiddleFontSize(targetWidth, targetHeight, tolerance, fontSpec) }
+        Platform.runLater {
+            statisticLabel.updateMiddleFontSize(
+                targetWidth,
+                targetHeight,
+                tolerance,
+                fontSpec,
+                forceAtLeastOneUpdate
+            )
+        }
     }
 
     private fun Label.updateMiddleFontSize(
         targetWidth: Double,
         targetHeight: Double,
         tolerance: Double,
-        fontSpec: FontSpec
+        fontSpec: FontSpec,
+        forceAtLeastOneUpdate: Boolean = false
     ) {
         if (statisticsLabelCancelFontSizeUpdate || cardAboutToBeKilled) {
             statisticsLabelCancelFontSizeUpdate = false
@@ -183,13 +201,13 @@ class StatisticCard {
         val heightStepSize = (targetHeight - height) / targetHeight
         val stepSize = min(widthStepSize, heightStepSize)
 
-        if (abs(stepSize) < tolerance) {
+        if (!forceAtLeastOneUpdate && abs(stepSize) < tolerance) {
             statisticsLabelFontSizeUpdateInProgress = false
             return
         }
 
         statisticsLabelFontSizeUpdateInProgress = true
-        val fontSize = font.size + 10 * stepSize
+        val fontSize = font.size + stepSize
         font = fontSpec.withSize(fontSize)
         Platform.runLater { this.updateMiddleFontSize(targetWidth, targetHeight, tolerance, fontSpec) }
     }

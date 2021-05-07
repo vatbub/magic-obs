@@ -25,7 +25,6 @@ import com.github.vatbub.magic.data.Card
 import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.data.PreferenceKeys.AbilityKeys.SortMode
 import com.github.vatbub.magic.data.preferences
-import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.get
 import javafx.beans.property.IntegerProperty
 import javafx.beans.value.ObservableValue
@@ -154,12 +153,16 @@ class MainView {
 
     @FXML
     fun healthPointsFontSpecChangeButtonOnAction() {
-        FontSpecSelectionView.show(DataHolder.healthPointsFontSpecProperty.value)
+        FontSpecSelectionView.show(DataHolder.healthPointsFontSpecProperty.value) {
+            DataHolder.healthPointsFontSpecProperty.value = it
+        }
     }
 
     @FXML
     fun cardStatisticsFontSpecChangeButtonOnAction() {
-        FontSpecSelectionView.show(DataHolder.cardStatisticsFontSpecProperty.value)
+        FontSpecSelectionView.show(DataHolder.cardStatisticsFontSpecProperty.value) {
+            DataHolder.cardStatisticsFontSpecProperty.value = it
+        }
     }
 
     fun close() {
