@@ -64,22 +64,12 @@ class MainView {
     @FXML
     private lateinit var buttonsColumn: TableColumn<Card, Card>
 
-    @FXML
-    private lateinit var healthPointsFontSpecLabel: Label
-
-    @FXML
-    private lateinit var cardStatisticsFontSpecLabel: Label
-
     private var healthPointUpdateInProgress = false
 
     @FXML
     fun initialize() {
         backgroundColorPicker.valueProperty().bindBidirectional(DataHolder.backgroundColorProperty)
         healthPointsFontColorPicker.valueProperty().bindBidirectional(DataHolder.healthPointsFontColorProperty)
-        healthPointsFontSpecLabel.textProperty()
-            .bindAndMap(DataHolder.healthPointsFontSpecProperty) { it.toHumanReadableName() }
-        cardStatisticsFontSpecLabel.textProperty()
-            .bindAndMap(DataHolder.healthPointsFontSpecProperty) { it.toHumanReadableName() }
         healthPointsBox.textProperty().addListener { _, oldValue, newValue ->
             val newIntValue = newValue.toIntOrNull()
 
