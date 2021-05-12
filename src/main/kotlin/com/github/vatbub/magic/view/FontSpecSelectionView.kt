@@ -34,6 +34,7 @@ import javafx.scene.text.FontWeight
 import javafx.stage.Modality
 import javafx.stage.Stage
 import javafx.stage.StageStyle
+import javafx.util.StringConverter
 import kotlin.properties.Delegates
 
 
@@ -115,6 +116,12 @@ class FontSpecSelectionView {
         systemPostureDropDown.items = FXCollections.observableArrayList(*FontPosture.values())
         systemFamilyDropDown.items = FXCollections.observableArrayList(FontSpec.systemFonts)
         builtInFontSpecDropDown.items = FXCollections.observableArrayList(*BuiltInFontSpecs.values())
+
+        builtInFontSpecDropDown.converter = object : StringConverter<BuiltInFontSpecs>() {
+            override fun toString(fontSpec: BuiltInFontSpecs): String = fontSpec.humanReadableName
+
+            override fun fromString(string: String): BuiltInFontSpecs = throw NotImplementedError()
+        }
 
         listOf(systemWeightDropDown, systemPostureDropDown, systemFamilyDropDown, builtInFontSpecDropDown)
             .forEach { it.selectionModel.select(0) }
