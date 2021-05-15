@@ -61,6 +61,8 @@ class App private constructor(callLaunch: Boolean, vararg args: String?) : Appli
     var controllerInstance: MainView? = null
         private set
 
+    val auxiliaryViews: MutableList<Closeable> = mutableListOf()
+
     override fun start(primaryStage: Stage) {
         instance = this
         currentStage = primaryStage
@@ -77,10 +79,8 @@ class App private constructor(callLaunch: Boolean, vararg args: String?) : Appli
 
         primaryStage.scene = scene
 
-        val auxiliaryViews: List<Closeable> = listOf(
-            HealthPointsView.show(),
-            CardStatisticsView.show()
-        )
+        auxiliaryViews.add(HealthPointsView.show())
+        auxiliaryViews.add(CardStatisticsView.show())
 
         primaryStage.setOnCloseRequest {
             controllerInstance?.close()

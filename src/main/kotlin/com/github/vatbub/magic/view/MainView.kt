@@ -20,33 +20,20 @@
 package com.github.vatbub.magic.view
 
 import com.github.vatbub.magic.App
-import com.github.vatbub.magic.data.Ability
 import com.github.vatbub.magic.data.Card
 import com.github.vatbub.magic.data.DataHolder
-import com.github.vatbub.magic.data.PreferenceKeys.AbilityKeys.SortMode
-import com.github.vatbub.magic.data.preferences
-import com.github.vatbub.magic.util.get
 import javafx.beans.property.IntegerProperty
 import javafx.beans.value.ObservableValue
-import javafx.collections.FXCollections
 import javafx.fxml.FXML
-import javafx.scene.control.*
+import javafx.scene.control.TableColumn
+import javafx.scene.control.TableView
+import javafx.scene.control.TextField
 import javafx.util.Callback
-import javafx.util.StringConverter
 
 
 class MainView {
     @FXML
-    private lateinit var backgroundColorPicker: ColorPicker
-
-    @FXML
-    private lateinit var healthPointsFontColorPicker: ColorPicker
-
-    @FXML
     private lateinit var healthPointsBox: TextField
-
-    @FXML
-    private lateinit var dropDownAbilitySortMode: ComboBox<Ability.SortMode>
 
     @FXML
     private lateinit var cardsTableView: TableView<Card>
@@ -67,8 +54,6 @@ class MainView {
 
     @FXML
     fun initialize() {
-        backgroundColorPicker.valueProperty().bindBidirectional(DataHolder.backgroundColorProperty)
-        healthPointsFontColorPicker.valueProperty().bindBidirectional(DataHolder.healthPointsFontColorProperty)
         healthPointsBox.textProperty().addListener { _, oldValue, newValue ->
             val newIntValue = newValue.toIntOrNull()
 
@@ -95,26 +80,10 @@ class MainView {
 
         healthPointsBox.text = DataHolder.healthPointsProperty.value.toString()
 
-        dropDownAbilitySortMode.items = FXCollections.observableArrayList(*Ability.SortMode.values())
-        dropDownAbilitySortMode.selectionModel.select(preferences[SortMode])
-        dropDownAbilitySortMode.converter = object : StringConverter<Ability.SortMode>() {
-            override fun toString(sortMode: Ability.SortMode): String =
-                App.resourceBundle["ability.sortMode.$sortMode"] ?: sortMode.toString()
-
-            override fun fromString(string: String): Ability.SortMode = throw NotImplementedError("Not supported")
-        }
-        dropDownAbilitySortMode.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
-            preferences[SortMode] = newValue
-            refreshCardTableFactories()
-        }
+        DataHolder.abilitySortModeProperty.addListener { _, _, _ -> refreshCardTableFactories() }
 
         cardsTableView.items = DataHolder.cardList
         refreshCardTableFactories()
-    }
-
-    private fun FontSpec.toHumanReadableName() = when (this) {
-        is FontSpec.BuiltIn -> BuiltInFontSpecs.forSpec(this).humanReadableName
-        is FontSpec.System -> family
     }
 
     private fun refreshCardTableFactories() {
@@ -152,17 +121,16 @@ class MainView {
     }
 
     @FXML
-    fun healthPointsFontSpecChangeButtonOnAction() {
-        FontSpecSelectionView.show(DataHolder.healthPointsFontSpecProperty.value) {
-            DataHolder.healthPointsFontSpecProperty.value = it
-        }
-    }
-
-    @FXML
-    fun cardStatisticsFontSpecChangeButtonOnAction() {
-        FontSpecSelectionView.show(DataHolder.cardStatisticsFontSpecProperty.value) {
-            DataHolder.cardStatisticsFontSpecProperty.value = it
-        }
+    fun customizeAppearanceButtonOnAction(): Unit = with(App.instance) {
+        val existingViews = auxiliaryViews.mapNotNull { it as? CustomizationSettingsView }
+        if (existingViews.isEmpty())
+            auxiliaryViews.add(CustomizationSettingsView.show())
+        else
+            existingViews.forEach {
+                it.stage.show()
+                it.stage.isIconified = false
+                it.stage.requestFocus()
+            }
     }
 
     fun close() {

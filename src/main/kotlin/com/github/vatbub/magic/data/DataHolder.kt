@@ -19,6 +19,7 @@
  */
 package com.github.vatbub.magic.data
 
+import com.github.vatbub.magic.data.PreferenceKeys.AbilityKeys
 import com.github.vatbub.magic.data.PreferenceKeys.BackgroundColor
 import com.github.vatbub.magic.data.PreferenceKeys.CardStatisticsFontSpec
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPoints
@@ -66,6 +67,13 @@ object DataHolder {
             preferences[HealthPoints] = newValue.toInt()
         }
     }
+
+    val abilitySortModeProperty: ObjectProperty<Ability.SortMode> =
+        SimpleObjectProperty(preferences[AbilityKeys.SortMode]).apply {
+            addListener { _, _, newValue ->
+                preferences[AbilityKeys.SortMode] = newValue
+            }
+        }
 
     val cardList: ObservableList<Card> = PermutatingObservableList(mutableListOf())
 }
