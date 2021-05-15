@@ -20,67 +20,52 @@
 package com.github.vatbub.magic.view
 
 import com.github.vatbub.magic.App
+import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.get
+import javafx.beans.property.SimpleObjectProperty
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
-import javafx.scene.control.ComboBox
-import javafx.scene.control.Tab
-import javafx.scene.control.TabPane
-import javafx.scene.text.FontPosture
-import javafx.scene.text.FontWeight
+import javafx.scene.control.*
+import javafx.stage.FileChooser
 import javafx.stage.Modality
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.util.StringConverter
+import java.io.File
 import kotlin.properties.Delegates
 
 
 class ImageSpecSelectionView {
     companion object {
-        fun show(initialSpec: FontSpec?, onFontSelectedCallback: (FontSpec) -> Unit): ImageSpecSelectionView {
-            val stage = Stage(StageStyle.UNIFIED)
-            stage.initModality(Modality.APPLICATION_MODAL)
-
+        fun show(initialSpec: ImageSpec?, onFontSelectedCallback: (ImageSpec) -> Unit): ImageSpecSelectionView {
             val fxmlLoader =
                 FXMLLoader(
-                    ImageSpecSelectionView::class.java.getResource("FontSpecSelectionView.fxml"),
+                    ImageSpecSelectionView::class.java.getResource("ImageSpecSelectionView.fxml"),
                     App.resourceBundle
                 )
             val root = fxmlLoader.load<Parent>()
-            val controllerInstance = fxmlLoader.getController<ImageSpecSelectionView>()
-            controllerInstance.stage = stage
-            if (initialSpec != null)
-                controllerInstance.initialSpec = initialSpec
-            controllerInstance.onFontSelectedCallback = onFontSelectedCallback
+            with(fxmlLoader.getController<ImageSpecSelectionView>()) {
+                if (initialSpec != null)
+                    this.initialSpec = initialSpec
+                this.onFontSelectedCallback = onFontSelectedCallback
 
-            val scene = Scene(root)
+                val scene = Scene(root)
+                stage.minWidth = root.minWidth(0.0) + 70
+                stage.minHeight = root.minHeight(0.0) + 70
 
-            stage.title = App.resourceBundle["fontSpecSelectionView.title"]
-            // stage.icons.add(Image(javaClass.getResourceAsStream("icon.png")))
-            stage.minWidth = root.minWidth(0.0) + 70
-            stage.minHeight = root.minHeight(0.0) + 70
+                stage.scene = scene
 
-            stage.scene = scene
-
-            stage.show()
-            return controllerInstance
+                stage.show()
+                return this
+            }
         }
     }
 
     @FXML
-    private lateinit var systemWeightDropDown: ComboBox<FontWeight>
-
-    @FXML
-    private lateinit var builtInFontSpecDropDown: ComboBox<BuiltInFontSpecs>
-
-    @FXML
-    private lateinit var systemFamilyDropDown: ComboBox<String>
-
-    @FXML
-    private lateinit var systemPostureDropDown: ComboBox<FontPosture>
+    private lateinit var builtInImageSpecDropDown: ComboBox<BuiltInImageSpecs>
 
     @FXML
     private lateinit var tabPane: TabPane
@@ -89,57 +74,88 @@ class ImageSpecSelectionView {
     private lateinit var builtInTab: Tab
 
     @FXML
-    private lateinit var systemTab: Tab
+    private lateinit var customTab: Tab
 
-    lateinit var stage: Stage
-        private set
-    private var initialSpec: FontSpec by Delegates.observable(BuiltInFontSpecs.ArchitectsDaughterRegular.fontSpec) { _, _, newValue ->
+    @FXML
+    private lateinit var customFileLocationField: TextField
+
+
+    val stage: Stage = Stage(StageStyle.UNIFIED).apply {
+        initModality(Modality.APPLICATION_MODAL)
+        title = App.resourceBundle["imageSpecSelectionView.title"]
+        // stage.icons.add(Image(javaClass.getResourceAsStream("icon.png")))
+    }
+
+    private var initialSpec: ImageSpec by Delegates.observable(BuiltInImageSpecs.GreenRing.imageSpec) { _, _, newValue ->
         when (newValue) {
-            is FontSpec.BuiltIn -> {
+            is ImageSpec.BuiltIn -> {
                 tabPane.selectionModel.select(builtInTab)
-                builtInFontSpecDropDown.selectionModel.select(BuiltInFontSpecs.forSpec(newValue))
+                builtInImageSpecDropDown.selectionModel.select(BuiltInImageSpecs.forSpec(newValue))
             }
-            is FontSpec.System -> {
-                tabPane.selectionModel.select(systemTab)
-                systemFamilyDropDown.selectionModel.select(newValue.family)
-                systemPostureDropDown.selectionModel.select(newValue.posture)
-                systemWeightDropDown.selectionModel.select(newValue.weight)
+            is ImageSpec.Custom -> {
+                tabPane.selectionModel.select(customTab)
+                customFileProperty.value = newValue.file
             }
         }
     }
 
-    private lateinit var onFontSelectedCallback: (FontSpec) -> Unit
+    private var customFileProperty = SimpleObjectProperty<File>()
+
+    private lateinit var onFontSelectedCallback: (ImageSpec) -> Unit
 
     @FXML
     fun initialize() {
-        systemWeightDropDown.items = FXCollections.observableArrayList(*FontWeight.values())
-        systemPostureDropDown.items = FXCollections.observableArrayList(*FontPosture.values())
-        systemFamilyDropDown.items = FXCollections.observableArrayList(FontSpec.systemFonts)
-        builtInFontSpecDropDown.items = FXCollections.observableArrayList(*BuiltInFontSpecs.values())
+        builtInImageSpecDropDown.items = FXCollections.observableArrayList(*BuiltInImageSpecs.values())
 
-        builtInFontSpecDropDown.converter = object : StringConverter<BuiltInFontSpecs>() {
-            override fun toString(fontSpec: BuiltInFontSpecs): String = fontSpec.humanReadableName
+        builtInImageSpecDropDown.converter = object : StringConverter<BuiltInImageSpecs>() {
+            override fun toString(imageSpec: BuiltInImageSpecs): String = imageSpec.humanReadableName
 
-            override fun fromString(string: String): BuiltInFontSpecs = throw NotImplementedError()
+            override fun fromString(string: String): BuiltInImageSpecs = throw NotImplementedError()
         }
 
-        listOf(systemWeightDropDown, systemPostureDropDown, systemFamilyDropDown, builtInFontSpecDropDown)
+        customFileLocationField.textProperty().bindAndMap(customFileProperty) { it?.name ?: "" }
+
+        listOf(builtInImageSpecDropDown)
             .forEach { it.selectionModel.select(0) }
     }
 
-    private fun generateFontSpecFromView(): FontSpec = when (tabPane.selectionModel.selectedItem) {
-        builtInTab -> builtInFontSpecDropDown.selectionModel.selectedItem.fontSpec
-        systemTab -> FontSpec.System(
-            family = systemFamilyDropDown.selectionModel.selectedItem,
-            weight = systemWeightDropDown.selectionModel.selectedItem,
-            posture = systemPostureDropDown.selectionModel.selectedItem
+    @FXML
+    fun browseButtonOnAction() = with(FileChooser()) {
+        title = App.resourceBundle["imageSpecSelectionView.fileChooser.title"]
+        customFileProperty.value?.let { currentFile ->
+            initialDirectory = currentFile.parentFile
+            initialFileName = currentFile.name
+        }
+
+        this.extensionFilters.add(
+            FileChooser.ExtensionFilter(
+                App.resourceBundle["imageSpecSelectionView.fileChooser.supportedFileTypes"],
+                "*.bmp", "*.gif", "*.jpg", "*.jpeg", "*.png"
+            )
         )
+
+        customFileProperty.value = showOpenDialog(stage)
+    }
+
+    private fun generateImageSpecFromView(): ImageSpec? = when (tabPane.selectionModel.selectedItem) {
+        builtInTab -> builtInImageSpecDropDown.selectionModel.selectedItem.imageSpec
+        customTab -> customFileProperty.value?.let { ImageSpec.Custom(it) }
         else -> throw IllegalStateException("Illegal tab selected")
     }
 
     @FXML
     fun okButtonOnAction() {
-        onFontSelectedCallback(generateFontSpecFromView())
+        val currentSpec = generateImageSpecFromView()
+        if (currentSpec == null) {
+            Alert(
+                Alert.AlertType.WARNING,
+                App.resourceBundle["imageSpecSelectionView.alert.noFileSelected.contentText"],
+                ButtonType.OK
+            ).show()
+            return
+        }
+
+        onFontSelectedCallback(currentSpec)
         stage.hide()
     }
 

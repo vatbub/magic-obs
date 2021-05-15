@@ -34,7 +34,7 @@ sealed class ImageSpec {
     ): Image =
         openInputStream().use { Image(it, requestedWidth, requestedHeight, preserveRatio, smooth) }
 
-    data class System(val file: File) : ImageSpec() {
+    data class Custom(val file: File) : ImageSpec() {
         override fun openInputStream(): InputStream = file.inputStream()
     }
 
@@ -44,7 +44,8 @@ sealed class ImageSpec {
 }
 
 enum class BuiltInImageSpecs(val imageSpec: ImageSpec.BuiltIn, val humanReadableName: String) {
-    GreenRing(ImageSpec.BuiltIn("HealthPointsFrame.png"), "Green ring");
+    GreenRing(ImageSpec.BuiltIn("HealthPointsFrame.png"), "Green ring"),
+    LinusMeme(ImageSpec.BuiltIn("LinusMeme.jpg"), "LTT Meme");
 
     companion object {
         fun forSpec(imageSpec: ImageSpec.BuiltIn) = values().first { it.imageSpec == imageSpec }

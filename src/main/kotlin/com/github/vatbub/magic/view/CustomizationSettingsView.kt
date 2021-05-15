@@ -106,6 +106,13 @@ class CustomizationSettingsView : Closeable {
         }
     }
 
+    @FXML
+    fun healthPointsImageSpecChangeButtonOnAction() {
+        ImageSpecSelectionView.show(DataHolder.healthPointsImageSpecProperty.value) {
+            DataHolder.healthPointsImageSpecProperty.value = it
+        }
+    }
+
     override fun close() {
         stage.hide()
     }

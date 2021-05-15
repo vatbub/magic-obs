@@ -93,13 +93,13 @@ object PreferenceKeys {
             val parts = it.split(";")
             when (parts[0]) {
                 "BuiltIn" -> BuiltInImageSpecs.valueOf(parts[1]).imageSpec
-                "System" -> ImageSpec.System(File(parts[1]))
+                "System" -> ImageSpec.Custom(File(parts[1]))
                 else -> throw IllegalArgumentException("Illegal ImageSpecType found in preferences")
             }
         }, {
             when (it) {
                 is ImageSpec.BuiltIn -> "BuiltIn;${BuiltInImageSpecs.forSpec(it)}"
-                is ImageSpec.System -> "System;${it.file.absolutePath}"
+                is ImageSpec.Custom -> "System;${it.file.absolutePath}"
             }
         })
 
