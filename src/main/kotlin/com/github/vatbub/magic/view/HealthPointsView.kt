@@ -24,6 +24,7 @@ import com.github.vatbub.magic.animation.queue.toQueueItem
 import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.util.asBackgroundStyle
 import com.github.vatbub.magic.util.bindAndMap
+import com.github.vatbub.magic.util.runOnUiThread
 import javafx.animation.Interpolator.EASE_IN
 import javafx.animation.Interpolator.EASE_OUT
 import javafx.animation.KeyFrame
@@ -41,7 +42,10 @@ import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.util.Duration
+import kotlinx.coroutines.*
 import java.io.Closeable
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 
 class HealthPointsView : Closeable {
@@ -85,13 +89,26 @@ class HealthPointsView : Closeable {
 
     private val animationQueue = AnimationQueue()
 
+    private var loadBackgroundImageDelayJob: Job? = null
+
     @FXML
     fun initialize() {
         rootPane.styleProperty().bindAndMap(DataHolder.backgroundColorProperty, Color::asBackgroundStyle)
         healthPointsLabel.textFillProperty().bind(DataHolder.healthPointsFontColorProperty)
 
+        DataHolder.healthPointsImageSpecProperty.addListener { _, _, newValue ->
+            loadBackgroundImage(imageSpec = newValue)
+        }
+
         backgroundImageView.fitWidthProperty().bind(rootPane.widthProperty())
         backgroundImageView.fitHeightProperty().bind(rootPane.heightProperty())
+
+        backgroundImageView.fitWidthProperty().addListener { _, _, newValue ->
+            loadBackgroundImageWithDelay(requestedWidth = newValue.toDouble())
+        }
+        backgroundImageView.fitHeightProperty().addListener { _, _, newValue ->
+            loadBackgroundImageWithDelay(requestedHeight = newValue.toDouble())
+        }
 
         healthPointsLabel.font = DataHolder.healthPointsFontSpecProperty.get().withSize(240.0)
         backgroundImageView.fitWidthProperty().addListener { _, _, newValue ->
@@ -112,6 +129,32 @@ class HealthPointsView : Closeable {
         }
 
         healthPointsLabel.text = DataHolder.healthPointsProperty.value.toString()
+    }
+
+    @OptIn(DelicateCoroutinesApi::class, kotlin.time.ExperimentalTime::class)
+    private fun loadBackgroundImageWithDelay(
+        imageSpec: ImageSpec = DataHolder.healthPointsImageSpecProperty.value,
+        requestedWidth: Double = backgroundImageView.fitWidth,
+        requestedHeight: Double = backgroundImageView.fitHeight
+    ) {
+        loadBackgroundImageDelayJob?.cancel()
+        loadBackgroundImageDelayJob = GlobalScope.launch {
+            delay(1.0.toDuration(DurationUnit.SECONDS))
+            loadBackgroundImage(imageSpec, requestedWidth, requestedHeight)
+        }
+    }
+
+    private fun loadBackgroundImage(
+        imageSpec: ImageSpec = DataHolder.healthPointsImageSpecProperty.value,
+        requestedWidth: Double = backgroundImageView.fitWidth,
+        requestedHeight: Double = backgroundImageView.fitHeight
+    ) = runOnUiThread {
+        backgroundImageView.image = imageSpec.load(
+            requestedWidth = requestedWidth,
+            requestedHeight = requestedHeight,
+            preserveRatio = true,
+            smooth = false
+        )
     }
 
     private fun updateFont(

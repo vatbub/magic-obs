@@ -23,10 +23,12 @@ import com.github.vatbub.magic.data.PreferenceKeys.AbilityKeys
 import com.github.vatbub.magic.data.PreferenceKeys.BackgroundColor
 import com.github.vatbub.magic.data.PreferenceKeys.CardStatisticsFontSpec
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPoints
+import com.github.vatbub.magic.data.PreferenceKeys.HealthPointsBackgroundImageSpec
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPointsFontColor
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPointsFontSpec
 import com.github.vatbub.magic.util.PermutatingObservableList
 import com.github.vatbub.magic.view.FontSpec
+import com.github.vatbub.magic.view.ImageSpec
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleIntegerProperty
@@ -59,6 +61,13 @@ object DataHolder {
         SimpleObjectProperty(preferences[CardStatisticsFontSpec]).apply {
             addListener { _, _, newValue ->
                 preferences[CardStatisticsFontSpec] = newValue
+            }
+        }
+
+    val healthPointsImageSpecProperty: ObjectProperty<ImageSpec> =
+        SimpleObjectProperty(preferences[HealthPointsBackgroundImageSpec]).apply {
+            addListener { _, _, newValue ->
+                preferences[HealthPointsBackgroundImageSpec] = newValue
             }
         }
 

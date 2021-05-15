@@ -24,9 +24,9 @@ import com.github.vatbub.kotlin.preferences.Preferences
 import com.github.vatbub.kotlin.preferences.PropertiesFileKeyValueProvider
 import com.github.vatbub.magic.data.Ability.SortMode.Usage
 import com.github.vatbub.magic.view.BuiltInFontSpecs
+import com.github.vatbub.magic.view.BuiltInImageSpecs
 import com.github.vatbub.magic.view.FontSpec
-import com.github.vatbub.magic.view.FontSpec.BuiltIn
-import com.github.vatbub.magic.view.FontSpec.System
+import com.github.vatbub.magic.view.ImageSpec
 import javafx.scene.paint.Color
 import javafx.scene.text.FontPosture
 import javafx.scene.text.FontWeight
@@ -52,6 +52,11 @@ object PreferenceKeys {
         BuiltInFontSpecs.ArchitectsDaughterRegular.fontSpec
     )
 
+    object HealthPointsBackgroundImageSpec : ImageSpecKey(
+        uniqueName = "healthPointsImageSpec",
+        defaultValue = BuiltInImageSpecs.GreenRing.imageSpec
+    )
+
     object AbilityKeys {
         object SortMode : Key<SortModeEnum>("abilitySortMode", Usage, { SortModeEnum.valueOf(it) }, { it.toString() })
 
@@ -73,15 +78,30 @@ object PreferenceKeys {
         val parts = it.split(";")
         when (parts[0]) {
             "BuiltIn" -> BuiltInFontSpecs.valueOf(parts[1]).fontSpec
-            "System" -> System(parts[1], parts[2].toFontWeightOrNull(), parts[3].toPostureOrNull())
+            "System" -> FontSpec.System(parts[1], parts[2].toFontWeightOrNull(), parts[3].toPostureOrNull())
             else -> throw IllegalArgumentException("Illegal FontSpecType found in preferences")
         }
     }, {
         when (it) {
-            is BuiltIn -> "BuiltIn;${BuiltInFontSpecs.forSpec(it)}"
-            is System -> "System;${it.family};${it.weight};${it.posture}"
+            is FontSpec.BuiltIn -> "BuiltIn;${BuiltInFontSpecs.forSpec(it)}"
+            is FontSpec.System -> "System;${it.family};${it.weight};${it.posture}"
         }
     })
+
+    abstract class ImageSpecKey(uniqueName: String, defaultValue: ImageSpec) :
+        Key<ImageSpec>(uniqueName, defaultValue, {
+            val parts = it.split(";")
+            when (parts[0]) {
+                "BuiltIn" -> BuiltInImageSpecs.valueOf(parts[1]).imageSpec
+                "System" -> ImageSpec.System(File(parts[1]))
+                else -> throw IllegalArgumentException("Illegal ImageSpecType found in preferences")
+            }
+        }, {
+            when (it) {
+                is ImageSpec.BuiltIn -> "BuiltIn;${BuiltInImageSpecs.forSpec(it)}"
+                is ImageSpec.System -> "System;${it.file.absolutePath}"
+            }
+        })
 
     private fun String.toFontWeightOrNull(): FontWeight? = when (this) {
         "null" -> null

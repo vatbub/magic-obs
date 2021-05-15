@@ -44,7 +44,7 @@ sealed class ImageSpec {
 }
 
 enum class BuiltInImageSpecs(val imageSpec: ImageSpec.BuiltIn, val humanReadableName: String) {
-    ArchitectsDaughterRegular(ImageSpec.BuiltIn("HealthPointsFrame.png"), "Green ring");
+    GreenRing(ImageSpec.BuiltIn("HealthPointsFrame.png"), "Green ring");
 
     companion object {
         fun forSpec(imageSpec: ImageSpec.BuiltIn) = values().first { it.imageSpec == imageSpec }
