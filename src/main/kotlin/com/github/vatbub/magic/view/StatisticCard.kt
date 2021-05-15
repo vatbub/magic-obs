@@ -125,6 +125,10 @@ class StatisticCard {
     private var statisticsLabelCancelFontSizeUpdate = false
     private var cardAboutToBeKilled = false
 
+    private var fontOffset by Delegates.observable(0.0) { _, _, newValue ->
+        updateMiddleFontSize(targetHeight = middleImageView.fitHeight - newValue)
+    }
+
     @FXML
     fun initialize() {
         updateMiddleWidth()
@@ -150,7 +154,7 @@ class StatisticCard {
 
     private fun updateMiddleFontSize(
         targetWidth: Double = middleImageView.fitWidth,
-        targetHeight: Double = middleImageView.fitHeight,
+        targetHeight: Double = middleImageView.fitHeight - fontOffset,
         tolerance: Double = 0.05,
         fontSpec: FontSpec = DataHolder.cardStatisticsFontSpecProperty.get(),
         forceAtLeastOneUpdate: Boolean = false
@@ -374,6 +378,7 @@ class StatisticCard {
 
     private fun animateStatisticsOffset(childCount: Int) {
         val targetValue = if (childCount != 0) statisticsOffset else 0.0
+        fontOffset = if (childCount != 0) abilityIcons.height * 0.4 else 0.0
 
         if (statisticLabel.translateY == -targetValue) return
 
