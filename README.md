@@ -123,6 +123,8 @@ issue [here](https://github.com/vatbub/magic-obs/issues) or create a pull reques
 
 ## License
 
+All parts of this program are licensed under the [Apache license v2](/LICENSE.txt) except for the parts mentioned below.
+
 Copyright (C) 2021 - 2021 Frederik Kammel
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
@@ -133,3 +135,10 @@ License. You may obtain a copy of the License at
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "
 AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific
 language governing permissions and limitations under the License.
+
+The following icons were taken from [Flaticon](https://www.flaticon.com/) and is thus licensed under the [Flaticon license](https://www.freepikcompany.com/legal#nav-flaticon-agreement):
+- Up/down arrow: Icons made by <a href="https://www.flaticon.com/authors/google" title="Google">Google</a>
+  from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com </a>
+  
+The following fonts are taken from [Google fonts](https://fonts.google.com/) and are licensed under the [Open Font License](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL):
+- [Architects Daughter](https://fonts.google.com/specimen/Architects+Daughter)
