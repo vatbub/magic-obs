@@ -78,7 +78,9 @@ class CardButtonCell : TableCell<Card, Card>() {
         downButton.isDisable = tableRow.index == tableView.items.size - 1
 
         tableView.items.addListener(ListChangeListener { change ->
-            downButton.isDisable = tableRow.index == change.list.size - 1
+            while (change.next()) {
+                downButton.isDisable = tableRow.index == change.list.size - 1
+            }
         })
 
         Platform.runLater {
