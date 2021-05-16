@@ -26,14 +26,14 @@ import com.github.vatbub.magic.animation.queue.toQueueItem
 import com.github.vatbub.magic.data.Ability
 import com.github.vatbub.magic.data.Card
 import com.github.vatbub.magic.data.DataHolder
-import com.github.vatbub.magic.util.awaitLayoutCycles
 import com.github.vatbub.magic.util.bindAndMap
+import com.github.vatbub.magic.util.fitFontSizeToWidth
 import com.github.vatbub.magic.util.times
 import javafx.animation.Interpolator
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue
 import javafx.animation.Timeline
-import javafx.application.Platform
+import javafx.beans.property.SimpleDoubleProperty
 import javafx.collections.ListChangeListener
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
@@ -48,11 +48,10 @@ import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
 import javafx.util.Duration
+import kotlin.collections.set
 import kotlin.math.abs
-import kotlin.math.min
 import kotlin.properties.Delegates
 import kotlin.time.ExperimentalTime
-import kotlin.time.milliseconds
 
 
 class StatisticCard {
@@ -78,7 +77,6 @@ class StatisticCard {
         oldValue?.abilities?.removeListener(abilitiesChangeListener)
         if (newValue == null) return@observable
 
-        cardAboutToBeKilled = false
         with(newValue) {
             updateStatisticLabel(
                 newValue.attackProperty.value,
@@ -121,13 +119,7 @@ class StatisticCard {
 
     private val abilityViewMap = mutableMapOf<Ability, ImageView>()
 
-    private var statisticsLabelFontSizeUpdateInProgress = false
-    private var statisticsLabelCancelFontSizeUpdate = false
-    private var cardAboutToBeKilled = false
-
-    private var fontOffset by Delegates.observable(0.0) { _, _, newValue ->
-        updateMiddleFontSize(targetHeight = middleImageView.fitHeight - newValue)
-    }
+    private var fontOffset = SimpleDoubleProperty(0.0)
 
     @FXML
     fun initialize() {
@@ -139,7 +131,16 @@ class StatisticCard {
             animateStatisticsOffset(change.list.size)
         })
         DataHolder.cardStatisticsFontSpecProperty.addListener { _, _, newValue ->
-            updateMiddleFontSize(fontSpec = newValue, forceAtLeastOneUpdate = true)
+            updateMiddleFontSize(fontSpec = newValue, forceUpdate = true)
+        }
+        statisticLabel.widthProperty().addListener { _, _, _ ->
+            updateMiddleFontSize()
+        }
+        middleImageView.fitWidthProperty().addListener { _, _, newValue ->
+            updateMiddleFontSize(targetWidth = newValue.toDouble() - 20)
+        }
+        fontOffset.addListener { _, _, newValue ->
+            updateMiddleFontSize(targetHeight = middleImageView.fitHeight - newValue.toDouble())
         }
     }
 
@@ -148,76 +149,26 @@ class StatisticCard {
             rootPane.prefWidth - rootPane.getCellBounds(0, 0).width - rootPane.getCellBounds(2, 0).width + 2
 
         middleImageView.fitWidth = newMiddleWidth
-
-        updateMiddleFontSize(newMiddleWidth - 10)
     }
 
     private fun updateMiddleFontSize(
-        targetWidth: Double = middleImageView.fitWidth,
-        targetHeight: Double = middleImageView.fitHeight - fontOffset,
-        tolerance: Double = 0.05,
+        targetWidth: Double = middleImageView.fitWidth - 20,
+        targetHeight: Double = middleImageView.fitHeight - fontOffset.value,
+        tolerance: Double = 1.0,
         fontSpec: FontSpec = DataHolder.cardStatisticsFontSpecProperty.get(),
-        forceAtLeastOneUpdate: Boolean = false
+        forceUpdate: Boolean = false
     ) {
-        if (cardAboutToBeKilled) return
         if (targetWidth < 0) return
         if (targetHeight < 0) return
 
-        if (statisticsLabelFontSizeUpdateInProgress) {
-            statisticsLabelCancelFontSizeUpdate = true
-            Platform.runLater {
-                updateMiddleFontSize(
-                    targetWidth,
-                    targetHeight,
-                    tolerance,
-                    fontSpec,
-                    forceAtLeastOneUpdate
-                )
-            }
-            return
+        with(statisticLabel) {
+            val newFontSize = fitFontSizeToWidth(font, this.text, targetWidth, targetHeight)
+            if (abs(font.size - newFontSize) <= tolerance && !forceUpdate) return
+            font = fontSpec.withSize(newFontSize)
         }
-
-        Platform.runLater {
-            statisticLabel.updateMiddleFontSize(
-                targetWidth,
-                targetHeight,
-                tolerance,
-                fontSpec,
-                forceAtLeastOneUpdate
-            )
-        }
-    }
-
-    private fun Label.updateMiddleFontSize(
-        targetWidth: Double,
-        targetHeight: Double,
-        tolerance: Double,
-        fontSpec: FontSpec,
-        forceAtLeastOneUpdate: Boolean = false
-    ) {
-        if (statisticsLabelCancelFontSizeUpdate || cardAboutToBeKilled) {
-            statisticsLabelCancelFontSizeUpdate = false
-            statisticsLabelFontSizeUpdateInProgress = false
-            return
-        }
-
-        val widthStepSize = (targetWidth - width) / targetWidth
-        val heightStepSize = (targetHeight - height) / targetHeight
-        val stepSize = min(widthStepSize, heightStepSize)
-
-        if (!forceAtLeastOneUpdate && abs(stepSize) < tolerance) {
-            statisticsLabelFontSizeUpdateInProgress = false
-            return
-        }
-
-        statisticsLabelFontSizeUpdateInProgress = true
-        val fontSize = font.size + stepSize
-        font = fontSpec.withSize(fontSize)
-        Platform.runLater { this.updateMiddleFontSize(targetWidth, targetHeight, tolerance, fontSpec) }
     }
 
     fun createKillAnimation(): ConcurrentTimelineQueueItem {
-        cardAboutToBeKilled = true
         killCrossLeftTopToRightBottom.prepareKillAnimation()
         killCrossLeftBottomToRightTop.prepareKillAnimation()
 
@@ -295,8 +246,6 @@ class StatisticCard {
         defense: Int = card!!.defenseProperty.value
     ) {
         statisticLabel.text = "$attack/$defense"
-        // Laying out text apparently takes more than one layout cycle...
-        awaitLayoutCycles(5, 10.milliseconds) { updateMiddleFontSize() }
     }
 
     private val abilitiesChangeListener = ListChangeListener<Ability> { change ->
@@ -378,12 +327,13 @@ class StatisticCard {
 
     private fun animateStatisticsOffset(childCount: Int) {
         val targetValue = if (childCount != 0) statisticsOffset else 0.0
-        fontOffset = if (childCount != 0) abilityIcons.height * 0.4 else 0.0
+        val fontOffsetTargetValue = if (childCount != 0) abilityIcons.height * 0.4 else 0.0
 
         if (statisticLabel.translateY == -targetValue) return
 
-        val keyValue = KeyValue(statisticLabel.translateYProperty(), -targetValue, Interpolator.EASE_BOTH)
-        val keyFrame = KeyFrame(statisticsOffsetAnimationDuration, keyValue)
+        val translateKeyValue = KeyValue(statisticLabel.translateYProperty(), -targetValue, Interpolator.EASE_BOTH)
+        val fontKeyValue = KeyValue(fontOffset, fontOffsetTargetValue, Interpolator.EASE_BOTH)
+        val keyFrame = KeyFrame(statisticsOffsetAnimationDuration, translateKeyValue, fontKeyValue)
         Timeline(keyFrame).play()
     }
 }

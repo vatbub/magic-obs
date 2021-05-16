@@ -19,21 +19,13 @@
  */
 package com.github.vatbub.magic.util
 
-import javafx.application.Platform
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import javafx.scene.text.Font
+import javafx.scene.text.Text
 
-@OptIn(ExperimentalTime::class)
-fun awaitLayoutCycles(numberOfCyclesToSkip: Int, sleepBetweenSchedulerRequests: Duration, block: () -> Unit) {
-    if (numberOfCyclesToSkip == 0) {
-        Platform.runLater(block)
-        return
-    }
+fun calculateTextDimensions(font: Font, string: String): TextDimensions =
+    Text(string)
+        .apply { this.font = font }
+        .boundsInLocal
+        .let { TextDimensions(it.width, it.height) }
 
-    Thread {
-        Thread.sleep(sleepBetweenSchedulerRequests.toLongMilliseconds())
-        Platform.runLater {
-            awaitLayoutCycles(numberOfCyclesToSkip - 1, sleepBetweenSchedulerRequests, block)
-        }
-    }.start()
-}
+data class TextDimensions(val width:Double, val height:Double)
