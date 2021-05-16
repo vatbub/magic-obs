@@ -43,8 +43,8 @@ import javafx.scene.control.Label
 import javafx.scene.effect.GaussianBlur
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
-import javafx.scene.layout.GridPane
 import javafx.scene.layout.HBox
+import javafx.scene.layout.StackPane
 import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
 import javafx.util.Duration
@@ -98,13 +98,13 @@ class StatisticCard {
         private set
 
     @FXML
-    lateinit var rootPane: GridPane
+    lateinit var rootPane: StackPane
 
     @FXML
     private lateinit var statisticLabel: Label
 
     @FXML
-    private lateinit var middleImageView: ImageView
+    private lateinit var backgroundRectangle: Rectangle
 
     @FXML
     private lateinit var killCrossLeftBottomToRightTop: ImageView
@@ -123,10 +123,7 @@ class StatisticCard {
 
     @FXML
     fun initialize() {
-        updateMiddleWidth()
-        rootPane.widthProperty().addListener { _, _, _ ->
-            updateMiddleWidth()
-        }
+        backgroundRectangle.widthProperty().bind(rootPane.widthProperty())
         abilityIcons.children.addListener(ListChangeListener { change ->
             animateStatisticsOffset(change.list.size)
         })
@@ -136,30 +133,23 @@ class StatisticCard {
         statisticLabel.widthProperty().addListener { _, _, _ ->
             updateMiddleFontSize()
         }
-        middleImageView.fitWidthProperty().addListener { _, _, newValue ->
+        rootPane.widthProperty().addListener { _, _, newValue ->
             updateMiddleFontSize(targetWidth = newValue.toDouble() - 20)
         }
         fontOffset.addListener { _, _, newValue ->
-            updateMiddleFontSize(targetHeight = middleImageView.fitHeight - newValue.toDouble())
+            updateMiddleFontSize(targetHeight = backgroundRectangle.height - newValue.toDouble())
         }
     }
 
-    fun updateMiddleWidth() {
-        val newMiddleWidth =
-            rootPane.prefWidth - rootPane.getCellBounds(0, 0).width - rootPane.getCellBounds(2, 0).width + 2
-
-        middleImageView.fitWidth = newMiddleWidth
-    }
-
     private fun updateMiddleFontSize(
-        targetWidth: Double = middleImageView.fitWidth - 20,
-        targetHeight: Double = middleImageView.fitHeight - fontOffset.value,
+        targetWidth: Double = backgroundRectangle.width - 20,
+        targetHeight: Double = backgroundRectangle.height - fontOffset.value,
         tolerance: Double = 1.0,
         fontSpec: FontSpec = DataHolder.cardStatisticsFontSpecProperty.get(),
         forceUpdate: Boolean = false
     ) {
-        if (targetWidth < 0) return
-        if (targetHeight < 0) return
+        if (targetWidth <= 0) return
+        if (targetHeight <= 0) return
 
         with(statisticLabel) {
             val newFontSize = fitFontSizeToWidth(font, this.text, targetWidth, targetHeight)

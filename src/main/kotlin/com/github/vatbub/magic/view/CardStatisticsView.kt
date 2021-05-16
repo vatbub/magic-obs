@@ -117,8 +117,6 @@ class CardStatisticsView : Closeable {
             val keyValueMaxWidth = KeyValue(it.rootPane.maxWidthProperty(), cardWidth, Interpolator.EASE_BOTH)
             val keyFrame = KeyFrame(Duration(animationDuration), keyValueMaxWidth, keyValuePrefWidth)
             Timeline(keyFrame).play()
-
-            it.updateMiddleWidth()
         }
 
         val cardSpacing = min(maxSpacing, (width - cardWidth * viewListSize) / (viewListSize - 1))
