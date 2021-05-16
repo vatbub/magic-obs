@@ -25,6 +25,7 @@ import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.util.get
 import com.github.vatbub.magic.util.swap
 import javafx.application.Platform
+import javafx.collections.ListChangeListener
 import javafx.event.ActionEvent
 import javafx.scene.control.Button
 import javafx.scene.control.TableCell
@@ -33,18 +34,34 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.HBox
 
 class CardButtonCell : TableCell<Card, Card>() {
-    private val hBox = HBox(
-        Button(App.resourceBundle["mainView.button.controls.kill"]!!).also { it.setOnAction(this::killButtonOnAction) },
+    private val killButton by lazy {
+        Button(App.resourceBundle["mainView.button.controls.kill"]!!).also {
+            it.setOnAction(this::killButtonOnAction)
+        }
+    }
+
+    private val upButton by lazy {
         Button().also {
             it.graphic = ImageView(Image(javaClass.getResourceAsStream("up-arrow.png")))
             it.setOnAction(this::upButtonOnAction)
-        },
+        }
+    }
+
+    private val downButton by lazy {
         Button().also {
             it.graphic = ImageView(Image(javaClass.getResourceAsStream("down-arrow.png")))
             it.setOnAction(this::downButtonOnAction)
         }
-    ).apply {
-        spacing = 8.0
+    }
+
+    private val hBox by lazy {
+        HBox(
+            killButton,
+            upButton,
+            downButton
+        ).apply {
+            spacing = 8.0
+        }
     }
 
 
@@ -57,6 +74,13 @@ class CardButtonCell : TableCell<Card, Card>() {
         }
 
         graphic = hBox
+        upButton.isDisable = tableRow.index == 0
+        downButton.isDisable = tableRow.index == tableView.items.size - 1
+
+        tableView.items.addListener(ListChangeListener { change ->
+            downButton.isDisable = tableRow.index == change.list.size - 1
+        })
+
         Platform.runLater {
             if (tableColumn.width < hBox.width)
                 tableColumn.prefWidth = hBox.width + 50
