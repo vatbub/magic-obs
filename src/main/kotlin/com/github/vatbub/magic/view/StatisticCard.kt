@@ -30,6 +30,7 @@ import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.fitFontSizeToWidth
 import com.github.vatbub.magic.util.times
 import javafx.animation.Interpolator
+import javafx.animation.Interpolator.EASE_BOTH
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue
 import javafx.animation.Timeline
@@ -71,6 +72,11 @@ class StatisticCard {
         private val statisticsOffsetAnimationDuration = Duration(500.0)
 
         private const val abilityAnimationDuration = 500.0
+
+        private const val abilityScrollMargin = 15.0
+        private const val abilityInitialScrollSpeed = 0.5
+        private const val abilityScrollSpeed = 0.02
+        private const val abilityScrollPauseDurationInMillis = 4000.0
     }
 
     var card: Card? by Delegates.observable(null) { _, oldValue, newValue ->
@@ -115,11 +121,22 @@ class StatisticCard {
     @FXML
     private lateinit var abilityIcons: HBox
 
+    @FXML
+    private lateinit var abilityIconsWrapper: HBox
+
+    private var scrollAnimation: Timeline? = null
+
+    private val abilitiesClippingRectangle = Rectangle().apply {
+        addGaussianBlurForClip()
+    }
+
     private val abilityAnimationQueue = AnimationQueue()
 
     private val abilityViewMap = mutableMapOf<Ability, ImageView>()
 
-    private var fontOffset = SimpleDoubleProperty(0.0)
+    private val fontOffset = SimpleDoubleProperty(0.0)
+
+    private val abilitiesClippingRectangleXMargin = SimpleDoubleProperty(0.0)
 
     @FXML
     fun initialize() {
@@ -139,6 +156,79 @@ class StatisticCard {
         fontOffset.addListener { _, _, newValue ->
             updateMiddleFontSize(targetHeight = backgroundRectangle.height - newValue.toDouble())
         }
+        abilityIcons.widthProperty().addListener { _, _, newValue ->
+            determineIfAbilitiesShouldScroll(abilitiesWidth = newValue.toDouble())
+            abilitiesClippingRectangle.updateDimensions(abilitiesWidth = newValue.toDouble())
+        }
+        rootPane.widthProperty().addListener { _, _, newValue ->
+            determineIfAbilitiesShouldScroll(rootWidth = newValue.toDouble())
+            abilitiesClippingRectangle.updateDimensions(rootWidth = newValue.toDouble())
+        }
+        abilitiesClippingRectangleXMargin.addListener { _, _, newValue ->
+            abilitiesClippingRectangle.updateDimensions(margin = newValue.toDouble())
+        }
+
+        abilityIconsWrapper.clip = abilitiesClippingRectangle
+        abilitiesClippingRectangle.heightProperty().bind(abilityIcons.heightProperty().add(10.0))
+    }
+
+    private fun Rectangle.updateDimensions(
+        abilitiesWidth: Double = abilityIcons.width,
+        rootWidth: Double = rootPane.width,
+        margin: Double = abilitiesClippingRectangleXMargin.value
+    ) {
+        x = margin + abs(rootWidth - abilitiesWidth) / 2
+        width = rootWidth - 2 * margin
+    }
+
+    private fun determineIfAbilitiesShouldScroll(
+        abilitiesWidth: Double = abilityIcons.width,
+        rootWidth: Double = rootPane.width
+    ) {
+        val xMarginTargetValue = if (abilitiesWidth > (rootWidth - abilityScrollMargin)) abilityScrollMargin
+        else 0.0
+
+        if (abilitiesWidth > rootWidth) startScrollAnimation(abilityInitialScrollSpeed)
+        else stopScrollAnimation()
+
+        val keyValue = KeyValue(abilitiesClippingRectangleXMargin, xMarginTargetValue)
+        val keyFrame = KeyFrame(Duration(100.0), keyValue)
+        Timeline(keyFrame).play()
+    }
+
+    private fun startScrollAnimation(initialScrollSpeed: Double = abilityScrollSpeed) {
+        scrollAnimation?.stop()
+
+        val translateAmount = abilityScrollMargin + abs(rootPane.width - abilityIcons.width) / 2
+        val firstScrollDuration = translateAmount / initialScrollSpeed
+        val secondScrollDuration = translateAmount / abilityScrollSpeed
+
+        val keyValue1 = KeyValue(abilityIcons.translateXProperty(), -translateAmount, EASE_BOTH)
+        val keyFrame1 = KeyFrame(Duration(firstScrollDuration), keyValue1)
+        val keyFrame2 = KeyFrame(Duration(firstScrollDuration + abilityScrollPauseDurationInMillis), keyValue1)
+
+        val keyValue2 = KeyValue(abilityIcons.translateXProperty(), translateAmount, EASE_BOTH)
+        val keyFrame3 = KeyFrame(
+            Duration(firstScrollDuration + secondScrollDuration + abilityScrollPauseDurationInMillis),
+            keyValue2
+        )
+        val keyFrame4 = KeyFrame(
+            Duration(firstScrollDuration + secondScrollDuration + 2 * abilityScrollPauseDurationInMillis),
+            keyValue2
+        )
+
+        scrollAnimation = Timeline(keyFrame1, keyFrame2, keyFrame3, keyFrame4)
+            .apply { setOnFinished { startScrollAnimation() } }
+            .apply { play() }
+    }
+
+    private fun stopScrollAnimation() {
+        scrollAnimation?.stop()
+
+        val keyValue1 = KeyValue(abilityIcons.translateXProperty(), 0.0, EASE_BOTH)
+        val keyFrame1 = KeyFrame(Duration(2000.0), keyValue1)
+        scrollAnimation = Timeline(keyFrame1)
+            .apply { play() }
     }
 
     private fun updateMiddleFontSize(
@@ -173,22 +263,22 @@ class StatisticCard {
         val keyValueWidthLeftTopToRightBottom1 = KeyValue(
             leftTopToRightBottomClip.widthProperty(),
             rootPane.width,
-            Interpolator.EASE_BOTH
+            EASE_BOTH
         )
         val keyValueHeightLeftTopToRightBottom1 = KeyValue(
             leftTopToRightBottomClip.heightProperty(),
             rootPane.height,
-            Interpolator.EASE_BOTH
+            EASE_BOTH
         )
         val keyValueWidthLeftBottomToRightTop1 = KeyValue(
             leftBottomToRightTopClip.widthProperty(),
             0,
-            Interpolator.EASE_BOTH
+            EASE_BOTH
         )
         val keyValueHeightLeftBottomToRightTop1 = KeyValue(
             leftBottomToRightTopClip.heightProperty(),
             0,
-            Interpolator.EASE_BOTH
+            EASE_BOTH
         )
         val keyFrame1 =
             KeyFrame(
@@ -199,12 +289,12 @@ class StatisticCard {
         val keyValueWidthLeftBottomToRightTop2 = KeyValue(
             leftBottomToRightTopClip.widthProperty(),
             rootPane.width,
-            Interpolator.EASE_BOTH
+            EASE_BOTH
         )
         val keyValueHeightLeftBottomToRightTop2 = KeyValue(
             leftBottomToRightTopClip.heightProperty(),
             rootPane.height,
-            Interpolator.EASE_BOTH
+            EASE_BOTH
         )
         val keyFrame2 =
             KeyFrame(
@@ -273,7 +363,7 @@ class StatisticCard {
         val targetWidth = image.width
         val space = Rectangle(0.0, image.height, Color.TRANSPARENT)
 
-        val keyValueSpaceWidth = KeyValue(space.widthProperty(), targetWidth, Interpolator.EASE_BOTH)
+        val keyValueSpaceWidth = KeyValue(space.widthProperty(), targetWidth, EASE_BOTH)
 
         val keyFrameWidth = KeyFrame(Duration(abilityAnimationDuration), keyValueSpaceWidth)
 
@@ -300,7 +390,7 @@ class StatisticCard {
         val targetWidth = -abilityIcons.spacing
         val space = Rectangle(image.width, image.height, Color.TRANSPARENT)
 
-        val keyValueSpaceWidth = KeyValue(space.widthProperty(), targetWidth, Interpolator.EASE_BOTH)
+        val keyValueSpaceWidth = KeyValue(space.widthProperty(), targetWidth, EASE_BOTH)
 
         val keyFrameWidth = KeyFrame(Duration(abilityAnimationDuration), keyValueSpaceWidth)
 
@@ -321,8 +411,8 @@ class StatisticCard {
 
         if (statisticLabel.translateY == -targetValue) return
 
-        val translateKeyValue = KeyValue(statisticLabel.translateYProperty(), -targetValue, Interpolator.EASE_BOTH)
-        val fontKeyValue = KeyValue(fontOffset, fontOffsetTargetValue, Interpolator.EASE_BOTH)
+        val translateKeyValue = KeyValue(statisticLabel.translateYProperty(), -targetValue, EASE_BOTH)
+        val fontKeyValue = KeyValue(fontOffset, fontOffsetTargetValue, EASE_BOTH)
         val keyFrame = KeyFrame(statisticsOffsetAnimationDuration, translateKeyValue, fontKeyValue)
         Timeline(keyFrame).play()
     }

@@ -5,7 +5,6 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Rectangle?>
@@ -13,19 +12,20 @@
 <StackPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.vatbub.magic.view.StatisticCard">
     <children>
       <Rectangle fx:id="backgroundRectangle" arcHeight="50.0" arcWidth="50.0" fill="#ffbf85" height="150.0" stroke="#ad5e00" strokeType="INSIDE" strokeWidth="5.0" width="233.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-       <Label fx:id="statisticLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Label" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-           <GridPane.margin>
-               <Insets />
-           </GridPane.margin>
+      <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+             <Label fx:id="statisticLabel" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Label" wrapText="true">
        </Label>
-       <HBox fx:id="abilityIcons" alignment="BOTTOM_CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="BOTTOM" GridPane.vgrow="ALWAYS">
-           <GridPane.margin>
-               <Insets bottom="12.0" />
-           </GridPane.margin>
+         </children>
+      </StackPane>
+      <HBox fx:id="abilityIconsWrapper" alignment="BOTTOM_CENTER" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+         <children>
+             <HBox fx:id="abilityIcons" alignment="BOTTOM_CENTER" />
+         </children>
          <StackPane.margin>
-            <Insets bottom="12.0" />
+            <Insets bottom="10.0" />
          </StackPane.margin>
-       </HBox>
+      </HBox>
       <ImageView fx:id="killCrossLeftBottomToRightTop" fitHeight="10.0" fitWidth="10.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <image>
             <Image url="@KillCrossLeftBottomToRightTop.png" />
