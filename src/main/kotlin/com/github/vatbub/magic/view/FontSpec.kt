@@ -41,7 +41,8 @@ sealed class FontSpec {
 }
 
 enum class BuiltInFontSpecs(val fontSpec: FontSpec.BuiltIn, val humanReadableName: String) {
-    ArchitectsDaughterRegular(FontSpec.BuiltIn("ArchitectsDaughterRegular.ttf"), "Architects Daughter (Regular)");
+    ArchitectsDaughterRegular(FontSpec.BuiltIn("ArchitectsDaughterRegular.ttf"), "Architects Daughter (Regular)"),
+    MagicTheGathering(FontSpec.BuiltIn("magic.ttf"), "Magic The Gathering (Regular)");
 
     companion object {
         fun forSpec(fontSpec: FontSpec.BuiltIn) = values().first { it.fontSpec == fontSpec }

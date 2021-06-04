@@ -44,12 +44,12 @@ object PreferenceKeys {
 
     object HealthPointsFontSpec : FontSpecKey(
         "healthPointsFontSpec",
-        BuiltInFontSpecs.ArchitectsDaughterRegular.fontSpec
+        BuiltInFontSpecs.MagicTheGathering.fontSpec
     )
 
     object CardStatisticsFontSpec : FontSpecKey(
         "cardStatisticsFontSpec",
-        BuiltInFontSpecs.ArchitectsDaughterRegular.fontSpec
+        BuiltInFontSpecs.MagicTheGathering.fontSpec
     )
 
     object HealthPointsBackgroundImageSpec : ImageSpecKey(
