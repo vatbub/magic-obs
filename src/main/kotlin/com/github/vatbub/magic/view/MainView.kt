@@ -154,6 +154,11 @@ class MainView {
         DataHolder.resetGame()
     }
 
+    @FXML
+    fun buttonResetWindowsOnAction() {
+        App.instance.resetAuxiliaryViews()
+    }
+
     fun close() {
 
     }

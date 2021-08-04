@@ -78,8 +78,7 @@ class CardStatisticsView : Closeable {
         private const val additionAnimationLayoutYOffset = 0.0
     }
 
-    lateinit var stage: Stage
-        private set
+    private lateinit var stage: Stage
 
     @FXML
     private lateinit var anchorPane: AnchorPane
@@ -92,6 +91,7 @@ class CardStatisticsView : Closeable {
     @FXML
     fun initialize() {
         anchorPane.styleProperty().bindAndMap(DataHolder.backgroundColorProperty, Color::asBackgroundStyle)
+        DataHolder.cardList.forEachIndexed { index, card -> handleCardInsertion(index, card) }
         DataHolder.cardList.addListener(itemListener)
         cardContainer.widthProperty().addListener { _, _, newValue ->
             updateSpacing(newValue.toDouble())
@@ -126,8 +126,9 @@ class CardStatisticsView : Closeable {
     }
 
     override fun close() {
-        stage.hide()
+        stage.close()
         DataHolder.cardList.removeListener(itemListener)
+        animationQueue.shutdownNow()
     }
 
     private val itemListener = ListChangeListener<Card> { change ->
@@ -145,27 +146,35 @@ class CardStatisticsView : Closeable {
                     }
             } else {
                 change.removed.forEach { removedItem ->
-                    animationQueue.add(CodeBlockQueueItem {
-                        viewList.firstOrNull { it.card == removedItem }?.let { view ->
-                            viewList.remove(view)
-                            cardViewsInRemovalQueue.add(view)
-                            animationQueue.add(DeferredQueueItem {
-                                view.createKillAnimation()
-                            })
-                            view.animateRemoval()
-                        }
-                    })
+                    handleCardRemoval(removedItem)
                 }
                 change.addedSubList.forEachIndexed { index, addedItem ->
-                    animationQueue.add(DeferredQueueItem {
-                        val statisticCard = StatisticCard.newInstance(addedItem)
-                        viewList.add(statisticCard)
-                        cardContainer.children.add(index + change.from, statisticCard.rootPane)
-                        statisticCard.createAddAnimation().toQueueItem()
-                    })
+                    handleCardInsertion(index + change.from, addedItem)
                 }
             }
         }
+    }
+
+    private fun handleCardRemoval(removedItem: Card) {
+        animationQueue.add(CodeBlockQueueItem {
+            viewList.firstOrNull { it.card == removedItem }?.let { view ->
+                viewList.remove(view)
+                cardViewsInRemovalQueue.add(view)
+                animationQueue.add(DeferredQueueItem {
+                    view.createKillAnimation()
+                })
+                view.animateRemoval()
+            }
+        })
+    }
+
+    private fun handleCardInsertion(index: Int, addedItem: Card) {
+        animationQueue.add(DeferredQueueItem {
+            val statisticCard = StatisticCard.newInstance(addedItem)
+            viewList.add(statisticCard)
+            cardContainer.children.add(index, statisticCard.rootPane)
+            statisticCard.createAddAnimation().toQueueItem()
+        })
     }
 
     private fun StatisticCard.createAddAnimation(): Timeline {

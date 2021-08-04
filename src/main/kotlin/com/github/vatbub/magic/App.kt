@@ -79,14 +79,29 @@ class App private constructor(callLaunch: Boolean, vararg args: String?) : Appli
 
         primaryStage.scene = scene
 
-        auxiliaryViews.add(HealthPointsView.show())
-        auxiliaryViews.add(CardStatisticsView.show())
+        openAuxiliaryViews()
 
         primaryStage.setOnCloseRequest {
             controllerInstance?.close()
-            auxiliaryViews.forEach { view -> view.close() }
+            closeAuxiliaryViews()
         }
 
         primaryStage.show()
+    }
+
+    private fun openAuxiliaryViews() {
+        auxiliaryViews.add(HealthPointsView.show())
+        auxiliaryViews.add(CardStatisticsView.show())
+    }
+
+    private fun closeAuxiliaryViews() {
+        while (auxiliaryViews.isNotEmpty()) {
+            auxiliaryViews.removeAt(0).close()
+        }
+    }
+
+    fun resetAuxiliaryViews() {
+        closeAuxiliaryViews()
+        openAuxiliaryViews()
     }
 }
