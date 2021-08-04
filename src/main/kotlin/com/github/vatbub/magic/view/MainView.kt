@@ -28,13 +28,10 @@ import com.github.vatbub.magic.util.get
 import javafx.beans.property.IntegerProperty
 import javafx.beans.value.ObservableValue
 import javafx.fxml.FXML
-import javafx.scene.control.Alert
+import javafx.scene.control.*
 import javafx.scene.control.Alert.AlertType.CONFIRMATION
 import javafx.scene.control.ButtonType.NO
 import javafx.scene.control.ButtonType.YES
-import javafx.scene.control.TableColumn
-import javafx.scene.control.TableView
-import javafx.scene.control.TextField
 import javafx.util.Callback
 
 
@@ -61,6 +58,11 @@ class MainView {
 
     @FXML
     fun initialize() {
+        cardsTableView.placeholder = Label(
+            App.resourceBundle["mainView.tableView.cards.placeholder"]!!
+                .format(App.resourceBundle["mainView.button.addCard"])
+        )
+
         healthPointsBox.textProperty().addListener { _, oldValue, newValue ->
             val newIntValue = newValue.toIntOrNull()
 
