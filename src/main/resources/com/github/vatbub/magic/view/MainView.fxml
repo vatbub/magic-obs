@@ -44,6 +44,7 @@
               <HBox spacing="8.0" HBox.hgrow="NEVER">
                   <children>
                       <Button mnemonicParsing="false" onAction="#addCardButtonOnAction" text="%mainView.button.addCard" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+                  <Button mnemonicParsing="false" onAction="#resetGameButtonOnAction" text="%mainView.button.reset" />
                   </children>
               </HBox>
             <HBox maxWidth="1.7976931348623157E308" spacing="8.0" HBox.hgrow="ALWAYS" />

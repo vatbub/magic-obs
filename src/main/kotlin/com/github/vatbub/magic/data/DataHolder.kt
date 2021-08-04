@@ -85,4 +85,9 @@ object DataHolder {
         }
 
     val cardList: ObservableList<Card> = PermutatingObservableList(mutableListOf())
+
+    fun resetGame(){
+        healthPointsProperty.value = HealthPoints.defaultValue
+        cardList.clear()
+    }
 }

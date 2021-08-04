@@ -22,9 +22,16 @@ package com.github.vatbub.magic.view
 import com.github.vatbub.magic.App
 import com.github.vatbub.magic.data.Card
 import com.github.vatbub.magic.data.DataHolder
+import com.github.vatbub.magic.data.PreferenceKeys.HealthPoints
+import com.github.vatbub.magic.util.asNullable
+import com.github.vatbub.magic.util.get
 import javafx.beans.property.IntegerProperty
 import javafx.beans.value.ObservableValue
 import javafx.fxml.FXML
+import javafx.scene.control.Alert
+import javafx.scene.control.Alert.AlertType.CONFIRMATION
+import javafx.scene.control.ButtonType.NO
+import javafx.scene.control.ButtonType.YES
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.control.TextField
@@ -131,6 +138,18 @@ class MainView {
                 it.stage.isIconified = false
                 it.stage.requestFocus()
             }
+    }
+
+    @FXML
+    fun resetGameButtonOnAction() {
+        val alertResult = Alert(CONFIRMATION).apply {
+            contentText = App.resourceBundle["mainView.confirmation.reset.content"]!!.format(HealthPoints.defaultValue)
+            buttonTypes.clear()
+            buttonTypes.addAll(YES, NO)
+        }.showAndWait().asNullable() ?: return
+
+        if (alertResult != YES) return
+        DataHolder.resetGame()
     }
 
     fun close() {
