@@ -43,6 +43,9 @@ class MainView {
     private lateinit var cardsTableView: TableView<Card>
 
     @FXML
+    private lateinit var counterColumn: TableColumn<Card, Int>
+
+    @FXML
     private lateinit var defenseColumn: TableColumn<Card, Int>
 
     @FXML
@@ -98,6 +101,7 @@ class MainView {
     private fun refreshCardTableFactories() {
         attackColumn.setIntegerColumnFactories { attackProperty }
         defenseColumn.setIntegerColumnFactories { defenseProperty }
+        counterColumn.setIntegerColumnFactories { counterProperty }
         abilitiesColumn.cellFactory = Callback { CheckboxDropDownCell() }
         buttonsColumn.cellFactory = Callback { CardButtonCell() }
     }

@@ -24,8 +24,9 @@ import javafx.beans.property.SimpleIntegerProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 
-class Card(attack: Int = 1, defense: Int = 1, abilities: List<Ability> = listOf()) {
+class Card(attack: Int = 1, defense: Int = 1, counter: Int = 0, abilities: List<Ability> = listOf()) {
     val attackProperty: IntegerProperty = SimpleIntegerProperty(attack)
     val defenseProperty: IntegerProperty = SimpleIntegerProperty(defense)
+    val counterProperty: IntegerProperty = SimpleIntegerProperty(counter)
     val abilities: ObservableList<Ability> = FXCollections.observableArrayList(abilities)
 }

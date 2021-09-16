@@ -28,6 +28,7 @@
                 <TableColumn fx:id="attackColumn" prefWidth="75.0" sortable="false" text="%mainView.tableColumn.attack" />
                 <TableColumn fx:id="defenseColumn" prefWidth="75.0" sortable="false" text="%mainView.tableColumn.defense" />
                 <TableColumn fx:id="abilitiesColumn" prefWidth="75.0" text="%mainView.tableColumn.abilities" />
+            <TableColumn fx:id="counterColumn" prefWidth="75.0" sortable="false" text="%mainView.tableColumn.counter"/>
                 <TableColumn fx:id="buttonsColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="75.0" sortable="false" text="%mainView.tableColumn.controls" />
             </columns>
         </TableView>

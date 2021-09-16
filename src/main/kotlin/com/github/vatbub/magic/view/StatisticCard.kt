@@ -23,13 +23,11 @@ import com.github.vatbub.magic.animation.queue.AnimationQueue
 import com.github.vatbub.magic.animation.queue.CodeBlockQueueItem
 import com.github.vatbub.magic.animation.queue.ConcurrentTimelineQueueItem
 import com.github.vatbub.magic.animation.queue.toQueueItem
-import com.github.vatbub.magic.data.Ability
-import com.github.vatbub.magic.data.Card
-import com.github.vatbub.magic.data.DataHolder
+import com.github.vatbub.magic.data.*
+import com.github.vatbub.magic.data.Either.Right
 import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.fitFontSizeToWidth
 import com.github.vatbub.magic.util.times
-import javafx.animation.Interpolator
 import javafx.animation.Interpolator.EASE_BOTH
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue
@@ -85,9 +83,10 @@ class StatisticCard {
 
         with(newValue) {
             updateStatisticLabel(
-                newValue.attackProperty.value,
-                newValue.defenseProperty.value
+                attackProperty.value,
+                defenseProperty.value
             )
+            updateCounter(counterProperty.value)
 
             attackProperty.addListener { _, _, newValue ->
                 updateStatisticLabel(attack = newValue.toInt())
@@ -95,10 +94,11 @@ class StatisticCard {
             defenseProperty.addListener { _, _, newValue ->
                 updateStatisticLabel(defense = newValue.toInt())
             }
+            counterProperty.addListener { _, _, newValue -> updateCounter(newValue.toInt()) }
 
             abilities.addListener(abilitiesChangeListener)
             abilityIcons.children.clear()
-            abilities.forEach { addAbility(it) }
+            abilities.forEach { addAbility(it.left()) }
         }
     }
         private set
@@ -132,7 +132,7 @@ class StatisticCard {
 
     private val abilityAnimationQueue = AnimationQueue()
 
-    private val abilityViewMap = mutableMapOf<Ability, ImageView>()
+    private val abilityViewMap = mutableMapOf<RenderedAbility, ImageView>()
 
     private val fontOffset = SimpleDoubleProperty(0.0)
 
@@ -328,22 +328,52 @@ class StatisticCard {
         statisticLabel.text = "$attack/$defense"
     }
 
+    private fun updateCounter(counter: Int) {
+        val currentNumberOfSixes = abilityViewMap.keys
+            .mapNotNull { it.rightOrNull() }
+            .filter { it.value == 6 }
+            .count()
+
+        val numberOfSixes = (counter / 6.0).toInt()
+        val remainder = counter % 6
+
+        // Remove previous remainders
+        abilityViewMap.keys
+            .filter { it is Right<Ability, CounterAbility> && it.value.value != 6 }
+            .reversed()
+            .forEach { removeAbility(it) }
+
+        // Remove excess sixes
+        if (currentNumberOfSixes > numberOfSixes) {
+            abilityViewMap.keys
+                .filter { it is Right<Ability, CounterAbility> && it.value.value == 6 }
+                .takeLast(currentNumberOfSixes - numberOfSixes)
+                .reversed()
+                .forEach { removeAbility(it) }
+        }
+
+        repeat(numberOfSixes - currentNumberOfSixes) {
+            addAbility(CounterAbility(6).right())
+        }
+
+        if (remainder > 0)
+            addAbility(CounterAbility(remainder).right())
+    }
+
     private val abilitiesChangeListener = ListChangeListener<Ability> { change ->
         while (change.next()) {
             change.removed.forEach { removedItem ->
-                removeAbility(removedItem)
+                removeAbility(removedItem.left())
             }
             change.addedSubList.forEach { addedItem ->
-                addAbility(addedItem)
+                addAbility(addedItem.left())
             }
         }
     }
 
-    private fun addAbility(ability: Ability) {
+    private fun addAbility(ability: RenderedAbility) {
         if (abilityViewMap.containsKey(ability)) return
-        val iconStream =
-            StatisticCard::class.java.getResourceAsStream("AbilityIcons/${ability.imageFileName}.png")
-        val imageView = ImageView(Image(iconStream, abilityIconSize, abilityIconSize, false, true))
+        val imageView = ImageView(Image(ability.iconStream, abilityIconSize, abilityIconSize, false, true))
 
         abilityViewMap[ability] = imageView
         abilityAnimationQueue.add(CodeBlockQueueItem {
@@ -351,7 +381,7 @@ class StatisticCard {
         })
     }
 
-    private fun removeAbility(ability: Ability) {
+    private fun removeAbility(ability: RenderedAbility) {
         abilityViewMap.remove(ability)?.let { view ->
             abilityAnimationQueue.add(CodeBlockQueueItem {
                 view.animateRemoval()
