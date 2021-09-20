@@ -23,6 +23,8 @@ import com.github.vatbub.kotlin.preferences.Key
 import com.github.vatbub.kotlin.preferences.Preferences
 import com.github.vatbub.kotlin.preferences.PropertiesFileKeyValueProvider
 import com.github.vatbub.magic.data.Ability.SortMode.Usage
+import com.github.vatbub.magic.data.DayNightState.None
+import com.github.vatbub.magic.data.DayNightState.valueOf
 import com.github.vatbub.magic.view.BuiltInFontSpecs
 import com.github.vatbub.magic.view.BuiltInImageSpecs
 import com.github.vatbub.magic.view.FontSpec
@@ -39,6 +41,9 @@ object PreferenceKeys {
     object BackgroundColor : ColorKey("backgroundColor", Color.RED)
 
     object HealthPoints : Key<Int>("healthPoints", 20, { it.toInt() }, { it.toString() })
+
+    object DayNightStateKey :
+        Key<DayNightState>("dayNightState", None, { valueOf(it) }, { it.toString() })
 
     object HealthPointsFontColor : ColorKey("healthPointsFontColor", Color.WHITE)
 

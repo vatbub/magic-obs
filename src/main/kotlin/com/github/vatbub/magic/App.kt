@@ -20,6 +20,7 @@
 package com.github.vatbub.magic
 
 import com.github.vatbub.magic.view.CardStatisticsView
+import com.github.vatbub.magic.view.DayNightView
 import com.github.vatbub.magic.view.HealthPointsView
 import com.github.vatbub.magic.view.MainView
 import javafx.application.Application
@@ -92,6 +93,7 @@ class App private constructor(callLaunch: Boolean, vararg args: String?) : Appli
     private fun openAuxiliaryViews() {
         auxiliaryViews.add(HealthPointsView.show())
         auxiliaryViews.add(CardStatisticsView.show())
+        auxiliaryViews.add(DayNightView.show())
     }
 
     private fun closeAuxiliaryViews() {

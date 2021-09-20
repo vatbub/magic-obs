@@ -22,6 +22,7 @@ package com.github.vatbub.magic.data
 import com.github.vatbub.magic.data.PreferenceKeys.AbilityKeys
 import com.github.vatbub.magic.data.PreferenceKeys.BackgroundColor
 import com.github.vatbub.magic.data.PreferenceKeys.CardStatisticsFontSpec
+import com.github.vatbub.magic.data.PreferenceKeys.DayNightStateKey
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPoints
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPointsBackgroundImageSpec
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPointsFontColor
@@ -84,9 +85,15 @@ object DataHolder {
             }
         }
 
+    val dayNightState: ObjectProperty<DayNightState> = SimpleObjectProperty(preferences[DayNightStateKey]).apply {
+        addListener { _, _, newValue ->
+            preferences[DayNightStateKey] = newValue
+        }
+    }
+
     val cardList: ObservableList<Card> = PermutatingObservableList(mutableListOf())
 
-    fun resetGame(){
+    fun resetGame() {
         healthPointsProperty.value = HealthPoints.defaultValue
         cardList.clear()
     }

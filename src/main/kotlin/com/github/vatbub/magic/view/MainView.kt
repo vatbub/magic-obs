@@ -22,20 +22,26 @@ package com.github.vatbub.magic.view
 import com.github.vatbub.magic.App
 import com.github.vatbub.magic.data.Card
 import com.github.vatbub.magic.data.DataHolder
+import com.github.vatbub.magic.data.DayNightState
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPoints
 import com.github.vatbub.magic.util.asNullable
 import com.github.vatbub.magic.util.get
 import javafx.beans.property.IntegerProperty
 import javafx.beans.value.ObservableValue
+import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.control.Alert.AlertType.CONFIRMATION
 import javafx.scene.control.ButtonType.NO
 import javafx.scene.control.ButtonType.YES
+import javafx.scene.layout.GridPane
 import javafx.util.Callback
 
 
 class MainView {
+    @FXML
+    private lateinit var rootPane: GridPane
+
     @FXML
     private lateinit var healthPointsBox: TextField
 
@@ -56,6 +62,9 @@ class MainView {
 
     @FXML
     private lateinit var buttonsColumn: TableColumn<Card, Card>
+
+    @FXML
+    private lateinit var comboBoxDayNightState: ComboBox<DayNightState>
 
     private var healthPointUpdateInProgress = false
 
@@ -96,6 +105,15 @@ class MainView {
 
         cardsTableView.items = DataHolder.cardList
         refreshCardTableFactories()
+
+        comboBoxDayNightState.items = FXCollections.observableArrayList(*DayNightState.values())
+        comboBoxDayNightState.selectionModel.select(DataHolder.dayNightState.value)
+        DataHolder.dayNightState.addListener { _, _, newValue ->
+            comboBoxDayNightState.selectionModel.select(newValue)
+        }
+        comboBoxDayNightState.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
+            DataHolder.dayNightState.value = newValue
+        }
     }
 
     private fun refreshCardTableFactories() {
