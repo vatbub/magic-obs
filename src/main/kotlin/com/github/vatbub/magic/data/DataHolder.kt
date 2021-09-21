@@ -95,6 +95,7 @@ object DataHolder {
 
     fun resetGame() {
         healthPointsProperty.value = HealthPoints.defaultValue
+        dayNightState.value = DayNightStateKey.defaultValue
         cardList.clear()
     }
 }
