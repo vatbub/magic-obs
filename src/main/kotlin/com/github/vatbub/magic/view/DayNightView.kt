@@ -23,11 +23,11 @@ import com.github.vatbub.magic.animation.queue.AnimationQueue
 import com.github.vatbub.magic.animation.queue.toQueueItem
 import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.data.DayNightState
-import com.github.vatbub.magic.data.DayNightState.Day
-import com.github.vatbub.magic.data.DayNightState.Night
+import com.github.vatbub.magic.data.DayNightState.*
 import com.github.vatbub.magic.util.asBackgroundStyle
 import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.runOnUiThread
+import javafx.animation.Interpolator
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue
 import javafx.animation.Timeline
@@ -71,8 +71,8 @@ class DayNightView : Closeable {
             return controllerInstance
         }
 
-        private const val animationDuration = 500.0
-        private const val fontSizeFactor = 0.55
+        private const val fadeAnimationDuration = 500.0
+        private const val flipAnimationDuration = 1000.0
     }
 
     lateinit var stage: Stage
@@ -128,8 +128,10 @@ class DayNightView : Closeable {
         loadImageWithDelay(loadMethod = this::loadNightImage)
         loadImageWithDelay(loadMethod = this::loadNoneImage)
 
-        transitionImages(DataHolder.dayNightState.value)
-        DataHolder.dayNightState.addListener { _, _, newValue -> transitionImages(newValue) }
+        transitionImages(None, DataHolder.dayNightState.value)
+        DataHolder.dayNightState.addListener { _, oldValue, newValue ->
+            transitionImages(oldValue, newValue)
+        }
     }
 
 
@@ -173,11 +175,49 @@ class DayNightView : Closeable {
             .let { Image(it, requestedWidth, requestedHeight, true, false) }
     }
 
-    private fun transitionImages(newState: DayNightState) {
-        val keyValueDay = KeyValue(dayView.opacityProperty(), if (newState == Day) 1.0 else 0.0)
-        val keyValueNight = KeyValue(nightView.opacityProperty(), if (newState == Night) 1.0 else 0.0)
-        val keyFrame = KeyFrame(Duration(animationDuration), keyValueDay, keyValueNight)
-        animationQueue.add(Timeline(keyFrame).toQueueItem())
+    private fun transitionImages(oldState: DayNightState, newState: DayNightState) {
+        if ((oldState == None && newState == Day) || (oldState == Day && newState == None))
+            fadeTransition(newState)
+        else
+            flipTransition(newState)
+    }
+
+    private fun fadeTransition(newState: DayNightState) {
+        Timeline(
+            KeyFrame(
+                Duration(fadeAnimationDuration),
+                KeyValue(dayView.opacityProperty(), if (newState == Day) 1.0 else 0.0),
+                KeyValue(nightView.opacityProperty(), if (newState == Night) 1.0 else 0.0)
+            )
+        ).let { animationQueue.add(it.toQueueItem()) }
+    }
+
+    private fun flipTransition(newState: DayNightState) {
+        val currentScaleX = dayView.scaleX
+        Timeline(
+            KeyFrame(
+                Duration((flipAnimationDuration / 2.0) - 0.1),
+                KeyValue(dayView.opacityProperty(), dayView.opacity),
+                KeyValue(nightView.opacityProperty(), nightView.opacity)
+            ),
+            KeyFrame(
+                Duration(flipAnimationDuration / 2.0),
+                KeyValue(dayView.scaleXProperty(), 0, Interpolator.EASE_BOTH),
+                KeyValue(nightView.scaleXProperty(), 0, Interpolator.EASE_BOTH),
+                KeyValue(noneView.scaleXProperty(), 0, Interpolator.EASE_BOTH),
+            ),
+            KeyFrame(
+                Duration((flipAnimationDuration / 2.0) + 0.1),
+                KeyValue(dayView.opacityProperty(), if (newState == Day) 1.0 else 0.0),
+                KeyValue(nightView.opacityProperty(), if (newState == Night) 1.0 else 0.0)
+            ),
+            KeyFrame(
+                Duration(flipAnimationDuration),
+                KeyValue(dayView.scaleXProperty(), currentScaleX, Interpolator.EASE_BOTH),
+                KeyValue(nightView.scaleXProperty(), currentScaleX, Interpolator.EASE_BOTH),
+                KeyValue(noneView.scaleXProperty(), currentScaleX, Interpolator.EASE_BOTH),
+            )
+        ).let { animationQueue.add(it.toQueueItem()) }
     }
 
     override fun close() {
