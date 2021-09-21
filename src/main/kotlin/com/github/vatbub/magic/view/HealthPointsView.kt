@@ -173,31 +173,32 @@ class HealthPointsView : Closeable {
         val motionBlur = MotionBlur(90.0, 0.0)
         healthPointsLabel.effect = motionBlur
 
-        val motionBlurKeyValue1 = KeyValue(motionBlur.radiusProperty(), 45.0, EASE_IN)
-        val positionKeyValue1 = KeyValue(healthPointsLabel.translateYProperty(), moveDistance * direction, EASE_IN)
-        val opacityKeyValue1 = KeyValue(healthPointsLabel.opacityProperty(), 0, EASE_IN)
-        val keyFrame1 =
-            KeyFrame(Duration(animationDuration / 2), motionBlurKeyValue1, positionKeyValue1, opacityKeyValue1)
-
-        animationQueue.add(Timeline(keyFrame1).apply {
+        Timeline(
+            KeyFrame(
+                Duration(animationDuration / 2),
+                KeyValue(motionBlur.radiusProperty(), 45.0, EASE_IN),
+                KeyValue(healthPointsLabel.translateYProperty(), moveDistance * direction, EASE_IN),
+                KeyValue(healthPointsLabel.opacityProperty(), 0, EASE_IN)
+            )
+        ).apply {
             setOnFinished {
                 healthPointsLabel.translateY = -moveDistance * direction
                 healthPointsLabel.text = newHealthPoints.toString()
             }
-        }.toQueueItem())
+        }.let { animationQueue.add(it.toQueueItem()) }
 
-
-        val motionBlurKeyValue2 = KeyValue(motionBlur.radiusProperty(), 0.0, EASE_OUT)
-        val positionKeyValue2 = KeyValue(healthPointsLabel.translateYProperty(), 0, EASE_OUT)
-        val opacityKeyValue2 = KeyValue(healthPointsLabel.opacityProperty(), 1, EASE_OUT)
-        val keyFrame2 =
-            KeyFrame(Duration(animationDuration / 2), motionBlurKeyValue2, positionKeyValue2, opacityKeyValue2)
-
-        animationQueue.add(Timeline(keyFrame2).apply {
+        Timeline(
+            KeyFrame(
+                Duration(animationDuration / 2),
+                KeyValue(motionBlur.radiusProperty(), 0.0, EASE_OUT),
+                KeyValue(healthPointsLabel.translateYProperty(), 0, EASE_OUT),
+                KeyValue(healthPointsLabel.opacityProperty(), 1, EASE_OUT)
+            )
+        ).apply {
             setOnFinished {
                 healthPointsLabel.effect = null
             }
-        }.toQueueItem())
+        }.let { animationQueue.add(it.toQueueItem()) }
     }
 
     override fun close() {

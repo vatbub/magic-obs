@@ -38,14 +38,18 @@ fun Node.shakeAnimation(
         .map { frameNumber ->
             val translationX = Random.nextDouble(-maxTranslationX, maxTranslationX)
             val translationY = Random.nextDouble(-maxTranslationY, maxTranslationY)
-            val keyValueX = KeyValue(translateXProperty(), translationX)
-            val keyValueY = KeyValue(translateYProperty(), translationY)
-            KeyFrame(Duration(frameNumber * 1000.0 / fps), keyValueX, keyValueY)
+            KeyFrame(
+                Duration(frameNumber * 1000.0 / fps),
+                KeyValue(translateXProperty(), translationX),
+                KeyValue(translateYProperty(), translationY)
+            )
         }.toMutableList()
 
-    val finalKeyValueX = KeyValue(translateXProperty(), 0)
-    val finalKeyValueY = KeyValue(translateYProperty(), 0)
-    frames.add(KeyFrame(Duration((numberOfFrames + 1) * 1000.0 / fps), finalKeyValueX, finalKeyValueY))
+    KeyFrame(
+        Duration((numberOfFrames + 1) * 1000.0 / fps),
+        KeyValue(translateXProperty(), 0),
+        KeyValue(translateYProperty(), 0)
+    ).let { frames.add(it) }
 
     return Timeline(*frames.toTypedArray())
 }

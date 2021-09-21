@@ -191,9 +191,12 @@ class StatisticCard {
         if (abilitiesWidth > rootWidth) startScrollAnimation(abilityInitialScrollSpeed)
         else stopScrollAnimation()
 
-        val keyValue = KeyValue(abilitiesClippingRectangleXMargin, xMarginTargetValue)
-        val keyFrame = KeyFrame(Duration(100.0), keyValue)
-        Timeline(keyFrame).play()
+        Timeline(
+            KeyFrame(
+                Duration(100.0),
+                KeyValue(abilitiesClippingRectangleXMargin, xMarginTargetValue)
+            )
+        ).play()
     }
 
     private fun startScrollAnimation(initialScrollSpeed: Double = abilityScrollSpeed) {
@@ -204,20 +207,26 @@ class StatisticCard {
         val secondScrollDuration = translateAmount / abilityScrollSpeed
 
         val keyValue1 = KeyValue(abilityIcons.translateXProperty(), -translateAmount, EASE_BOTH)
-        val keyFrame1 = KeyFrame(Duration(firstScrollDuration), keyValue1)
-        val keyFrame2 = KeyFrame(Duration(firstScrollDuration + abilityScrollPauseDurationInMillis), keyValue1)
-
         val keyValue2 = KeyValue(abilityIcons.translateXProperty(), translateAmount, EASE_BOTH)
-        val keyFrame3 = KeyFrame(
-            Duration(firstScrollDuration + secondScrollDuration + abilityScrollPauseDurationInMillis),
-            keyValue2
-        )
-        val keyFrame4 = KeyFrame(
-            Duration(firstScrollDuration + secondScrollDuration + 2 * abilityScrollPauseDurationInMillis),
-            keyValue2
-        )
 
-        scrollAnimation = Timeline(keyFrame1, keyFrame2, keyFrame3, keyFrame4)
+        scrollAnimation = Timeline(
+            KeyFrame(
+                Duration(firstScrollDuration),
+                keyValue1
+            ),
+            KeyFrame(
+                Duration(firstScrollDuration + abilityScrollPauseDurationInMillis),
+                keyValue1
+            ),
+            KeyFrame(
+                Duration(firstScrollDuration + secondScrollDuration + abilityScrollPauseDurationInMillis),
+                keyValue2
+            ),
+            KeyFrame(
+                Duration(firstScrollDuration + secondScrollDuration + 2 * abilityScrollPauseDurationInMillis),
+                keyValue2
+            )
+        )
             .apply { setOnFinished { startScrollAnimation() } }
             .apply { play() }
     }
@@ -225,10 +234,12 @@ class StatisticCard {
     private fun stopScrollAnimation() {
         scrollAnimation?.stop()
 
-        val keyValue1 = KeyValue(abilityIcons.translateXProperty(), 0.0, EASE_BOTH)
-        val keyFrame1 = KeyFrame(Duration(2000.0), keyValue1)
-        scrollAnimation = Timeline(keyFrame1)
-            .apply { play() }
+        scrollAnimation = Timeline(
+            KeyFrame(
+                Duration(2000.0),
+                KeyValue(abilityIcons.translateXProperty(), 0.0, EASE_BOTH)
+            )
+        ).apply { play() }
     }
 
     private fun updateMiddleFontSize(
@@ -260,52 +271,22 @@ class StatisticCard {
         killCrossLeftTopToRightBottom.clip = leftTopToRightBottomClip
         killCrossLeftBottomToRightTop.clip = leftBottomToRightTopClip
 
-        val keyValueWidthLeftTopToRightBottom1 = KeyValue(
-            leftTopToRightBottomClip.widthProperty(),
-            rootPane.width,
-            EASE_BOTH
-        )
-        val keyValueHeightLeftTopToRightBottom1 = KeyValue(
-            leftTopToRightBottomClip.heightProperty(),
-            rootPane.height,
-            EASE_BOTH
-        )
-        val keyValueWidthLeftBottomToRightTop1 = KeyValue(
-            leftBottomToRightTopClip.widthProperty(),
-            0,
-            EASE_BOTH
-        )
-        val keyValueHeightLeftBottomToRightTop1 = KeyValue(
-            leftBottomToRightTopClip.heightProperty(),
-            0,
-            EASE_BOTH
-        )
-        val keyFrame1 =
-            KeyFrame(
-                killAnimationDuration, keyValueWidthLeftTopToRightBottom1, keyValueHeightLeftTopToRightBottom1,
-                keyValueWidthLeftBottomToRightTop1, keyValueHeightLeftBottomToRightTop1
-            )
-
-        val keyValueWidthLeftBottomToRightTop2 = KeyValue(
-            leftBottomToRightTopClip.widthProperty(),
-            rootPane.width,
-            EASE_BOTH
-        )
-        val keyValueHeightLeftBottomToRightTop2 = KeyValue(
-            leftBottomToRightTopClip.heightProperty(),
-            rootPane.height,
-            EASE_BOTH
-        )
-        val keyFrame2 =
-            KeyFrame(
-                2.0 * killAnimationDuration,
-                keyValueWidthLeftBottomToRightTop2,
-                keyValueHeightLeftBottomToRightTop2
-            )
-
         return ConcurrentTimelineQueueItem(
             rootPane.shakeAnimation(2.0 * killAnimationDuration),
-            Timeline(keyFrame1, keyFrame2)
+            Timeline(
+                KeyFrame(
+                    killAnimationDuration,
+                    KeyValue(leftTopToRightBottomClip.widthProperty(), rootPane.width, EASE_BOTH),
+                    KeyValue(leftTopToRightBottomClip.heightProperty(), rootPane.height, EASE_BOTH),
+                    KeyValue(leftBottomToRightTopClip.widthProperty(), 0, EASE_BOTH),
+                    KeyValue(leftBottomToRightTopClip.heightProperty(), 0, EASE_BOTH)
+                ),
+                KeyFrame(
+                    2.0 * killAnimationDuration,
+                    KeyValue(leftBottomToRightTopClip.widthProperty(), rootPane.width, EASE_BOTH),
+                    KeyValue(leftBottomToRightTopClip.heightProperty(), rootPane.height, EASE_BOTH)
+                )
+            )
         )
     }
 
@@ -393,43 +374,54 @@ class StatisticCard {
         val targetWidth = image.width
         val space = Rectangle(0.0, image.height, Color.TRANSPARENT)
 
-        val keyValueSpaceWidth = KeyValue(space.widthProperty(), targetWidth, EASE_BOTH)
-
-        val keyFrameWidth = KeyFrame(Duration(abilityAnimationDuration), keyValueSpaceWidth)
-
-        val keyValueOpacity = KeyValue(opacityProperty(), 1.0)
-        val keyFrameOpacity = KeyFrame(Duration(0.5 * abilityAnimationDuration), keyValueOpacity)
-
         abilityAnimationQueue.add(CodeBlockQueueItem {
             abilityIcons.children.add(space)
         })
-        abilityAnimationQueue.add(Timeline(keyFrameWidth).toQueueItem())
+
+        Timeline(
+            KeyFrame(
+                Duration(abilityAnimationDuration),
+                KeyValue(space.widthProperty(), targetWidth, EASE_BOTH)
+            )
+        ).let { abilityAnimationQueue.add(it.toQueueItem()) }
 
         abilityAnimationQueue.add(CodeBlockQueueItem {
             opacity = 0.0
             val indexOfSpace = abilityIcons.children.indexOf(space)
             abilityIcons.children[indexOfSpace] = this
         })
-        abilityAnimationQueue.add(Timeline(keyFrameOpacity).toQueueItem())
+
+        Timeline(
+            KeyFrame(
+                Duration(0.5 * abilityAnimationDuration),
+                KeyValue(opacityProperty(), 1.0)
+            )
+        ).let { abilityAnimationQueue.add(it.toQueueItem()) }
     }
 
     private fun ImageView.animateRemoval() {
-        val keyValueOpacity = KeyValue(opacityProperty(), 0.0)
-        val keyFrameOpacity = KeyFrame(Duration(0.5 * abilityAnimationDuration), keyValueOpacity)
-
         val targetWidth = -abilityIcons.spacing
         val space = Rectangle(image.width, image.height, Color.TRANSPARENT)
 
-        val keyValueSpaceWidth = KeyValue(space.widthProperty(), targetWidth, EASE_BOTH)
+        Timeline(
+            KeyFrame(
+                Duration(0.5 * abilityAnimationDuration),
+                KeyValue(opacityProperty(), 0.0)
+            )
+        ).let { abilityAnimationQueue.add(it.toQueueItem()) }
 
-        val keyFrameWidth = KeyFrame(Duration(abilityAnimationDuration), keyValueSpaceWidth)
-
-        abilityAnimationQueue.add(Timeline(keyFrameOpacity).toQueueItem())
         abilityAnimationQueue.add(CodeBlockQueueItem {
             val indexInParent = abilityIcons.children.indexOf(this)
             abilityIcons.children[indexInParent] = space
         })
-        abilityAnimationQueue.add(Timeline(keyFrameWidth).toQueueItem())
+
+        Timeline(
+            KeyFrame(
+                Duration(abilityAnimationDuration),
+                KeyValue(space.widthProperty(), targetWidth, EASE_BOTH)
+            )
+        ).let { abilityAnimationQueue.add(it.toQueueItem()) }
+
         abilityAnimationQueue.add(CodeBlockQueueItem {
             abilityIcons.children.remove(space)
         })
@@ -441,9 +433,12 @@ class StatisticCard {
 
         if (statisticLabel.translateY == -targetValue) return
 
-        val translateKeyValue = KeyValue(statisticLabel.translateYProperty(), -targetValue, EASE_BOTH)
-        val fontKeyValue = KeyValue(fontOffset, fontOffsetTargetValue, EASE_BOTH)
-        val keyFrame = KeyFrame(statisticsOffsetAnimationDuration, translateKeyValue, fontKeyValue)
-        Timeline(keyFrame).play()
+        Timeline(
+            KeyFrame(
+                statisticsOffsetAnimationDuration,
+                KeyValue(statisticLabel.translateYProperty(), -targetValue, EASE_BOTH),
+                KeyValue(fontOffset, fontOffsetTargetValue, EASE_BOTH)
+            )
+        ).play()
     }
 }

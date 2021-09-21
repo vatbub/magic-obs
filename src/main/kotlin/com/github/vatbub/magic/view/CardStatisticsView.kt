@@ -113,16 +113,22 @@ class CardStatisticsView : Closeable {
             )
         )
         combinedViewList.forEach {
-            val keyValuePrefWidth = KeyValue(it.rootPane.prefWidthProperty(), cardWidth, Interpolator.EASE_BOTH)
-            val keyValueMaxWidth = KeyValue(it.rootPane.maxWidthProperty(), cardWidth, Interpolator.EASE_BOTH)
-            val keyFrame = KeyFrame(Duration(animationDuration), keyValueMaxWidth, keyValuePrefWidth)
-            Timeline(keyFrame).play()
+            Timeline(
+                KeyFrame(
+                    Duration(animationDuration),
+                    KeyValue(it.rootPane.prefWidthProperty(), cardWidth, Interpolator.EASE_BOTH),
+                    KeyValue(it.rootPane.maxWidthProperty(), cardWidth, Interpolator.EASE_BOTH)
+                )
+            ).play()
         }
 
         val cardSpacing = min(maxSpacing, (width - cardWidth * viewListSize) / (viewListSize - 1))
-        val keyValueSpacing = KeyValue(cardContainer.spacingProperty(), cardSpacing, Interpolator.EASE_BOTH)
-        val keyFrameSpacing = KeyFrame(Duration(animationDuration), keyValueSpacing)
-        Timeline(keyFrameSpacing).play()
+        Timeline(
+            KeyFrame(
+                Duration(animationDuration),
+                KeyValue(cardContainer.spacingProperty(), cardSpacing, Interpolator.EASE_BOTH)
+            )
+        ).play()
     }
 
     override fun close() {
@@ -180,37 +186,42 @@ class CardStatisticsView : Closeable {
     private fun StatisticCard.createAddAnimation(): Timeline {
         rootPane.translateY = cardContainer.height + additionAnimationLayoutYOffset
 
-        val keyValue1 = KeyValue(rootPane.translateYProperty(), 0, Interpolator.EASE_OUT)
-        val keyFrame1 = KeyFrame(Duration(1.5 * animationDuration), keyValue1)
-        return Timeline(keyFrame1)
+        return Timeline(
+            KeyFrame(
+                Duration(1.5 * animationDuration),
+                KeyValue(rootPane.translateYProperty(), 0, Interpolator.EASE_OUT)
+            )
+        )
     }
 
     private fun StatisticCard.animateRemoval() = animationQueue.add(DeferredQueueItem {
         rootPane.translateY = 0.0
 
-        val keyValueTranslateY1 = KeyValue(
-            rootPane.translateYProperty(),
-            cardContainer.height + additionAnimationLayoutYOffset,
-            Interpolator.EASE_IN
-        )
-        val keyValuePrefWidth1 = KeyValue(rootPane.prefWidthProperty(), rootPane.width, Interpolator.EASE_BOTH)
-        val keyValueMaxWidth1 = KeyValue(rootPane.maxWidthProperty(), rootPane.width, Interpolator.EASE_BOTH)
-        val keyFrame1 =
-            KeyFrame(Duration(1.5 * animationDuration), keyValueTranslateY1, keyValueMaxWidth1, keyValuePrefWidth1)
-
         val targetWidth = -cardContainer.spacing
-        val keyValuePrefWidth2 = KeyValue(rootPane.prefWidthProperty(), targetWidth, Interpolator.EASE_BOTH)
-        val keyValueMaxWidth2 = KeyValue(rootPane.maxWidthProperty(), targetWidth, Interpolator.EASE_BOTH)
-        val keyFrame2 = KeyFrame(Duration(2.5 * animationDuration), keyValueMaxWidth2, keyValuePrefWidth2)
 
 
-        Timeline(keyFrame1, keyFrame2)
-            .apply {
-                setOnFinished {
-                    cardContainer.children.remove(this@animateRemoval.rootPane)
-                    cardViewsInRemovalQueue.remove(this@animateRemoval)
-                }
-            }.toQueueItem()
+        Timeline(
+            KeyFrame(
+                Duration(1.5 * animationDuration),
+                KeyValue(
+                    rootPane.translateYProperty(),
+                    cardContainer.height + additionAnimationLayoutYOffset,
+                    Interpolator.EASE_IN
+                ),
+                KeyValue(rootPane.prefWidthProperty(), rootPane.width, Interpolator.EASE_BOTH),
+                KeyValue(rootPane.maxWidthProperty(), rootPane.width, Interpolator.EASE_BOTH)
+            ),
+            KeyFrame(
+                Duration(2.5 * animationDuration),
+                KeyValue(rootPane.prefWidthProperty(), targetWidth, Interpolator.EASE_BOTH),
+                KeyValue(rootPane.maxWidthProperty(), targetWidth, Interpolator.EASE_BOTH)
+            )
+        ).apply {
+            setOnFinished {
+                cardContainer.children.remove(this@animateRemoval.rootPane)
+                cardViewsInRemovalQueue.remove(this@animateRemoval)
+            }
+        }.toQueueItem()
     })
 
     private fun Permutation.animate() {
@@ -221,16 +232,18 @@ class CardStatisticsView : Closeable {
             val child2 = children.maxByOrNull { it.layoutX }!!
             val xDifference = child2.layoutX - child1.layoutX
 
-            val keyValue11 = KeyValue(child1.translateXProperty(), -xDifference, Interpolator.EASE_BOTH)
-            val keyValue12 = KeyValue(child2.translateXProperty(), xDifference, Interpolator.EASE_BOTH)
-            val keyFrame1 = KeyFrame(Duration.ZERO, keyValue11, keyValue12)
-
-
-            val keyValue21 = KeyValue(child1.translateXProperty(), 0.0, Interpolator.EASE_BOTH)
-            val keyValue22 = KeyValue(child2.translateXProperty(), 0.0, Interpolator.EASE_BOTH)
-            val keyFrame2 = KeyFrame(Duration(animationDuration), keyValue21, keyValue22)
-
-            Timeline(keyFrame1, keyFrame2).toQueueItem()
+            Timeline(
+                KeyFrame(
+                    Duration.ZERO,
+                    KeyValue(child1.translateXProperty(), -xDifference, Interpolator.EASE_BOTH),
+                    KeyValue(child2.translateXProperty(), xDifference, Interpolator.EASE_BOTH)
+                ),
+                KeyFrame(
+                    Duration(animationDuration),
+                    KeyValue(child1.translateXProperty(), 0.0, Interpolator.EASE_BOTH),
+                    KeyValue(child2.translateXProperty(), 0.0, Interpolator.EASE_BOTH)
+                )
+            ).toQueueItem()
         })
     }
 
