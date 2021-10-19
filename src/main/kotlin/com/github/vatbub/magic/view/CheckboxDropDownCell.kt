@@ -31,9 +31,11 @@ import kotlin.properties.Delegates
 
 
 class CheckboxDropDownCell : TableCell<Card, Card>() {
+    private var cardUpdateInProgress = false
     private val dropDown = CheckComboBox(FXCollections.observableArrayList(Ability.sortedValues())).apply {
         checkModel.checkedItems.addListener(ListChangeListener { change ->
             val currentCard = currentCard ?: return@ListChangeListener
+            if (cardUpdateInProgress) return@ListChangeListener
 
             while (change.next()) {
                 currentCard.abilities.removeAll(change.removed)
@@ -52,12 +54,12 @@ class CheckboxDropDownCell : TableCell<Card, Card>() {
     private var currentCard: Card? by Delegates.observable(null) { _, oldValue, newValue ->
         oldValue?.abilities?.removeListener(abilitiesChangeListener)
         if (newValue == null) return@observable
+        cardUpdateInProgress = true
 
         newValue.abilities.addListener(abilitiesChangeListener)
-        Platform.runLater {
-            dropDown.checkModel.clearChecks()
-            newValue.abilities.forEach { ability -> dropDown.checkModel.check(ability) }
-        }
+        dropDown.checkModel.clearChecks()
+        newValue.abilities.forEach { ability -> dropDown.checkModel.check(ability) }
+        cardUpdateInProgress = false
     }
 
     private val abilitiesChangeListener = SetChangeListener<Ability> { change ->
