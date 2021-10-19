@@ -30,28 +30,30 @@ import kotlin.properties.Delegates
 
 
 class CheckboxDropDownCell : TableCell<Card, Card>() {
-    private var refreshInProgress = false
+    private var refreshesInProgress = 0
     private val dropDown = CheckComboBox(FXCollections.observableArrayList(Ability.sortedValues())).apply {
         checkModel.checkedItems.addListener(ListChangeListener { change ->
             val currentCard = currentCard ?: return@ListChangeListener
-            if (refreshInProgress) return@ListChangeListener
+            if (refreshesInProgress > 0) return@ListChangeListener
+            refreshesInProgress++
 
             while (change.next()) {
                 currentCard.abilities.removeAll(change.removed)
                 currentCard.abilities.addAll(change.addedSubList)
                 change.addedSubList.forEach { Ability.addToHistory(it) }
             }
+            refreshesInProgress--
         })
 
         converter = object : StringConverter<Ability>() {
-            override fun toString(ability: Ability): String =ability.localizedLabel
+            override fun toString(ability: Ability): String = ability.localizedLabel
 
             override fun fromString(string: String): Ability = Ability.valueOf(string)
         }
     }
 
     private var currentCard: Card? by Delegates.observable(null) { _, oldValue, newValue ->
-        refreshInProgress = true
+        refreshesInProgress++
         oldValue?.abilities?.removeListener(abilitiesChangeListener)
         if (newValue == null) return@observable
 
@@ -59,17 +61,18 @@ class CheckboxDropDownCell : TableCell<Card, Card>() {
         Platform.runLater {
             dropDown.checkModel.clearChecks()
             newValue.abilities.forEach { ability -> dropDown.checkModel.check(ability) }
-            refreshInProgress = false
+            refreshesInProgress--
         }
     }
 
     private val abilitiesChangeListener = ListChangeListener<Ability> { change ->
+        if (refreshesInProgress > 0) return@ListChangeListener
+        refreshesInProgress++
         while (change.next()) {
-            while (change.next()) {
-                dropDown.checkModel.checkedItems.removeAll(change.removed)
-                dropDown.checkModel.checkedItems.addAll(change.addedSubList)
-            }
+            change.removed.forEach { ability -> dropDown.checkModel.clearCheck(ability) }
+            change.addedSubList.forEach { ability -> dropDown.checkModel.check(ability) }
         }
+        refreshesInProgress--
     }
 
     override fun updateItem(item: Card?, empty: Boolean) {

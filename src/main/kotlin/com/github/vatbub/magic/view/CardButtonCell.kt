@@ -22,9 +22,9 @@ package com.github.vatbub.magic.view
 import com.github.vatbub.magic.App
 import com.github.vatbub.magic.data.Card
 import com.github.vatbub.magic.data.DataHolder
+import com.github.vatbub.magic.data.duplicate
 import com.github.vatbub.magic.util.get
 import com.github.vatbub.magic.util.swap
-import javafx.application.Platform
 import javafx.collections.ListChangeListener
 import javafx.event.ActionEvent
 import javafx.scene.control.Button
@@ -37,6 +37,16 @@ class CardButtonCell : TableCell<Card, Card>() {
     private val killButton by lazy {
         Button(App.resourceBundle["mainView.button.controls.kill"]!!).also {
             it.setOnAction(this::killButtonOnAction)
+            it.minWidth = USE_PREF_SIZE
+            it.prefWidth = USE_COMPUTED_SIZE
+        }
+    }
+
+    private val duplicateButton by lazy {
+        Button(App.resourceBundle["mainView.button.controls.duplicate"]!!).also {
+            it.setOnAction(this::duplicateButtonOnAction)
+            it.minWidth = USE_PREF_SIZE
+            it.prefWidth = USE_COMPUTED_SIZE
         }
     }
 
@@ -44,6 +54,8 @@ class CardButtonCell : TableCell<Card, Card>() {
         Button().also {
             it.graphic = ImageView(Image(javaClass.getResourceAsStream("up-arrow.png")))
             it.setOnAction(this::upButtonOnAction)
+            it.minWidth = USE_PREF_SIZE
+            it.prefWidth = USE_COMPUTED_SIZE
         }
     }
 
@@ -51,12 +63,15 @@ class CardButtonCell : TableCell<Card, Card>() {
         Button().also {
             it.graphic = ImageView(Image(javaClass.getResourceAsStream("down-arrow.png")))
             it.setOnAction(this::downButtonOnAction)
+            it.minWidth = USE_PREF_SIZE
+            it.prefWidth = USE_COMPUTED_SIZE
         }
     }
 
     private val hBox by lazy {
         HBox(
             killButton,
+            duplicateButton,
             upButton,
             downButton
         ).apply {
@@ -83,15 +98,22 @@ class CardButtonCell : TableCell<Card, Card>() {
             }
         })
 
-        Platform.runLater {
-            if (tableColumn.width < hBox.width)
-                tableColumn.prefWidth = hBox.width + 50
+        tableColumn.minWidth = USE_PREF_SIZE
+        hBox.widthProperty().addListener { _, _, newValue ->
+            if (tableColumn.width >= newValue.toDouble()) return@addListener
+            tableColumn.prefWidth = newValue.toDouble() + 10
         }
     }
 
     private fun killButtonOnAction(@Suppress("UNUSED_PARAMETER") event: ActionEvent) {
         val card = tableRow.item ?: return
         DataHolder.cardList.remove(card)
+    }
+
+    private fun duplicateButtonOnAction(@Suppress("UNUSED_PARAMETER") event: ActionEvent) {
+        val card = tableRow.item ?: return
+        val index = tableRow.index
+        DataHolder.cardList.add(index + 1, card.duplicate())
     }
 
     private fun upButtonOnAction(@Suppress("UNUSED_PARAMETER") event: ActionEvent) {

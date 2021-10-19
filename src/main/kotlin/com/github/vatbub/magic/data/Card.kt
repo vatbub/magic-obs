@@ -30,3 +30,10 @@ class Card(attack: Int = 1, defense: Int = 1, counter: Int = 0, abilities: List<
     val counterProperty: IntegerProperty = SimpleIntegerProperty(counter)
     val abilities: ObservableList<Ability> = FXCollections.observableArrayList(abilities)
 }
+
+fun Card.duplicate() = Card(
+    attack = attackProperty.value,
+    defense = defenseProperty.value,
+    counter = counterProperty.value,
+    abilities = ArrayList(abilities)
+)

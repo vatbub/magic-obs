@@ -388,6 +388,13 @@ class StatisticCard {
         abilityAnimationQueue.add(CodeBlockQueueItem {
             opacity = 0.0
             val indexOfSpace = abilityIcons.children.indexOf(space)
+            if (indexOfSpace == -1) {
+                // Race condition during the animation: counters and abilities were added simultaneously
+                // (e.g. while duplicating a card).
+                // Solution: Retry the animation
+                this.animateAddition()
+                return@CodeBlockQueueItem
+            }
             abilityIcons.children[indexOfSpace] = this
         })
 

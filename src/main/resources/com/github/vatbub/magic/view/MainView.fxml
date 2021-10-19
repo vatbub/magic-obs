@@ -38,7 +38,7 @@
                 <TableColumn fx:id="counterColumn" prefWidth="75.0" sortable="false"
                              text="%mainView.tableColumn.counter"/>
                 <TableColumn fx:id="buttonsColumn" editable="false" maxWidth="1.7976931348623157E308"
-                             minWidth="-Infinity" prefWidth="75.0" sortable="false"
+                             minWidth="-Infinity" prefWidth="75.0" resizable="false" sortable="false"
                              text="%mainView.tableColumn.controls"/>
             </columns>
         </TableView>
