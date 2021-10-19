@@ -22,18 +22,18 @@ package com.github.vatbub.magic.data
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.collections.FXCollections
-import javafx.collections.ObservableList
+import javafx.collections.ObservableSet
 
-class Card(attack: Int = 1, defense: Int = 1, counter: Int = 0, abilities: List<Ability> = listOf()) {
+class Card(attack: Int = 1, defense: Int = 1, counter: Int = 0, abilities: Set<Ability> = setOf()) {
     val attackProperty: IntegerProperty = SimpleIntegerProperty(attack)
     val defenseProperty: IntegerProperty = SimpleIntegerProperty(defense)
     val counterProperty: IntegerProperty = SimpleIntegerProperty(counter)
-    val abilities: ObservableList<Ability> = FXCollections.observableArrayList(abilities)
+    val abilities: ObservableSet<Ability> = FXCollections.observableSet(abilities.toMutableSet())
 }
 
 fun Card.duplicate() = Card(
     attack = attackProperty.value,
     defense = defenseProperty.value,
     counter = counterProperty.value,
-    abilities = ArrayList(abilities)
+    abilities = abilities
 )

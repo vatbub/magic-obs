@@ -34,6 +34,7 @@ import javafx.animation.KeyValue
 import javafx.animation.Timeline
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.collections.ListChangeListener
+import javafx.collections.SetChangeListener
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Node
@@ -341,14 +342,12 @@ class StatisticCard {
             addAbility(CounterAbility(remainder).right())
     }
 
-    private val abilitiesChangeListener = ListChangeListener<Ability> { change ->
-        while (change.next()) {
-            change.removed.forEach { removedItem ->
-                removeAbility(removedItem.left())
-            }
-            change.addedSubList.forEach { addedItem ->
-                addAbility(addedItem.left())
-            }
+    private val abilitiesChangeListener = SetChangeListener<Ability> { change ->
+        change.elementRemoved?.let { removedItem ->
+            removeAbility(removedItem.left())
+        }
+        change.elementAdded?.let { addedItem ->
+            addAbility(addedItem.left())
         }
     }
 

@@ -23,6 +23,7 @@ import com.github.vatbub.magic.data.*
 import javafx.application.Platform
 import javafx.collections.FXCollections
 import javafx.collections.ListChangeListener
+import javafx.collections.SetChangeListener
 import javafx.scene.control.TableCell
 import javafx.util.StringConverter
 import org.controlsfx.control.CheckComboBox
@@ -30,19 +31,15 @@ import kotlin.properties.Delegates
 
 
 class CheckboxDropDownCell : TableCell<Card, Card>() {
-    private var refreshesInProgress = 0
     private val dropDown = CheckComboBox(FXCollections.observableArrayList(Ability.sortedValues())).apply {
         checkModel.checkedItems.addListener(ListChangeListener { change ->
             val currentCard = currentCard ?: return@ListChangeListener
-            if (refreshesInProgress > 0) return@ListChangeListener
-            refreshesInProgress++
 
             while (change.next()) {
                 currentCard.abilities.removeAll(change.removed)
                 currentCard.abilities.addAll(change.addedSubList)
                 change.addedSubList.forEach { Ability.addToHistory(it) }
             }
-            refreshesInProgress--
         })
 
         converter = object : StringConverter<Ability>() {
@@ -53,7 +50,6 @@ class CheckboxDropDownCell : TableCell<Card, Card>() {
     }
 
     private var currentCard: Card? by Delegates.observable(null) { _, oldValue, newValue ->
-        refreshesInProgress++
         oldValue?.abilities?.removeListener(abilitiesChangeListener)
         if (newValue == null) return@observable
 
@@ -61,18 +57,12 @@ class CheckboxDropDownCell : TableCell<Card, Card>() {
         Platform.runLater {
             dropDown.checkModel.clearChecks()
             newValue.abilities.forEach { ability -> dropDown.checkModel.check(ability) }
-            refreshesInProgress--
         }
     }
 
-    private val abilitiesChangeListener = ListChangeListener<Ability> { change ->
-        if (refreshesInProgress > 0) return@ListChangeListener
-        refreshesInProgress++
-        while (change.next()) {
-            change.removed.forEach { ability -> dropDown.checkModel.clearCheck(ability) }
-            change.addedSubList.forEach { ability -> dropDown.checkModel.check(ability) }
-        }
-        refreshesInProgress--
+    private val abilitiesChangeListener = SetChangeListener<Ability> { change ->
+        change.elementRemoved?.let { ability -> dropDown.checkModel.clearCheck(ability) }
+        change.elementAdded?.let { ability -> dropDown.checkModel.check(ability) }
     }
 
     override fun updateItem(item: Card?, empty: Boolean) {
