@@ -179,13 +179,20 @@ modified to fit the look of this app.
 
 - Commander icon: Uploaded by [Yandere-sliver](https://mtg.fandom.com/wiki/User:Yandere-sliver)
 
-The following icons were taken from [Flaticon](https://www.flaticon.com/) and is thus licensed under
-the [Flaticon license](https://www.freepikcompany.com/legal#nav-flaticon-agreement):
+The Up/down arrow icons are made by <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> and were
+taken from [Flaticon](https://www.flaticon.com/) and are thus licensed under
+the [Flaticon license](https://www.freepikcompany.com/legal#nav-flaticon-agreement).
 
-- Up/down arrow: Icons made by <a href="https://www.flaticon.com/authors/google" title="Google">Google</a>
-  from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com </a>
+The <a href="https://www.freepik.com/free-vector/camping-designs-collection_1082315.htm">Camping designs collection
+created by zirconicusso</a> was taken from [Freepik](https://www.freepik.com/) and is thus licensed under
+the [Freepik license](https://www.freepikcompany.com/legal#nav-freepik-agreement).
 
-The following fonts are taken from [Google fonts](https://fonts.google.com/) and are licensed under
-the [Open Font License](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL):
+The font [Architects Daughter](https://fonts.google.com/specimen/Architects+Daughter) was taken
+from [Google fonts](https://fonts.google.com/) and is licensed under
+the [Open Font License](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL).
 
-- [Architects Daughter](https://fonts.google.com/specimen/Architects+Daughter)
+The font [Magic: The Gathering](https://www.urbanfonts.com/fonts/Magic:_the_Gathering.htm) was originally taken
+from [urbanfonts.com](https://www.urbanfonts.com/fonts/Magic:_the_Gathering.htm) and was modified since.
+
+The [LTT meme](https://rroll.to/GoppRq) was taken from [Reddit](https://rroll.to/kaTQWG) and is licensed under
+the [CC BY-NC-SA-RI-KC-OR-LL](https://www.youtube.com/watch?v=dQw4w9WgXcQ).
