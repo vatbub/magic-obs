@@ -23,7 +23,7 @@ enum class Ability(imageFileName: String? = null, translationKey: String? = null
     Annihilator, CantBeBlocked, CantBlock, Deathtouch, Defender, DoesntUntap, DoubleFacedCard, DoubleStrike, Exile,
     FirstStrike, Flying, ForestWalk, Haste, Hexproof, Indestructible, Intimidate, Lifelink, Menace, MustAttack,
     Planeswalker, Protection, Reach, Regenerate, Renown, TemporaryControl, Token, Trample, Undying, Vigilance, Rally,
-    Ingest, Cohort, Delirium, Skulk;
+    Ingest, Cohort, Delirium, Skulk, Commander;
 
     val imageFileName = imageFileName ?: toString()
     val translationKey = translationKey ?: toString()

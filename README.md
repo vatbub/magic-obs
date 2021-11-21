@@ -172,9 +172,20 @@ Unless required by applicable law or agreed to in writing, software distributed 
 AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific
 language governing permissions and limitations under the License.
 
-The following icons were taken from [Flaticon](https://www.flaticon.com/) and is thus licensed under the [Flaticon license](https://www.freepikcompany.com/legal#nav-flaticon-agreement):
+The ability icons are taken from the [MTG Fandom Wiki](https://mtg.fandom.com/wiki/Category:Magic_keyword_images) and
+are thus licensed under the [CC BY-NC-SA 2.5](https://creativecommons.org/licenses/by-nc-sa/2.5/). Except for the
+ability icons mentioned below, they were originally uploaded by [Fenhl](https://mtg.fandom.com/wiki/User:Fenhl) and were
+modified to fit the look of this app.
+
+- Commander icon: Uploaded by [Yandere-sliver](https://mtg.fandom.com/wiki/User:Yandere-sliver)
+
+The following icons were taken from [Flaticon](https://www.flaticon.com/) and is thus licensed under
+the [Flaticon license](https://www.freepikcompany.com/legal#nav-flaticon-agreement):
+
 - Up/down arrow: Icons made by <a href="https://www.flaticon.com/authors/google" title="Google">Google</a>
   from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com </a>
-  
-The following fonts are taken from [Google fonts](https://fonts.google.com/) and are licensed under the [Open Font License](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL):
+
+The following fonts are taken from [Google fonts](https://fonts.google.com/) and are licensed under
+the [Open Font License](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL):
+
 - [Architects Daughter](https://fonts.google.com/specimen/Architects+Daughter)
