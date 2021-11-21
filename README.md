@@ -71,6 +71,15 @@ that you just created:
 
 OBS is now all set.
 
+## Using OBS as a virtual camera
+
+If you are using a meeting software like Discord or Zoom, you might want to use your video feed from OBS as your webcam
+in those softwares. In OBS, click on `Activate virtual camera`. Then, in your meeting software, you'll need to select
+`OBS Virtual Camera` as your webcam. In Discord or Zoom, simply click the small arrow next to the camera button to get
+to that setting.
+
+Confused? [Here's a video tutorial.](https://www.youtube.com/watch?v=66Hp1lItai4)
+
 ## Using Magic-OBS
 
 The usage is quite simple and should be pretty intuitive. Nevertheless, here's a quick rundown of how to use Magic-OBS.
