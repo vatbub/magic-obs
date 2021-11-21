@@ -19,84 +19,77 @@
  */
 package com.github.vatbub.magic.bootstrap
 
-import org.apache.maven.shared.invoker.DefaultInvocationRequest
-import org.apache.maven.shared.invoker.DefaultInvoker
-import java.io.File
-import java.net.URL
-import java.nio.file.Files
-import kotlin.system.exitProcess
+import javafx.application.Platform
+import javafx.concurrent.Worker.State.FAILED
+import javafx.concurrent.Worker.State.SUCCEEDED
+import javafx.scene.control.Alert
+import javafx.scene.control.Label
+import javafx.scene.control.TextArea
+import javafx.scene.layout.GridPane
+import javafx.scene.layout.Priority
+import org.apache.maven.shared.invoker.Invoker
+import org.controlsfx.dialog.ProgressDialog
+import java.io.StringWriter
+import java.util.*
+import java.util.concurrent.Executors
 
 
-fun main() {
-    val groupId = "com.github.vatbub"
-    val artifactId = "magic-obs"
-    val initialVersion = "1.0-SNAPSHOT"
-    val mainClass = "com.github.vatbub.magic.MainKt"
+val strings = ResourceBundle.getBundle("com.github.vatbub.magic.bootstrap.bootstrap_strings")
 
-    val snapshotUrl = URL("https://oss.sonatype.org/content/repositories/snapshots/")
-    val releasesUrl = URL("https://repo1.maven.org/maven2/")
+fun main() = Platform.startup {
+    val progressDialog = ProgressDialog(UpdateAndLaunchTask)
+    progressDialog.show()
 
-    val appDir = File("maven-obs-launcher-data").absoluteFile
-    Files.createDirectories(appDir.toPath())
-
-    val repositoryLocation = File(appDir, "dependencies")
-    Files.createDirectories(repositoryLocation.toPath())
-
-    val pomFile = File(appDir, "pom.xml")
-    Files.deleteIfExists(pomFile.toPath())
-    pomFile.writeText(createDummyPom(groupId, artifactId, initialVersion, mainClass, releasesUrl, snapshotUrl))
-
-    val mavenHome = File(appDir, "mavenHome").absoluteFile
-    Files.createDirectories(mavenHome.toPath())
-    mavenHome.deleteAllChildren()
-    MavenExtractor.extract(mavenHome)
-
-    val invoker = DefaultInvoker()
-    invoker.localRepositoryDirectory = repositoryLocation
-    invoker.mavenHome = mavenHome
-
-    val updateVersionsRequest = DefaultInvocationRequest()
-    updateVersionsRequest.pomFile = pomFile
-    // request.goals = listOf("dependency:copy-dependencies")
-    updateVersionsRequest.goals = listOf("versions:use-latest-versions")
-    updateVersionsRequest.baseDirectory = appDir
-    updateVersionsRequest.isUpdateSnapshots = true
-
-    val updateVersionsResult = invoker.execute(updateVersionsRequest)
-    if (updateVersionsResult.exitCode != 0) {
-        exitProcess(updateVersionsResult.exitCode)
+    UpdateAndLaunchTask.stateProperty().addListener { _, _, newValue ->
+        progressDialog.hide()
+        if (newValue == FAILED) showException(UpdateAndLaunchTask.exception)
+        else if (newValue == SUCCEEDED) launchApp(UpdateAndLaunchTask.value)
     }
 
-    val updateAppRequest = DefaultInvocationRequest()
-    updateAppRequest.pomFile = pomFile
-    updateAppRequest.goals = listOf("dependency:resolve")
-    updateAppRequest.baseDirectory = appDir
-    updateAppRequest.isUpdateSnapshots = true
+    val executor = Executors.newSingleThreadExecutor()
+    executor.submit(UpdateAndLaunchTask)
+    executor.shutdown()
+}
 
-    val updateAppResult = invoker.execute(updateAppRequest)
-    if (updateAppResult.exitCode != 0) {
-        exitProcess(updateAppResult.exitCode)
-    }
-
-    val startAppRequest = DefaultInvocationRequest()
-    startAppRequest.pomFile = pomFile
-    startAppRequest.goals = listOf("exec:java")
-    startAppRequest.baseDirectory = appDir
-    startAppRequest.isUpdateSnapshots = false
+private fun launchApp(invoker: Invoker) {
+    val startAppRequest = createRequest(listOf("exec:java"), false)
 
     val startAppResult = invoker.execute(startAppRequest)
     if (startAppResult.exitCode != 0) {
-        exitProcess(startAppResult.exitCode)
+        showException(IllegalStateException(strings["launch_failed"]))
     }
+    MavenOutputHandler.close()
 }
 
-private fun File.deleteAllChildren() = listFiles()!!
-    .map { it.listAllChildrenForDeletion() }
-    .flatten()
-    .forEach { Files.delete(it.toPath()) }
+fun showException(exception: Throwable) {
+    val alert = Alert(Alert.AlertType.ERROR)
+    alert.title = strings["exception_dialog.title"]
+    alert.headerText = strings["exception_dialog.header"]
 
-private fun File.listAllChildrenForDeletion(): List<File> =
-    if (isFile) listOf(this)
-    else listFiles()!!
-        .map { it.listAllChildrenForDeletion() }
-        .flatten() + this
+    val stringWriter = StringWriter()
+    stringWriter.write(exception.stackTraceToString())
+
+    val label = Label("The stacktrace was:")
+    val textArea = TextArea(stringWriter.toString())
+    with(textArea) {
+        isWrapText = false
+        isEditable = false
+        maxWidth = Double.MAX_VALUE
+        maxHeight = Double.MAX_VALUE
+    }
+    GridPane.setVgrow(textArea, Priority.ALWAYS)
+    GridPane.setHgrow(textArea, Priority.ALWAYS)
+
+    val expandableContent = GridPane()
+    with(expandableContent) {
+        maxWidth = Double.MAX_VALUE
+        add(label, 0, 0)
+        add(textArea, 0, 1)
+    }
+
+    alert.dialogPane.expandableContent = expandableContent
+
+    alert.contentText = exception.message
+
+    alert.show()
+}
