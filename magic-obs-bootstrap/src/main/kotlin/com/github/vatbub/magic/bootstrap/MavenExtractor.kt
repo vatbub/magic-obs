@@ -37,10 +37,19 @@ object MavenExtractor {
                     Files.createDirectories(newFile.parentFile.toPath())
 
                     if (zipEntry.isDirectory) {
-                        Files.createDirectories(newFile.toPath())
+                        if (!newFile.isDirectory) Files.deleteIfExists(newFile.toPath())
+                        if (!newFile.exists()) Files.createDirectories(newFile.toPath())
                     } else {
-                        FileOutputStream(newFile).use { fileOutputStream ->
-                            fileOutputStream.write(zipInputStream.readBytes())
+                        if (!newFile.isFile) Files.deleteIfExists(newFile.toPath())
+                        val entryBytes = zipInputStream.readBytes()
+
+                        if (newFile.exists() && !entryBytes.elementEqualTo(newFile.readBytes()))
+                            Files.delete(newFile.toPath())
+
+                        if (!newFile.exists()) {
+                            FileOutputStream(newFile).use { fileOutputStream ->
+                                fileOutputStream.write(entryBytes)
+                            }
                         }
                     }
                     zipInputStream.closeEntry()
@@ -48,5 +57,11 @@ object MavenExtractor {
                 }
             }
         }
+    }
+
+    private fun ByteArray.elementEqualTo(other: ByteArray): Boolean {
+        if (this.size != other.size) return false
+        this.forEachIndexed { index, item -> if (item != other[index]) return false }
+        return true
     }
 }

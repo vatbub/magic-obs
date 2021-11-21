@@ -36,19 +36,26 @@ import java.util.concurrent.Executors
 
 val strings = ResourceBundle.getBundle("com.github.vatbub.magic.bootstrap.bootstrap_strings")
 
-fun main() = Platform.startup {
-    val progressDialog = ProgressDialog(UpdateAndLaunchTask)
-    progressDialog.show()
-
-    UpdateAndLaunchTask.stateProperty().addListener { _, _, newValue ->
-        progressDialog.hide()
-        if (newValue == FAILED) showException(UpdateAndLaunchTask.exception)
-        else if (newValue == SUCCEEDED) launchApp(UpdateAndLaunchTask.value)
+fun main() {
+    Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
+        throwable.printStackTrace()
+        showException(throwable)
     }
 
-    val executor = Executors.newSingleThreadExecutor()
-    executor.submit(UpdateAndLaunchTask)
-    executor.shutdown()
+    Platform.startup {
+        val progressDialog = ProgressDialog(UpdateAndLaunchTask)
+        progressDialog.show()
+
+        UpdateAndLaunchTask.stateProperty().addListener { _, _, newValue ->
+            progressDialog.hide()
+            if (newValue == FAILED) showException(UpdateAndLaunchTask.exception)
+            else if (newValue == SUCCEEDED) launchApp(UpdateAndLaunchTask.value)
+        }
+
+        val executor = Executors.newSingleThreadExecutor()
+        executor.submit(UpdateAndLaunchTask)
+        executor.shutdown()
+    }
 }
 
 private fun launchApp(invoker: Invoker) {

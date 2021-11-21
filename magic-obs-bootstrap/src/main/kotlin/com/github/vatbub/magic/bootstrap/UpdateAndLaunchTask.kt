@@ -28,6 +28,8 @@ import org.apache.maven.shared.invoker.DefaultInvocationRequest
 import org.apache.maven.shared.invoker.DefaultInvoker
 import org.apache.maven.shared.invoker.Invoker
 import java.io.File
+import java.nio.file.DirectoryNotEmptyException
+import java.nio.file.FileSystemException
 import java.nio.file.Files
 
 object UpdateAndLaunchTask : Task<Invoker>() {
@@ -49,7 +51,7 @@ object UpdateAndLaunchTask : Task<Invoker>() {
             )
         )
 
-        mavenHome.deleteAllChildren()
+        mavenHome.deleteAllChildrenIfPossible()
         MavenExtractor.extract(mavenHome)
 
         val invoker = DefaultInvoker()
@@ -90,10 +92,18 @@ fun createRequest(goals: List<String>, isUpdateSnapshots: Boolean) = DefaultInvo
     it.isUpdateSnapshots = isUpdateSnapshots
 }
 
-private fun File.deleteAllChildren() = listFiles()!!
+private fun File.deleteAllChildrenIfPossible() = listFiles()!!
     .map { it.listAllChildrenForDeletion() }
     .flatten()
-    .forEach { Files.delete(it.toPath()) }
+    .forEach {
+        try {
+            Files.delete(it.toPath())
+        } catch (e: FileSystemException) {
+            e.printStackTrace()
+        } catch (e: DirectoryNotEmptyException) {
+            e.printStackTrace()
+        }
+    }
 
 private fun File.listAllChildrenForDeletion(): List<File> =
     if (isFile) listOf(this)
