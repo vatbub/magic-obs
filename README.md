@@ -23,6 +23,8 @@ image.
 
 ![CardStatistics before keying](screenshots/CardStatisticsUnkeyed.PNG)
 
+https://user-images.githubusercontent.com/13379225/142775132-8925aa86-174b-4e34-b58e-f73b72733d9a.mp4
+
 ## Download
 
 1. Before downloading, you will need to install Java 15 or
