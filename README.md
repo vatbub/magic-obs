@@ -17,9 +17,14 @@ image.
 
 ## Screenshots
 
-Tba
+![Battlefield with Overlay](screenshots/OBS.png)
+
+![Control panel](screenshots/MainWindow.PNG)
+
+![CardStatistics before keying](screenshots/CardStatisticsUnkeyed.PNG)
 
 ## Download
+
 1. Before downloading, you will need to install Java 15 or
    later ([Download link](https://adoptium.net/?variant=openjdk17&jvmVariant=hotspot))
 2. Download the
