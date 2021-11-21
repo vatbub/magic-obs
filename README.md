@@ -20,17 +20,24 @@ image.
 Tba
 
 ## Download
-
-Because I'm lazy, there's no download yet. Please follow the instructions below for cloning and compiling.
+1. Before downloading, you will need to install Java 15 or
+   later ([Download link](https://adoptium.net/?variant=openjdk17&jvmVariant=hotspot))
+2. Download the
+   launcher [here](https://oss.sonatype.org/content/repositories/snapshots/com/github/vatbub/magic-obs-bootstrap/1.0-SNAPSHOT/magic-obs-bootstrap-1.0-20211121.152509-17-jar-with-dependencies.jar)
+   .
+3. Double-click the launcher. It will download more necessary files and launch the application. Also, it will check for
+   updates every time you start the app.
 
 ## Setting up your streaming software
 
 Magic-OBS works with every streaming software that supports color keying, but I personally
 recommend [OBS Studio](https://obsproject.com/). For that reason, this guide will assume that you use OBS Studio.
 
-1. After downloading/compiling, double-click `magic-obs-1.0-SNAPSHOT-jar-with-dependencies.jar`
-2. Three windows will open: One window displays your current life points, one which is currently just a red rectangle (
-   this window will display your card statistics later), and a settings window which allows you to control everything.
+1. After downloading/compiling, double-click `magic-obs-bootstrap-1.0-SNAPSHOT-jar-with-dependencies.jar`
+2. Four windows will open: One window displays your current life points, one which is currently just a red rectangle (
+   this window will display the cards you have in your battlefield later), and a settings window which allows you to
+   control everything. Lastly, a window depicting a day/night graphic will open (This is important if you are playing a
+   deck that uses the day/night mechanic).
 3. Open OBS Studio.
 4. Create a new scene (using the `+` icon in the `Scenes` section)
 5. Look at the `Sources` section in OBS. You will also find a `+` icon there. Click it and add a `Video capture device`.
@@ -39,6 +46,8 @@ recommend [OBS Studio](https://obsproject.com/). For that reason, this guide wil
 8. Click `Okay`, then select `[java.exe]: Magic OBS Health Points` under `Window`.
 9. Uncheck `Record mouse pointer`, then click on `Okay`.
 10. Repeat steps 7 through 9 but this time, select `[java.exe]: Magic OBS Card Statistics` under `Window`.
+11. If your deck uses the day/night mechanic, repeat steps 7 through 9 again, but this time,
+    select `[java.exe]: Magic OBS Day Night` under `Window`.
 
 You should now see your webcam with your health points and the card statistics window on top. Before applying the key, I
 suggest you to arrange and scale the overlays on your webcam to your liking. To do that, use the preview window of OBS.
@@ -69,6 +78,8 @@ points graphic in OBS will update automatically.
 1. ... click `Add card`. A new card will be spawned.
 2. Use the table view to set properties like Power/Toughness.
 3. Use the drop down menu in the `Abilities` column to select any abilities that the creature has.
+4. If you wish to duplicate a card, you can click the `x2` button next to that card.
+5. You can also use the arrow buttons to change the order of the cards.
 
 > **Hint:** Magic-OBS will learn over time which abilities you use the most.
 > These will appear on the top of the list.
@@ -81,11 +92,32 @@ points graphic in OBS will update automatically.
 
 ...click the `Kill` button of that creature in the card table.
 
+### Using the Day/Night mechanic
+
+In the Innistrad: Midnight Hunt set, a new mechanic was introduced where it can be day or night. Some creatures behave
+differently depending on the day/night state. If some of your cards use that mechanic, you can use the Day/Night-Drop
+down to indicate whether it is day or night. A graphic is shown to the other players so-that everyone knows whether it's
+day or night.
+
+Unfortunately, you still need to transform your cards manually when day/night changes.
+
+### When your game is over...
+
+...click on `Reset game` and your game will be reset to its initial state (i.e. your HP will be reset to 20, the
+battlefield will be cleared and day/night will be reset to `None`).
+
+### Changing the look of things
+
+By clicking `Customize appearance`, a menu will pop up where you can change the look of basically anything. Don't like
+the font used for the card statistics? Change it!
+Don't like the background image of the health points display? Change it!
+Want to change the key color from red to green? Well... you get the point, change it :)
+
 ## Cloning and compiling
 
 ### Prerequisites
 
-- JDK 14 or later ([Download](https://adoptopenjdk.net/))
+- JDK 15 or later ([Download](https://adoptopenjdk.net/))
 
 ### Cloning
 
@@ -97,9 +129,10 @@ points graphic in OBS will update automatically.
 
 1. Open `Command prompt`
 2. Use the `cd` command to navigate to the folder you just unzipped/cloned
-3. Run `mvnw package` and wait for the magic to happen
-4. Once Maven is doe compiling, you will find a new folder called `target`. In that folder, you will find the
-   file `magic-obs-1.0-SNAPSHOT-jar-with-dependencies.jar` which is the compiled version of the program.
+3. To compile the program, run `mvnw package` and wait for the magic to happen.
+4. To actually launch the program, run `mvnw exec:java -pl magic-obs`.
+5. Once Maven is done compiling, you will find a new folder called `target`. In that folder, you will find the
+   file `magic-obs-1.0-SNAPSHOT.jar` which is the compiled version of the program.
 
 ## Contributing
 
@@ -108,10 +141,7 @@ There are lots of ways to contribute to this project. In particular, I need help
 - Find abilities that are still missing
 - Draw icons for new abilities
 - Improve some animations
-- Deal with the aftermath
-  of [Bintray going down](https://jfrog.com/blog/into-the-sunset-bintray-jcenter-gocenter-and-chartcenter/)
 - Setup a CI
-- Create a downloadable jar so-that users don't need to compile the thing on their own
 
 If you feel like helping me with any of these things, feel free to submit an issue in the
 issue [here](https://github.com/vatbub/magic-obs/issues) or create a pull request.
@@ -119,7 +149,6 @@ issue [here](https://github.com/vatbub/magic-obs/issues) or create a pull reques
 ## Translations
 
 - German: Mostly by myself, some translations are taken from [here](https://magic.freizeitspieler.de/MTGterms_EN-DE.txt)
-  .
 
 ## License
 
