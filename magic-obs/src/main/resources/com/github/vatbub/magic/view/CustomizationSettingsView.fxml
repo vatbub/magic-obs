@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane hgap="8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+          minWidth="-Infinity" vgap="8.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="com.github.vatbub.magic.view.CustomizationSettingsView">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity"/>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+      <RowConstraints maxHeight="17.0" minHeight="-Infinity" prefHeight="17.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="0.0" minHeight="-Infinity" prefHeight="0.0" vgrow="SOMETIMES" />
+    </rowConstraints>
+    <children>
+        <ColorPicker fx:id="backgroundColorPicker" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+        <Label text="%customizationView.label.backgroundColor" />
+        <Label text="%customizationView.label.abilitySortMode" GridPane.rowIndex="4" />
+        <ComboBox fx:id="dropDownAbilitySortMode" maxWidth="1.7976931348623157E308" prefWidth="150.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" />
+        <Label text="%customizationView.label.healthPointsFontColor" GridPane.rowIndex="1" />
+        <ColorPicker fx:id="healthPointsFontColorPicker" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+        <Label text="%customizationView.label.fonts" GridPane.rowIndex="3" />
+        <HBox alignment="CENTER_LEFT" minHeight="-Infinity" minWidth="-Infinity" spacing="2.0" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="3">
+            <children>
+                <Button mnemonicParsing="false" onAction="#healthPointsFontSpecChangeButtonOnAction" text="%customizationView.button.changeHealthPointsFont" />
+                <Button mnemonicParsing="false" onAction="#cardStatisticsFontSpecChangeButtonOnAction" text="%customizationView.button.changeCardStatisticsFont" />
+            </children>
+        </HBox>
+      <Label text="%customizationView.label.autoApplySettings" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+      <Label text="%customizationView.label.healthPointsBackground" GridPane.rowIndex="2" />
+      <Button mnemonicParsing="false" onAction="#healthPointsImageSpecChangeButtonOnAction" text="%customizationView.button.healthPointsBackground" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+    </children>
+   <padding>
+      <Insets bottom="8.0" left="16.0" right="16.0" top="16.0" />
+   </padding>
+</GridPane>

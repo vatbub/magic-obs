@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane fx:id="rootPane" hgap="8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+          minHeight="301.0" minWidth="492.0" vgap="8.0" xmlns="http://javafx.com/javafx/16"
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.vatbub.magic.view.MainView">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="ALWAYS"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="ALWAYS"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+    </rowConstraints>
+    <children>
+        <Label text="%mainView.label.healthPoints" />
+        <HBox spacing="4.0" GridPane.columnIndex="1">
+            <children>
+                <TextField fx:id="healthPointsBox" prefHeight="25.0" prefWidth="39.0" HBox.hgrow="ALWAYS" />
+                <Button mnemonicParsing="false" onAction="#healthPointsAddOnAction" text="+" />
+                <Button mnemonicParsing="false" onAction="#healthPointsSubtractOnAction" text="-" />
+            </children>
+        </HBox>
+        <TableView fx:id="cardsTableView" editable="true" maxHeight="1.7976931348623157E308"
+                   maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0"
+                   GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+            <columns>
+                <TableColumn fx:id="attackColumn" prefWidth="75.0" sortable="false"
+                             text="%mainView.tableColumn.attack"/>
+                <TableColumn fx:id="defenseColumn" prefWidth="75.0" sortable="false"
+                             text="%mainView.tableColumn.defense"/>
+                <TableColumn fx:id="abilitiesColumn" prefWidth="75.0" text="%mainView.tableColumn.abilities"/>
+                <TableColumn fx:id="counterColumn" prefWidth="75.0" sortable="false"
+                             text="%mainView.tableColumn.counter"/>
+                <TableColumn fx:id="buttonsColumn" editable="false" maxWidth="1.7976931348623157E308"
+                             minWidth="-Infinity" prefWidth="75.0" resizable="false" sortable="false"
+                             text="%mainView.tableColumn.controls"/>
+            </columns>
+        </TableView>
+        <HBox maxWidth="1.7976931348623157E308" spacing="8.0" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS"
+              GridPane.rowIndex="3">
+            <children>
+                <HBox spacing="8.0" HBox.hgrow="NEVER">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#addCardButtonOnAction"
+                                text="%mainView.button.addCard" GridPane.columnSpan="2147483647" GridPane.rowIndex="3"/>
+                        <Button mnemonicParsing="false" onAction="#resetGameButtonOnAction"
+                                text="%mainView.button.reset"/>
+                    </children>
+                </HBox>
+                <HBox maxWidth="1.7976931348623157E308" spacing="8.0" HBox.hgrow="ALWAYS"/>
+                <HBox spacing="8.0">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#buttonResetWindowsOnAction"
+                                text="%mainView.button.resetWindows"/>
+                        <Button mnemonicParsing="false" onAction="#customizeAppearanceButtonOnAction"
+                                text="%mainView.button.customizeAppearance"/>
+                    </children>
+                </HBox>
+            </children>
+        </HBox>
+        <Label text="%mainView.label.dayNightState" GridPane.rowIndex="1"/>
+        <ComboBox fx:id="comboBoxDayNightState" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
+                  GridPane.rowIndex="1"/>
+    </children>
+   <padding>
+      <Insets bottom="8.0" left="16.0" right="16.0" top="16.0" />
+   </padding>
+</GridPane>

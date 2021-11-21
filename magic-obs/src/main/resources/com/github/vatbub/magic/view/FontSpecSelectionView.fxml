@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+          minWidth="-Infinity" prefHeight="99.0" prefWidth="396.0" vgap="4.0" xmlns="http://javafx.com/javafx/16"
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.vatbub.magic.view.FontSpecSelectionView">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="ALWAYS"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+    </rowConstraints>
+    <children>
+        <TabPane fx:id="tabPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                 minHeight="-Infinity" minWidth="-Infinity" tabClosingPolicy="UNAVAILABLE" GridPane.hgrow="ALWAYS"
+                 GridPane.vgrow="ALWAYS">
+            <tabs>
+                <Tab fx:id="builtInTab" text="%fontSpecSelectionView.tab.builtIn">
+                    <content>
+                        <AnchorPane>
+                            <children>
+                                <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
+                                      minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0"
+                                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                      AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <ComboBox fx:id="builtInFontSpecDropDown" maxWidth="1.7976931348623157E308"
+                                                  HBox.hgrow="ALWAYS"/>
+                                    </children>
+                                    <padding>
+                                        <Insets left="8.0" right="8.0"/>
+                                    </padding>
+                                </HBox>
+                            </children>
+                            <padding>
+                                <Insets top="4.0"/>
+                            </padding>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab fx:id="systemTab" text="%fontSpecSelectionView.tab.system">
+                    <content>
+                        <GridPane hgap="8.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <children>
+                                <ComboBox fx:id="systemFamilyDropDown" prefWidth="150.0"/>
+                                <ComboBox fx:id="systemWeightDropDown" prefWidth="150.0" GridPane.columnIndex="1"/>
+                                <ComboBox fx:id="systemPostureDropDown" prefWidth="150.0" GridPane.columnIndex="2"/>
+                            </children>
+                            <padding>
+                                <Insets left="8.0" right="8.0" top="4.0"/>
+                            </padding>
+                        </GridPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+        <HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"
+              spacing="8.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+            <children>
+                <Button defaultButton="true" maxWidth="-Infinity" mnemonicParsing="false" onAction="#okButtonOnAction"
+                        text="%button.ok" HBox.hgrow="SOMETIMES"/>
+                <Button cancelButton="true" mnemonicParsing="false" onAction="#cancelButtonOnAction"
+                        text="%button.cancel"/>
+            </children>
+            <padding>
+                <Insets left="8.0" right="8.0"/>
+            </padding>
+        </HBox>
+    </children>
+    <opaqueInsets>
+        <Insets bottom="8.0"/>
+    </opaqueInsets>
+    <padding>
+        <Insets bottom="8.0"/>
+    </padding>
+</GridPane>
