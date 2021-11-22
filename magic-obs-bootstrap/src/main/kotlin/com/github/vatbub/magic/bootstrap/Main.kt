@@ -36,11 +36,13 @@ import java.util.concurrent.Executors
 
 val strings = ResourceBundle.getBundle("com.github.vatbub.magic.bootstrap.bootstrap_strings")
 
-fun main() {
+fun main(vararg args: String) {
     Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
         throwable.printStackTrace()
         showException(throwable)
     }
+
+    Configuration.allowSnapshots = args.contains("--enableSnapshots")
 
     Platform.startup {
         val progressDialog = ProgressDialog(UpdateAndLaunchTask)

@@ -26,6 +26,7 @@ object Configuration {
     val artifactId = "magic-obs"
     val initialVersion = "1.0-SNAPSHOT"
     val mainClass = "com.github.vatbub.magic.MainKt"
+    var allowSnapshots: Boolean = false
 
     val snapshotUrl = URL("https://oss.sonatype.org/content/repositories/snapshots/")
     val releasesUrl = URL("https://repo1.maven.org/maven2/")

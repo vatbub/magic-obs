@@ -26,6 +26,7 @@ fun createDummyPom(
     artifactId: String,
     initialVersion: String,
     mainClass: String,
+    allowSnapshots: Boolean,
     customReleaseRepoUrl: URL?,
     customSnapshotRepoUrl: URL?
 ): String = """
@@ -87,7 +88,7 @@ fun createDummyPom(
                         <artifactId>versions-maven-plugin</artifactId>
                         <version>2.8.1</version>
                         <configuration>
-                            <allowSnapshots>true</allowSnapshots>
+                            <allowSnapshots>$allowSnapshots</allowSnapshots>
                         </configuration>
                     </plugin>
                 </plugins>

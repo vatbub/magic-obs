@@ -46,6 +46,7 @@ object UpdateAndLaunchTask : Task<Invoker>() {
                 Configuration.artifactId,
                 Configuration.initialVersion,
                 Configuration.mainClass,
+                Configuration.allowSnapshots,
                 Configuration.releasesUrl,
                 Configuration.snapshotUrl
             )
