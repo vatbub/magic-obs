@@ -10,7 +10,8 @@ This was eventually pretty annoying, hence, I came up with this tool. Magic-obs 
 current life points, and the following statistics about the cards that you currently have on your battlefield:
 
 - Power/Toughness
-- Abilities like Flying or Trample
+- Abilities like Flying, Trample or Haste
+- Markers
 
 You can then use a streaming software like [OBS](https://obsproject.com/) to overlay this information onto your webcam
 image.
