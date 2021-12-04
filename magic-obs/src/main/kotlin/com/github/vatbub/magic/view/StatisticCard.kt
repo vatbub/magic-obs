@@ -32,6 +32,7 @@ import javafx.animation.Interpolator.EASE_BOTH
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue
 import javafx.animation.Timeline
+import javafx.application.Platform
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.collections.ListChangeListener
 import javafx.collections.SetChangeListener
@@ -145,6 +146,7 @@ class StatisticCard {
         abilityIcons.children.addListener(ListChangeListener { change ->
             animateStatisticsOffset(change.list.size)
         })
+        Platform.runLater { animateStatisticsOffset(abilityIcons.children.size) }
         DataHolder.cardStatisticsFontSpecProperty.addListener { _, _, newValue ->
             updateMiddleFontSize(fontSpec = newValue, forceUpdate = true)
         }
