@@ -25,12 +25,20 @@ import java.time.format.DateTimeParseException
 import java.time.temporal.ChronoField
 import java.time.temporal.TemporalAccessor
 
-internal const val appVersion = "%PROJECT_VERSION%"
-internal val buildTimestamp: LocalDateTime = try {
-    LocalDateTime.parse("%build_timestamp%")
-} catch (e: DateTimeParseException) {
-    LocalDateTime.now()
-}
+// yyyy-MM-dd HH:mm:ss
+private val mavenDateFormatter = DateTimeFormatterBuilder()
+    .appendValue(ChronoField.YEAR, 4)
+    .appendLiteral("-")
+    .appendValue(ChronoField.MONTH_OF_YEAR, 2)
+    .appendLiteral("-")
+    .appendValue(ChronoField.DAY_OF_MONTH)
+    .appendLiteral(" ")
+    .appendValue(ChronoField.HOUR_OF_DAY, 2)
+    .appendLiteral(":")
+    .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
+    .appendLiteral(":")
+    .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
+    .toFormatter()
 
 private val uiDateFormatter = DateTimeFormatterBuilder()
     .appendValue(ChronoField.DAY_OF_MONTH)
@@ -48,3 +56,10 @@ private val uiDateFormatter = DateTimeFormatterBuilder()
 
 internal val TemporalAccessor.uiString
     get() = uiDateFormatter.format(this)
+
+internal const val appVersion = "%PROJECT_VERSION%"
+internal val buildTimestamp: LocalDateTime = try {
+    LocalDateTime.parse("%build_timestamp%", mavenDateFormatter)
+} catch (e: DateTimeParseException) {
+    LocalDateTime.now()
+}
