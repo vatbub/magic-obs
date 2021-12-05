@@ -27,6 +27,7 @@ import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.data.PreferenceKeys.AbilityKeys.SortMode
 import com.github.vatbub.magic.data.preferences
 import com.github.vatbub.magic.uiString
+import com.github.vatbub.magic.util.EnumStringConverter
 import com.github.vatbub.magic.util.get
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
@@ -39,7 +40,6 @@ import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
 import javafx.stage.Stage
 import javafx.stage.StageStyle
-import javafx.util.StringConverter
 import java.io.Closeable
 
 
@@ -92,12 +92,7 @@ class CustomizationSettingsView : Closeable {
 
         dropDownAbilitySortMode.items = FXCollections.observableArrayList(*Ability.SortMode.values())
         dropDownAbilitySortMode.selectionModel.select(preferences[SortMode])
-        dropDownAbilitySortMode.converter = object : StringConverter<Ability.SortMode>() {
-            override fun toString(sortMode: Ability.SortMode): String =
-                App.resourceBundle["ability.sortMode.$sortMode"] ?: sortMode.toString()
-
-            override fun fromString(string: String): Ability.SortMode = throw NotImplementedError("Not supported")
-        }
+        dropDownAbilitySortMode.converter = EnumStringConverter()
         dropDownAbilitySortMode.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
             DataHolder.abilitySortModeProperty.value = newValue
         }

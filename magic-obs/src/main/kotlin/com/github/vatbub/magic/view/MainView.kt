@@ -24,6 +24,7 @@ import com.github.vatbub.magic.data.Card
 import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.data.DayNightState
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPoints
+import com.github.vatbub.magic.util.EnumStringConverter
 import com.github.vatbub.magic.util.asNullable
 import com.github.vatbub.magic.util.get
 import javafx.beans.property.IntegerProperty
@@ -106,6 +107,7 @@ class MainView {
         cardsTableView.items = DataHolder.cardList
         refreshCardTableFactories()
 
+        comboBoxDayNightState.converter = EnumStringConverter()
         comboBoxDayNightState.items = FXCollections.observableArrayList(*DayNightState.values())
         comboBoxDayNightState.selectionModel.select(DataHolder.dayNightState.value)
         DataHolder.dayNightState.addListener { _, _, newValue ->
