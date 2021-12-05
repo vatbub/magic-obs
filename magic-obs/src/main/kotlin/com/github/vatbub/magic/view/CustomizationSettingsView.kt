@@ -20,10 +20,13 @@
 package com.github.vatbub.magic.view
 
 import com.github.vatbub.magic.App
+import com.github.vatbub.magic.appVersion
+import com.github.vatbub.magic.buildTimestamp
 import com.github.vatbub.magic.data.Ability
 import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.data.PreferenceKeys.AbilityKeys.SortMode
 import com.github.vatbub.magic.data.preferences
+import com.github.vatbub.magic.uiString
 import com.github.vatbub.magic.util.get
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
@@ -32,6 +35,7 @@ import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.control.ColorPicker
 import javafx.scene.control.ComboBox
+import javafx.scene.control.Label
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.util.StringConverter
@@ -72,6 +76,9 @@ class CustomizationSettingsView : Closeable {
     @FXML
     private lateinit var dropDownAbilitySortMode: ComboBox<Ability.SortMode>
 
+    @FXML
+    private lateinit var versionLabel: Label
+
     val stage: Stage = Stage(StageStyle.DECORATED)
 
     @FXML
@@ -90,6 +97,9 @@ class CustomizationSettingsView : Closeable {
         dropDownAbilitySortMode.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
             DataHolder.abilitySortModeProperty.value = newValue
         }
+
+        versionLabel.text =
+            "${App.resourceBundle["customizationView.label.version"]}: $appVersion; ${buildTimestamp.uiString}"
     }
 
     @FXML

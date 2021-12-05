@@ -57,11 +57,79 @@
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>create-timestamp</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                    <timestampFormat>yyyy-MM-dd HH:mm:ss</timestampFormat>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
                     <mainClass>${mainClass}</mainClass>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.3</version>
+                <executions>
+                    <execution>
+                        <id>replace-version</id>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <ignoreMissingFile>false</ignoreMissingFile>
+                            <file>${project.build.sourceDirectory}/com/github/vatbub/magic/AppVersion.kt</file>
+                            <replacements>
+                                <replacement>
+                                    <token>%PROJECT_VERSION%</token>
+                                    <value>${project.version}</value>
+                                </replacement>
+                                <replacement>
+                                    <token>%build_timestamp%</token>
+                                    <value>${timestamp}</value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>reset-files</id>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                        <configuration>
+                            <ignoreMissingFile>false</ignoreMissingFile>
+                            <file>${project.build.sourceDirectory}/com/github/vatbub/magic/AppVersion.kt</file>
+                            <replacements>
+                                <replacement>
+                                    <token>${project.version}</token>
+                                    <value>%PROJECT_VERSION%</value>
+                                </replacement>
+                                <replacement>
+                                    <token>${timestamp}</token>
+                                    <value>%build_timestamp%</value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
