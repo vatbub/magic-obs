@@ -114,6 +114,14 @@ class MainView {
         comboBoxDayNightState.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
             DataHolder.dayNightState.value = newValue
         }
+
+        val dayNightRowIndex = GridPane.getRowIndex(comboBoxDayNightState)
+        rootPane.children
+            .filter { GridPane.getRowIndex(it) == dayNightRowIndex }
+            .forEach {
+                it.managedProperty().bind(DataHolder.dayNightMechanicEnabled)
+                it.visibleProperty().bind(DataHolder.dayNightMechanicEnabled)
+            }
     }
 
     private fun refreshCardTableFactories() {

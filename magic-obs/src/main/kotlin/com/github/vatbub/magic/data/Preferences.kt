@@ -45,6 +45,9 @@ object PreferenceKeys {
     object DayNightStateKey :
         Key<DayNightState>("dayNightState", None, { valueOf(it) }, { it.toString() })
 
+    object DayNightMechanicEnabledKey :
+        Key<Boolean>("dayNightMechanicEnabled", false, { it.toBooleanStrict() }, { it.toString() })
+
     object HealthPointsFontColor : ColorKey("healthPointsFontColor", Color.WHITE)
 
     object HealthPointsFontSpec : FontSpecKey(

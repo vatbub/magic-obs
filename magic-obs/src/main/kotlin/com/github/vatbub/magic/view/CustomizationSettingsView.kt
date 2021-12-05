@@ -33,6 +33,7 @@ import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
+import javafx.scene.control.CheckBox
 import javafx.scene.control.ColorPicker
 import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
@@ -79,6 +80,9 @@ class CustomizationSettingsView : Closeable {
     @FXML
     private lateinit var versionLabel: Label
 
+    @FXML
+    private lateinit var dayNightControlsEnabledCheckbox: CheckBox
+
     val stage: Stage = Stage(StageStyle.DECORATED)
 
     @FXML
@@ -97,6 +101,8 @@ class CustomizationSettingsView : Closeable {
         dropDownAbilitySortMode.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
             DataHolder.abilitySortModeProperty.value = newValue
         }
+
+        dayNightControlsEnabledCheckbox.selectedProperty().bindBidirectional(DataHolder.dayNightMechanicEnabled)
 
         versionLabel.text =
             "${App.resourceBundle["customizationView.label.version"]}: $appVersion; ${buildTimestamp.uiString}"

@@ -22,6 +22,7 @@ package com.github.vatbub.magic.data
 import com.github.vatbub.magic.data.PreferenceKeys.AbilityKeys
 import com.github.vatbub.magic.data.PreferenceKeys.BackgroundColor
 import com.github.vatbub.magic.data.PreferenceKeys.CardStatisticsFontSpec
+import com.github.vatbub.magic.data.PreferenceKeys.DayNightMechanicEnabledKey
 import com.github.vatbub.magic.data.PreferenceKeys.DayNightStateKey
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPoints
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPointsBackgroundImageSpec
@@ -30,10 +31,7 @@ import com.github.vatbub.magic.data.PreferenceKeys.HealthPointsFontSpec
 import com.github.vatbub.magic.util.PermutatingObservableList
 import com.github.vatbub.magic.view.FontSpec
 import com.github.vatbub.magic.view.ImageSpec
-import javafx.beans.property.IntegerProperty
-import javafx.beans.property.ObjectProperty
-import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.property.SimpleObjectProperty
+import javafx.beans.property.*
 import javafx.collections.ObservableList
 import javafx.scene.paint.Color
 
@@ -90,6 +88,13 @@ object DataHolder {
             preferences[DayNightStateKey] = newValue
         }
     }
+
+    val dayNightMechanicEnabled: BooleanProperty =
+        SimpleBooleanProperty(preferences[DayNightMechanicEnabledKey]).apply {
+            addListener { _, _, newValue ->
+                preferences[DayNightMechanicEnabledKey] = newValue
+            }
+        }
 
     val cardList: ObservableList<Card> = PermutatingObservableList(mutableListOf())
 

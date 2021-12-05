@@ -19,11 +19,11 @@
     </rowConstraints>
     <children>
         <Label text="%mainView.label.healthPoints" />
-        <HBox spacing="4.0" GridPane.columnIndex="1">
+        <HBox spacing="4.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
             <children>
-                <TextField fx:id="healthPointsBox" prefHeight="25.0" prefWidth="39.0" HBox.hgrow="ALWAYS" />
-                <Button mnemonicParsing="false" onAction="#healthPointsAddOnAction" text="+" />
-                <Button mnemonicParsing="false" onAction="#healthPointsSubtractOnAction" text="-" />
+                <Button mnemonicParsing="false" onAction="#healthPointsAddOnAction" text="+"/>
+                <Button mnemonicParsing="false" onAction="#healthPointsSubtractOnAction" text="-"/>
+                <TextField fx:id="healthPointsBox" prefHeight="25.0" prefWidth="39.0" HBox.hgrow="ALWAYS"/>
             </children>
         </HBox>
         <TableView fx:id="cardsTableView" editable="true" maxHeight="1.7976931348623157E308"
@@ -66,7 +66,7 @@
         </HBox>
         <Label text="%mainView.label.dayNightState" GridPane.rowIndex="1"/>
         <ComboBox fx:id="comboBoxDayNightState" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
-                  GridPane.rowIndex="1"/>
+                  GridPane.hgrow="ALWAYS" GridPane.rowIndex="1"/>
     </children>
    <padding>
       <Insets bottom="8.0" left="16.0" right="16.0" top="16.0" />

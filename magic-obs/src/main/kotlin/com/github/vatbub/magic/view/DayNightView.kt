@@ -31,6 +31,7 @@ import javafx.animation.Interpolator
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue
 import javafx.animation.Timeline
+import javafx.beans.value.ChangeListener
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
@@ -67,7 +68,8 @@ class DayNightView : Closeable {
 
             stage.scene = scene
 
-            stage.show()
+
+            if (DataHolder.dayNightMechanicEnabled.value) stage.show()
             return controllerInstance
         }
 
@@ -75,8 +77,7 @@ class DayNightView : Closeable {
         private const val flipAnimationDuration = 1000.0
     }
 
-    lateinit var stage: Stage
-        private set
+    private lateinit var stage: Stage
 
     @FXML
     private lateinit var rootPane: AnchorPane
@@ -132,7 +133,15 @@ class DayNightView : Closeable {
         DataHolder.dayNightState.addListener { _, oldValue, newValue ->
             transitionImages(oldValue, newValue)
         }
+
+        DataHolder.dayNightMechanicEnabled.addListener(mechanicEnabledListener)
     }
+
+    private val mechanicEnabledListener =
+        ChangeListener<Boolean> { _, _, newValue ->
+            if (newValue) stage.show()
+            else stage.hide()
+        }
 
 
     @OptIn(DelicateCoroutinesApi::class, kotlin.time.ExperimentalTime::class)
@@ -221,6 +230,7 @@ class DayNightView : Closeable {
     }
 
     override fun close() {
+        DataHolder.dayNightMechanicEnabled.removeListener(mechanicEnabledListener)
         stage.hide()
     }
 }
