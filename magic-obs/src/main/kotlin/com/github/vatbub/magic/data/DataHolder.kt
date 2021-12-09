@@ -31,70 +31,30 @@ import com.github.vatbub.magic.data.PreferenceKeys.HealthPointsFontSpec
 import com.github.vatbub.magic.util.PermutatingObservableList
 import com.github.vatbub.magic.view.FontSpec
 import com.github.vatbub.magic.view.ImageSpec
-import javafx.beans.property.*
+import javafx.beans.property.BooleanProperty
+import javafx.beans.property.IntegerProperty
+import javafx.beans.property.ObjectProperty
 import javafx.collections.ObservableList
 import javafx.scene.paint.Color
 
 object DataHolder {
-    val backgroundColorProperty: ObjectProperty<Color> = SimpleObjectProperty(preferences[BackgroundColor]).apply {
-        addListener { _, _, newValue ->
-            preferences[BackgroundColor] = newValue
-        }
-    }
+    val backgroundColorProperty: ObjectProperty<Color> = preferences.property(BackgroundColor)
 
-    val healthPointsFontColorProperty: ObjectProperty<Color> =
-        SimpleObjectProperty(preferences[HealthPointsFontColor]).apply {
-            addListener { _, _, newValue ->
-                preferences[HealthPointsFontColor] = newValue
-            }
-        }
+    val healthPointsFontColorProperty: ObjectProperty<Color> = preferences.property(HealthPointsFontColor)
 
-    val healthPointsFontSpecProperty: ObjectProperty<FontSpec> =
-        SimpleObjectProperty(preferences[HealthPointsFontSpec]).apply {
-            addListener { _, _, newValue ->
-                preferences[HealthPointsFontSpec] = newValue
-            }
-        }
+    val healthPointsFontSpecProperty: ObjectProperty<FontSpec> = preferences.property(HealthPointsFontSpec)
 
-    val cardStatisticsFontSpecProperty: ObjectProperty<FontSpec> =
-        SimpleObjectProperty(preferences[CardStatisticsFontSpec]).apply {
-            addListener { _, _, newValue ->
-                preferences[CardStatisticsFontSpec] = newValue
-            }
-        }
+    val cardStatisticsFontSpecProperty: ObjectProperty<FontSpec> = preferences.property(CardStatisticsFontSpec)
 
-    val healthPointsImageSpecProperty: ObjectProperty<ImageSpec> =
-        SimpleObjectProperty(preferences[HealthPointsBackgroundImageSpec]).apply {
-            addListener { _, _, newValue ->
-                preferences[HealthPointsBackgroundImageSpec] = newValue
-            }
-        }
+    val healthPointsImageSpecProperty: ObjectProperty<ImageSpec> = preferences.property(HealthPointsBackgroundImageSpec)
 
-    val healthPointsProperty: IntegerProperty = SimpleIntegerProperty(preferences[HealthPoints]).apply {
-        addListener { _, _, newValue ->
-            preferences[HealthPoints] = newValue.toInt()
-        }
-    }
+    val healthPointsProperty: IntegerProperty = preferences.property(HealthPoints)
 
-    val abilitySortModeProperty: ObjectProperty<Ability.SortMode> =
-        SimpleObjectProperty(preferences[AbilityKeys.SortMode]).apply {
-            addListener { _, _, newValue ->
-                preferences[AbilityKeys.SortMode] = newValue
-            }
-        }
+    val abilitySortModeProperty: ObjectProperty<Ability.SortMode> = preferences.property(AbilityKeys.SortMode)
 
-    val dayNightState: ObjectProperty<DayNightState> = SimpleObjectProperty(preferences[DayNightStateKey]).apply {
-        addListener { _, _, newValue ->
-            preferences[DayNightStateKey] = newValue
-        }
-    }
+    val dayNightState: ObjectProperty<DayNightState> = preferences.property(DayNightStateKey)
 
-    val dayNightMechanicEnabled: BooleanProperty =
-        SimpleBooleanProperty(preferences[DayNightMechanicEnabledKey]).apply {
-            addListener { _, _, newValue ->
-                preferences[DayNightMechanicEnabledKey] = newValue
-            }
-        }
+    val dayNightMechanicEnabled: BooleanProperty = preferences.property(DayNightMechanicEnabledKey)
 
     val cardList: ObservableList<Card> = PermutatingObservableList(mutableListOf())
 
