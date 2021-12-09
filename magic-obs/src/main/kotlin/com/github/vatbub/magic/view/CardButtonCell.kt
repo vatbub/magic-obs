@@ -22,7 +22,8 @@ package com.github.vatbub.magic.view
 import com.github.vatbub.magic.App
 import com.github.vatbub.magic.data.Card
 import com.github.vatbub.magic.data.DataHolder
-import com.github.vatbub.magic.data.duplicate
+import com.github.vatbub.magic.data.copy
+import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.get
 import com.github.vatbub.magic.util.swap
 import javafx.collections.ListChangeListener
@@ -113,7 +114,7 @@ class CardButtonCell : TableCell<Card, Card>() {
     private fun duplicateButtonOnAction(@Suppress("UNUSED_PARAMETER") event: ActionEvent) {
         val card = tableRow.item ?: return
         val index = tableRow.index
-        DataHolder.cardList.add(index + 1, card.duplicate())
+        DataHolder.cardList.add(index + 1, card.copy())
     }
 
     private fun upButtonOnAction(@Suppress("UNUSED_PARAMETER") event: ActionEvent) {

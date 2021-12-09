@@ -31,9 +31,14 @@ class Card(attack: Int = 1, defense: Int = 1, counter: Int = 0, abilities: Set<A
     val abilities: ObservableSet<Ability> = FXCollections.observableSet(abilities.toMutableSet())
 }
 
-fun Card.duplicate() = Card(
-    attack = attackProperty.value,
-    defense = defenseProperty.value,
-    counter = counterProperty.value,
+fun Card.copy(
+    attack: Int = attackProperty.value,
+    defense: Int = defenseProperty.value,
+    counter: Int = counterProperty.value,
+    abilities: Set<Ability> = this.abilities
+) = Card(
+    attack = attack,
+    defense = defense,
+    counter = counter,
     abilities = abilities
 )
