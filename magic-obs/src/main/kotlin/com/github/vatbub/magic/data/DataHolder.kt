@@ -34,7 +34,6 @@ import com.github.vatbub.magic.view.ImageSpec
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ObjectProperty
-import javafx.collections.ObservableList
 import javafx.scene.paint.Color
 
 object DataHolder {
@@ -56,7 +55,7 @@ object DataHolder {
 
     val dayNightMechanicEnabled: BooleanProperty = preferences.property(DayNightMechanicEnabledKey)
 
-    val cardList: ObservableList<Card> = PermutatingObservableList(mutableListOf())
+    val cardList = PermutatingObservableList<Card>(mutableListOf())
 
     fun resetGame() {
         healthPointsProperty.value = HealthPoints.defaultValue

@@ -21,6 +21,7 @@ package com.github.vatbub.magic.util
 
 import com.github.vatbub.magic.data.Permutation
 import javafx.collections.ModifiableObservableListBase
+import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 
@@ -30,9 +31,11 @@ import java.util.stream.IntStream
  */
 class PermutatingObservableList<E>(private val source: MutableList<E>) :
     ModifiableObservableListBase<E>() {
+    fun swap(i: Int, j: Int) = this.permute(Permutation(oldIndex = i, newIndex = j))
+
     fun permute(permutation: Permutation) {
         val permutationArray = (0 until size).toMutableList()
-        permutationArray.swap(permutation.oldIndex, permutation.newIndex)
+        Collections.swap(permutationArray, permutation.oldIndex, permutation.newIndex)
         this.permute(permutationArray.toIntArray())
     }
 
@@ -45,20 +48,6 @@ class PermutatingObservableList<E>(private val source: MutableList<E>) :
         }
         nextPermutation(0, size, permutation)
         endChange()
-    }
-
-    fun pairwiseSwap() {
-        val permutation = IntArray(size)
-        var i = 0
-        while (i + 1 < permutation.size) {
-            permutation[i] = i + 1
-            permutation[i + 1] = i
-            i += 2
-        }
-        if (permutation.size % 2 == 1) {
-            permutation[permutation.size - 1] = permutation.size - 1
-        }
-        permute(permutation)
     }
 
     private fun checkPermutation(permutation: IntArray) {

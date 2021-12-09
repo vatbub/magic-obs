@@ -25,7 +25,6 @@ import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.data.copy
 import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.get
-import com.github.vatbub.magic.util.swap
 import javafx.collections.ListChangeListener
 import javafx.event.ActionEvent
 import javafx.scene.control.Button
