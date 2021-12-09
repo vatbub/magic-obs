@@ -62,7 +62,7 @@ class DayNightView : Closeable {
             val scene = Scene(root)
 
             stage.title = "Magic OBS Day Night"
-            // stage.icons.add(Image(javaClass.getResourceAsStream("icon.png")))
+            stage.icons.add(Image(DayNightView::class.java.getResourceAsStream("icon.png")))
             stage.minWidth = root.minWidth(0.0) + 70
             stage.minHeight = root.minHeight(0.0) + 70
 

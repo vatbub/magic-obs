@@ -36,6 +36,7 @@ import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.control.Label
 import javafx.scene.effect.MotionBlur
+import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.AnchorPane
 import javafx.scene.paint.Color
@@ -61,7 +62,7 @@ class HealthPointsView : Closeable {
             val scene = Scene(root)
 
             stage.title = "Magic OBS Health Points"
-            // stage.icons.add(Image(javaClass.getResourceAsStream("icon.png")))
+            stage.icons.add(Image(HealthPointsView::class.java.getResourceAsStream("icon.png")))
             stage.minWidth = root.minWidth(0.0) + 70
             stage.minHeight = root.minHeight(0.0) + 70
 

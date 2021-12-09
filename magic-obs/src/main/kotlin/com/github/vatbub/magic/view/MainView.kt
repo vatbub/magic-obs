@@ -186,10 +186,12 @@ class MainView {
 
     @FXML
     fun resetGameButtonOnAction() {
-        val alertResult = Alert(CONFIRMATION).apply {
-            contentText = App.resourceBundle["mainView.confirmation.reset.content"]!!.format(HealthPoints.defaultValue)
-            buttonTypes.clear()
-            buttonTypes.addAll(YES, NO)
+        val alertResult = Alert(
+            CONFIRMATION,
+            App.resourceBundle["mainView.confirmation.reset.content"]!!.format(HealthPoints.defaultValue),
+            YES, NO
+        ).apply {
+            this.initOwner(App.instance.currentStage)
         }.showAndWait().asNullable() ?: return
 
         if (alertResult != YES) return

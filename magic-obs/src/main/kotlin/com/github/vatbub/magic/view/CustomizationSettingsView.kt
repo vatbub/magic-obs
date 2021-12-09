@@ -38,6 +38,7 @@ import javafx.scene.control.CheckBox
 import javafx.scene.control.ColorPicker
 import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
+import javafx.scene.image.Image
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import java.io.Closeable
@@ -56,7 +57,7 @@ class CustomizationSettingsView : Closeable {
                 val scene = Scene(root)
 
                 stage.title = App.resourceBundle["customizationView.windowTitle"]
-                // stage.icons.add(Image(javaClass.getResourceAsStream("icon.png")))
+                stage.icons.add(Image(javaClass.getResourceAsStream("icon.png")))
                 stage.minWidth = root.minWidth(0.0) + 70
                 stage.minHeight = root.minHeight(0.0) + 70
 

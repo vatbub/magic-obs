@@ -29,6 +29,7 @@ import javafx.scene.Scene
 import javafx.scene.control.ComboBox
 import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
+import javafx.scene.image.Image
 import javafx.scene.text.FontPosture
 import javafx.scene.text.FontWeight
 import javafx.stage.Modality
@@ -59,7 +60,7 @@ class FontSpecSelectionView {
             val scene = Scene(root)
 
             stage.title = App.resourceBundle["fontSpecSelectionView.title"]
-            // stage.icons.add(Image(javaClass.getResourceAsStream("icon.png")))
+            stage.icons.add(Image(FontSpecSelectionView::class.java.getResourceAsStream("icon.png")))
             stage.minWidth = root.minWidth(0.0) + 70
             stage.minHeight = root.minHeight(0.0) + 70
 

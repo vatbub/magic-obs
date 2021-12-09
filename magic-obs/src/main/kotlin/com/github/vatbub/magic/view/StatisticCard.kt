@@ -315,8 +315,7 @@ class StatisticCard {
     private fun updateCounter(counter: Int) {
         val currentNumberOfSixes = abilityViewMap.keys
             .mapNotNull { it.rightOrNull() }
-            .filter { it.value == 6 }
-            .count()
+            .count { it.value == 6 }
 
         val numberOfSixes = (counter / 6.0).toInt()
         val remainder = counter % 6

@@ -29,6 +29,7 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.control.*
+import javafx.scene.image.Image
 import javafx.stage.FileChooser
 import javafx.stage.Modality
 import javafx.stage.Stage
@@ -57,6 +58,7 @@ class ImageSpecSelectionView {
                 stage.minHeight = root.minHeight(0.0) + 70
 
                 stage.scene = scene
+                stage.icons.add(Image(FontSpecSelectionView::class.java.getResourceAsStream("icon.png")))
 
                 stage.show()
                 return this

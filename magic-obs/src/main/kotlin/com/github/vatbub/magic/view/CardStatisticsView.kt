@@ -35,6 +35,7 @@ import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
+import javafx.scene.image.Image
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
@@ -58,7 +59,7 @@ class CardStatisticsView : Closeable {
             val scene = Scene(root)
 
             stage.title = "Magic OBS Card Statistics"
-            // stage.icons.add(Image(javaClass.getResourceAsStream("icon.png")))
+            stage.icons.add(Image(CardStatisticsView::class.java.getResourceAsStream("icon.png")))
 
             stage.scene = scene
 
