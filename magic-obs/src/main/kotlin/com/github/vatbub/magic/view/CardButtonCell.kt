@@ -25,7 +25,7 @@ import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.data.copy
 import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.get
-import javafx.collections.ListChangeListener
+import com.github.vatbub.magic.util.sizeProperty
 import javafx.event.ActionEvent
 import javafx.scene.control.Button
 import javafx.scene.control.TableCell
@@ -90,13 +90,10 @@ class CardButtonCell : TableCell<Card, Card>() {
 
         graphic = hBox
         upButton.isDisable = tableRow.index == 0
-        downButton.isDisable = tableRow.index == tableView.items.size - 1
 
-        tableView.items.addListener(ListChangeListener { change ->
-            while (change.next()) {
-                downButton.isDisable = tableRow.index == change.list.size - 1
-            }
-        })
+        downButton.disableProperty().bindAndMap(tableView.items.sizeProperty()) {
+            tableRow.index == it.toInt() - 1
+        }
 
         tableColumn.minWidth = USE_PREF_SIZE
         hBox.widthProperty().addListener { _, _, newValue ->
