@@ -28,7 +28,11 @@ data class Permutation(val oldIndex: Int, val newIndex: Int) {
 val ListChangeListener.Change<*>.permutations: List<Permutation>
     get() {
         require(wasPermutated())
-        return (from until to).map { i ->
-            Permutation(i, getPermutation(i))
+        val result = mutableMapOf<Int, Int>()
+        (from until to).forEach { oldIndex ->
+            val newIndex = getPermutation(oldIndex)
+            if (result.containsKey(newIndex)) return@forEach
+            result[oldIndex] = newIndex
         }
+        return result.map { Permutation(it.key, it.value) }
     }
