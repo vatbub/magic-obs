@@ -38,7 +38,7 @@ class CheckboxDropDownCell : TableCell<Card, Card>() {
             if (cardUpdateInProgress) return@ListChangeListener
 
             while (change.next()) {
-                currentCard.abilities.removeAll(change.removed)
+                currentCard.abilities.removeAll(change.removed.toSet())
                 currentCard.abilities.addAll(change.addedSubList)
                 change.addedSubList.forEach { Ability.addToHistory(it) }
             }

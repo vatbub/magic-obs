@@ -37,6 +37,9 @@ import javafx.scene.control.ButtonType.NO
 import javafx.scene.control.ButtonType.YES
 import javafx.scene.layout.GridPane
 import javafx.util.Callback
+import kotlinx.coroutines.*
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 
 class MainView {
@@ -69,6 +72,9 @@ class MainView {
 
     private var healthPointUpdateInProgress = false
 
+    private var healthPointUpdateJob: Job? = null
+
+    @OptIn(DelicateCoroutinesApi::class, ExperimentalTime::class)
     @FXML
     fun initialize() {
         cardsTableView.placeholder = Label(
@@ -77,22 +83,26 @@ class MainView {
         )
 
         healthPointsBox.textProperty().addListener { _, oldValue, newValue ->
-            val newIntValue = newValue.toIntOrNull()
+            healthPointUpdateJob?.cancel()
+            healthPointUpdateJob = GlobalScope.launch {
+                delay(Duration.seconds(1))
+                val newIntValue = newValue.toIntOrNull()
 
-            if (newIntValue == null) {
-                DataHolder.healthPointsProperty.set(oldValue.toInt())
-                return@addListener
+                if (newIntValue == null) {
+                    DataHolder.healthPointsProperty.set(oldValue.toInt())
+                    return@launch
+                }
+
+                if (newIntValue < 0) {
+                    DataHolder.healthPointsProperty.set(0)
+                    return@launch
+                }
+
+
+                healthPointUpdateInProgress = true
+                DataHolder.healthPointsProperty.set(newIntValue)
+                healthPointUpdateInProgress = false
             }
-
-            if (newIntValue < 0) {
-                DataHolder.healthPointsProperty.set(0)
-                return@addListener
-            }
-
-
-            healthPointUpdateInProgress = true
-            DataHolder.healthPointsProperty.set(newIntValue)
-            healthPointUpdateInProgress = false
         }
 
         DataHolder.healthPointsProperty.addListener { _, _, newValue ->
