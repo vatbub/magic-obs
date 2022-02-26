@@ -2,7 +2,7 @@
  * #%L
  * magic-obs
  * %%
- * Copyright (C) 2016 - 2021 Frederik Kammel
+ * Copyright (C) 2019 - 2022 Frederik Kammel
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,9 @@
  * limitations under the License.
  * #L%
  */
-module magic.obs {
-    requires kotlin.stdlib;
-    requires javafx.graphics;
-    requires kotlinPreferences;
-    requires javafx.controls;
-    requires javafx.fxml;
-    requires org.controlsfx.controls;
-    requires kotlinx.coroutines.core.jvm;
-    requires unique4j;
-    opens com.github.vatbub.magic.view;
-    opens com.github.vatbub.magic;
-}
+package com.github.vatbub.magic.view
+
+import com.github.vatbub.magic.App
+
+fun String.appendInstanceNumber() =
+    if (App.instanceNumber == 1) this else "$this (Overlay number ${App.instanceNumber})"

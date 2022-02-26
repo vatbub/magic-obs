@@ -65,6 +65,8 @@ object PreferenceKeys {
         defaultValue = BuiltInImageSpecs.GreenRing.imageSpec
     )
 
+    object RunningInstances : Key<Int>("runningInstances", 0, String::toInt, Int::toString)
+
     object AbilityKeys {
         object SortMode : Key<SortModeEnum>("abilitySortMode", Usage, { SortModeEnum.valueOf(it) }, { it.toString() })
 

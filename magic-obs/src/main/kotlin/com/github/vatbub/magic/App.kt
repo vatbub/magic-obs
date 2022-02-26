@@ -19,10 +19,7 @@
  */
 package com.github.vatbub.magic
 
-import com.github.vatbub.magic.view.CardStatisticsView
-import com.github.vatbub.magic.view.DayNightView
-import com.github.vatbub.magic.view.HealthPointsView
-import com.github.vatbub.magic.view.MainView
+import com.github.vatbub.magic.view.*
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
@@ -37,12 +34,18 @@ class App private constructor(callLaunch: Boolean, vararg args: String?) : Appli
         lateinit var instance: App
             private set
 
+        var instanceNumber: Int = 1
+            private set
+
+        const val id = "com.github.vatbub.magic.obs"
+
         val resourceBundle: ResourceBundle by lazy {
             ResourceBundle.getBundle("com.github.vatbub.magic.strings")
         }
 
 
         fun actualMain(vararg args: String) {
+            instanceNumber = AppInstanceManager.afterStart()
             App(true, *args)
         }
     }
@@ -74,7 +77,7 @@ class App private constructor(callLaunch: Boolean, vararg args: String?) : Appli
         controllerInstance = fxmlLoader.getController()
 
         val scene = Scene(root)
-        primaryStage.title = "Magic OBS"
+        primaryStage.title = "Magic OBS".appendInstanceNumber()
         primaryStage.icons.add(Image(MainView::class.java.getResourceAsStream("icon.png")))
         primaryStage.minWidth = root.minWidth(0.0) + 70
         primaryStage.minHeight = root.minHeight(0.0) + 70
@@ -89,6 +92,10 @@ class App private constructor(callLaunch: Boolean, vararg args: String?) : Appli
         }
 
         primaryStage.show()
+    }
+
+    override fun stop() {
+        AppInstanceManager.beforeExit()
     }
 
     private fun openAuxiliaryViews() {

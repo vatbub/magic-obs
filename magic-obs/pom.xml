@@ -51,6 +51,11 @@
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
         </dependency>
+        <dependency>
+            <groupId>tk.pratanumandal</groupId>
+            <artifactId>unique4j</artifactId>
+            <version>1.4</version>
+        </dependency>
     </dependencies>
 
     <build>

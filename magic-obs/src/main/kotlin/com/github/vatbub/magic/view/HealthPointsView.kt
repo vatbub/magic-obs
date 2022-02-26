@@ -61,7 +61,7 @@ class HealthPointsView : Closeable {
 
             val scene = Scene(root)
 
-            stage.title = "Magic OBS Health Points"
+            stage.title = "Magic OBS Health Points".appendInstanceNumber()
             stage.icons.add(Image(HealthPointsView::class.java.getResourceAsStream("icon.png")))
             stage.minWidth = root.minWidth(0.0) + 70
             stage.minHeight = root.minHeight(0.0) + 70

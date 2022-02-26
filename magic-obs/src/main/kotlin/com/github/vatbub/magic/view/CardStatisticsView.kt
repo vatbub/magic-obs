@@ -58,7 +58,7 @@ class CardStatisticsView : Closeable {
 
             val scene = Scene(root)
 
-            stage.title = "Magic OBS Card Statistics"
+            stage.title = "Magic OBS Card Statistics".appendInstanceNumber()
             stage.icons.add(Image(CardStatisticsView::class.java.getResourceAsStream("icon.png")))
 
             stage.scene = scene
