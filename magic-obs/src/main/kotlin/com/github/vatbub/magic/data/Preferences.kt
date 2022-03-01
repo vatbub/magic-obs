@@ -48,6 +48,9 @@ object PreferenceKeys {
     object DayNightMechanicEnabledKey :
         Key<Boolean>("dayNightMechanicEnabled", false, { it.toBooleanStrict() }, { it.toString() })
 
+    object CardDatabaseEnabledKey :
+        Key<Boolean>("cardDatabaseEnabled", true, { it.toBooleanStrict() }, { it.toString() })
+
     object HealthPointsFontColor : ColorKey("healthPointsFontColor", Color.WHITE)
 
     object HealthPointsFontSpec : FontSpecKey(

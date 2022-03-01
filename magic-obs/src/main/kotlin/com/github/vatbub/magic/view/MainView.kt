@@ -27,6 +27,7 @@ import com.github.vatbub.magic.data.PreferenceKeys.HealthPoints
 import com.github.vatbub.magic.util.EnumStringConverter
 import com.github.vatbub.magic.util.asNullable
 import com.github.vatbub.magic.util.get
+import javafx.beans.property.DoubleProperty
 import javafx.beans.property.IntegerProperty
 import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
@@ -56,10 +57,10 @@ class MainView {
     private lateinit var counterColumn: TableColumn<Card, Int>
 
     @FXML
-    private lateinit var defenseColumn: TableColumn<Card, Int>
+    private lateinit var defenseColumn: TableColumn<Card, Double>
 
     @FXML
-    private lateinit var attackColumn: TableColumn<Card, Int>
+    private lateinit var attackColumn: TableColumn<Card, Double>
 
     @FXML
     private lateinit var abilitiesColumn: TableColumn<Card, Card>
@@ -137,8 +138,8 @@ class MainView {
     }
 
     private fun refreshCardTableFactories() {
-        attackColumn.setIntegerColumnFactories { attackProperty }
-        defenseColumn.setIntegerColumnFactories { defenseProperty }
+        attackColumn.setDoubleColumnFactories { attackProperty }
+        defenseColumn.setDoubleColumnFactories { defenseProperty }
         counterColumn.setIntegerColumnFactories { counterProperty }
         abilitiesColumn.cellFactory = Callback { CheckboxDropDownCell() }
         buttonsColumn.cellFactory = Callback { CardButtonCell() }
@@ -150,6 +151,18 @@ class MainView {
         cellFactory = Callback {
             object : ObjectIntegerEditingCell<Card>() {
                 override fun updateItemPropertyValue(item: Card, newValue: Int) {
+                    objectProperty(item).value = newValue
+                }
+            }
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun TableColumn<Card, Double>.setDoubleColumnFactories(objectProperty: Card.() -> DoubleProperty) {
+        cellValueFactory = Callback { objectProperty(it.value) as ObservableValue<Double> }
+        cellFactory = Callback {
+            object : ObjectDoubleEditingCell<Card>() {
+                override fun updateItemPropertyValue(item: Card, newValue: Double) {
                     objectProperty(item).value = newValue
                 }
             }

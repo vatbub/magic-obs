@@ -91,10 +91,10 @@ class StatisticCard {
             updateCounter(counterProperty.value)
 
             attackProperty.addListener { _, _, newValue ->
-                updateStatisticLabel(attack = newValue.toInt())
+                updateStatisticLabel(attack = newValue.toDouble())
             }
             defenseProperty.addListener { _, _, newValue ->
-                updateStatisticLabel(defense = newValue.toInt())
+                updateStatisticLabel(defense = newValue.toDouble())
             }
             counterProperty.addListener { _, _, newValue -> updateCounter(newValue.toInt()) }
 
@@ -306,11 +306,15 @@ class StatisticCard {
 
     @OptIn(ExperimentalTime::class)
     private fun updateStatisticLabel(
-        attack: Int = card!!.attackProperty.value,
-        defense: Int = card!!.defenseProperty.value
+        attack: Double = card!!.attackProperty.value,
+        defense: Double = card!!.defenseProperty.value
     ) {
-        statisticLabel.text = "$attack/$defense"
+        statisticLabel.text = "${attack.format()}/${defense.format()}"
     }
+
+    private fun Double.format() =
+        if (this == this.toInt().toDouble()) this.toInt().toString()
+        else this.toString()
 
     private fun updateCounter(counter: Int) {
         val currentNumberOfSixes = abilityViewMap.keys

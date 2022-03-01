@@ -28,4 +28,5 @@ module magic.obs {
     requires unique4j;
     opens com.github.vatbub.magic.view;
     opens com.github.vatbub.magic;
+    opens com.github.vatbub.magic.data to unique4j;
 }
