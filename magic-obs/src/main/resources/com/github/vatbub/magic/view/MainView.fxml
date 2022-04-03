@@ -4,8 +4,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <GridPane fx:id="rootPane" hgap="8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-          minHeight="301.0" minWidth="492.0" vgap="8.0" xmlns="http://javafx.com/javafx/17"
-          xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.vatbub.magic.view.MainView">
+          minHeight="301.0" minWidth="492.0" prefHeight="378.0" prefWidth="709.0" vgap="8.0"
+          xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="com.github.vatbub.magic.view.MainView">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity"/>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
@@ -30,12 +31,12 @@
                    maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0"
                    GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
             <columns>
-                <TableColumn fx:id="attackColumn" prefWidth="75.0" sortable="false"
+                <TableColumn fx:id="attackColumn" prefWidth="100.0" sortable="false"
                              text="%mainView.tableColumn.attack"/>
-                <TableColumn fx:id="defenseColumn" prefWidth="75.0" sortable="false"
+                <TableColumn fx:id="defenseColumn" prefWidth="100.0" sortable="false"
                              text="%mainView.tableColumn.defense"/>
-                <TableColumn fx:id="abilitiesColumn" prefWidth="75.0" text="%mainView.tableColumn.abilities"/>
-                <TableColumn fx:id="counterColumn" prefWidth="75.0" sortable="false"
+                <TableColumn fx:id="abilitiesColumn" prefWidth="150.0" text="%mainView.tableColumn.abilities"/>
+                <TableColumn fx:id="counterColumn" prefWidth="100.0" sortable="false"
                              text="%mainView.tableColumn.counter"/>
                 <TableColumn fx:id="buttonsColumn" editable="false" maxWidth="1.7976931348623157E308"
                              minWidth="-Infinity" prefWidth="75.0" resizable="false" sortable="false"

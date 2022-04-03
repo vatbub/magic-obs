@@ -104,7 +104,7 @@ class CardButtonCell : TableCell<Card, Card>() {
         tableColumn.minWidth = USE_PREF_SIZE
         hBox.widthProperty().addListener { _, _, newValue ->
             if (tableColumn.width >= newValue.toDouble()) return@addListener
-            tableColumn.prefWidth = newValue.toDouble() + 10
+            tableColumn.prefWidth = newValue.toDouble() + 25
         }
     }
 
