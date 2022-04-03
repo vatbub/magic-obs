@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <GridPane fx:id="rootPane" hgap="8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-          minHeight="301.0" minWidth="492.0" vgap="8.0" xmlns="http://javafx.com/javafx/16"
+          minHeight="301.0" minWidth="492.0" vgap="8.0" xmlns="http://javafx.com/javafx/17"
           xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.vatbub.magic.view.MainView">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity"/>
@@ -18,7 +18,7 @@
         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
     </rowConstraints>
     <children>
-        <Label text="%mainView.label.healthPoints" />
+        <Label text="%mainView.label.healthPoints"/>
         <HBox spacing="4.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
             <children>
                 <Button mnemonicParsing="false" onAction="#healthPointsAddOnAction" text="+"/>
@@ -58,8 +58,8 @@
                     <children>
                         <Button mnemonicParsing="false" onAction="#buttonResetWindowsOnAction"
                                 text="%mainView.button.resetWindows"/>
-                        <Button mnemonicParsing="false" onAction="#customizeAppearanceButtonOnAction"
-                                text="%mainView.button.customizeAppearance"/>
+                        <Button fx:id="customizeAppearanceButton" mnemonicParsing="false"
+                                onAction="#customizeAppearanceButtonOnAction"/>
                     </children>
                 </HBox>
             </children>
@@ -68,7 +68,7 @@
         <ComboBox fx:id="comboBoxDayNightState" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
                   GridPane.hgrow="ALWAYS" GridPane.rowIndex="1"/>
     </children>
-   <padding>
-      <Insets bottom="8.0" left="16.0" right="16.0" top="16.0" />
-   </padding>
+    <padding>
+        <Insets bottom="8.0" left="16.0" right="16.0" top="16.0"/>
+    </padding>
 </GridPane>
