@@ -38,7 +38,7 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
 import javafx.util.Callback
-import jfxtras.styles.jmetro.JMetroStyleClass
+import jfxtras.styles.jmetro.JMetroStyleClass.*
 import kotlinx.coroutines.*
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -82,11 +82,12 @@ class MainView {
     @OptIn(DelicateCoroutinesApi::class, ExperimentalTime::class)
     @FXML
     fun initialize() {
-        rootPane.styleClass.add(JMetroStyleClass.BACKGROUND)
+        rootPane.styleClass.add(BACKGROUND)
         cardsTableView.placeholder = Label(
             App.resourceBundle["mainView.tableView.cards.placeholder"]!!
                 .format(App.resourceBundle["mainView.button.addCard"])
         )
+        cardsTableView.styleClass.addAll(TABLE_GRID_LINES, ALTERNATING_ROW_COLORS)
 
         customizeAppearanceButton.graphicProperty().bind(
             Image(javaClass.getResourceAsStream("setting.png"), 15.0, 15.0, true, true)
