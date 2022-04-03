@@ -23,9 +23,7 @@ import com.github.vatbub.magic.App
 import com.github.vatbub.magic.data.Card
 import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.data.copy
-import com.github.vatbub.magic.util.bindAndMap
-import com.github.vatbub.magic.util.get
-import com.github.vatbub.magic.util.sizeProperty
+import com.github.vatbub.magic.util.*
 import javafx.event.ActionEvent
 import javafx.scene.control.Button
 import javafx.scene.control.TableCell
@@ -52,7 +50,11 @@ class CardButtonCell : TableCell<Card, Card>() {
 
     private val upButton by lazy {
         Button().also {
-            it.graphic = ImageView(Image(javaClass.getResourceAsStream("up-arrow.png")))
+            it.graphicProperty().bind(
+                Image(javaClass.getResourceAsStream("up-arrow.png"))
+                    .invertIfDarkMode()
+                    .map(::ImageView)
+            )
             it.setOnAction(this::upButtonOnAction)
             it.minWidth = USE_PREF_SIZE
             it.prefWidth = USE_COMPUTED_SIZE
@@ -61,7 +63,11 @@ class CardButtonCell : TableCell<Card, Card>() {
 
     private val downButton by lazy {
         Button().also {
-            it.graphic = ImageView(Image(javaClass.getResourceAsStream("down-arrow.png")))
+            it.graphicProperty().bind(
+                Image(javaClass.getResourceAsStream("down-arrow.png"))
+                    .invertIfDarkMode()
+                    .map(::ImageView)
+            )
             it.setOnAction(this::downButtonOnAction)
             it.minWidth = USE_PREF_SIZE
             it.prefWidth = USE_COMPUTED_SIZE

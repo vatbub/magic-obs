@@ -24,10 +24,7 @@ import com.github.vatbub.magic.data.Card
 import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.data.DayNightState
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPoints
-import com.github.vatbub.magic.util.EnumStringConverter
-import com.github.vatbub.magic.util.asNullable
-import com.github.vatbub.magic.util.get
-import com.github.vatbub.magic.util.map
+import com.github.vatbub.magic.util.*
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.IntegerProperty
 import javafx.beans.value.ObservableValue
@@ -42,7 +39,6 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
 import javafx.util.Callback
 import jfxtras.styles.jmetro.JMetroStyleClass
-import jfxtras.styles.jmetro.Style.DARK
 import kotlinx.coroutines.*
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -83,15 +79,6 @@ class MainView {
 
     private var healthPointUpdateJob: Job? = null
 
-    private val settingsIconProperty = DataHolder.uiStyle.map {
-        when (it) {
-            DARK -> "setting_dark.png"
-            else -> "setting.png"
-        }
-    }.map { javaClass.getResourceAsStream(it) }
-        .map { Image(it, 15.0, 15.0, true, true) }
-        .map { ImageView(it) }
-
     @OptIn(DelicateCoroutinesApi::class, ExperimentalTime::class)
     @FXML
     fun initialize() {
@@ -101,7 +88,11 @@ class MainView {
                 .format(App.resourceBundle["mainView.button.addCard"])
         )
 
-        customizeAppearanceButton.graphicProperty().bind(settingsIconProperty)
+        customizeAppearanceButton.graphicProperty().bind(
+            Image(javaClass.getResourceAsStream("setting.png"), 15.0, 15.0, true, true)
+                .invertIfDarkMode()
+                .map(::ImageView)
+        )
 
         healthPointsBox.textProperty().addListener { _, oldValue, newValue ->
             healthPointUpdateJob?.cancel()
