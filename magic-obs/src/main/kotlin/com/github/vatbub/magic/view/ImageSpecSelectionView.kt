@@ -168,7 +168,8 @@ class ImageSpecSelectionView {
                 Alert.AlertType.WARNING,
                 App.resourceBundle["imageSpecSelectionView.alert.noFileSelected.contentText"],
                 ButtonType.OK
-            ).show()
+            ).apply { initOwner(stage) }
+                .show()
             return
         }
 
