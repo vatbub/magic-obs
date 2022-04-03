@@ -26,6 +26,8 @@ module magic.obs {
     requires org.controlsfx.controls;
     requires kotlinx.coroutines.core.jvm;
     requires unique4j;
+    requires org.jdom2;
+    requires javafx.web;
     opens com.github.vatbub.magic.view;
     opens com.github.vatbub.magic;
     opens com.github.vatbub.magic.data to unique4j;

@@ -26,6 +26,7 @@
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
         <mainClass>com.github.vatbub.magic.MainKt</mainClass>
+        <mainPackageFolder>com/github/vatbub/magic</mainPackageFolder>
     </properties>
 
     <dependencies>
@@ -41,6 +42,10 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.vatbub</groupId>
@@ -60,6 +65,11 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom2</artifactId>
+            <version>2.0.6.1</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

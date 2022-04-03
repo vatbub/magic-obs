@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<ScrollPane fx:id="scrollPane" maxWidth="1.7976931348623157E308" prefHeight="434.0" prefWidth="599.0"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.github.vatbub.magic.view.AboutView">
+    <content>
+        <GridPane fx:id="gridPane" hgap="8.0" maxHeight="-Infinity" maxWidth="-Infinity" vgap="8.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity"/>
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="-Infinity"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER"/>
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER"/>
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER"/>
+                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER"/>
+                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="ALWAYS"/>
+            </rowConstraints>
+            <children>
+                <Label fx:id="labelAppName" text="&lt;App name&gt;" GridPane.columnSpan="2147483647"/>
+                <Label text="%versionLabel" GridPane.rowIndex="1"/>
+                <Label fx:id="labelAppVersion" text="&lt;version&gt;" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Label text="%authorLabel" GridPane.rowIndex="2"/>
+                <Label fx:id="labelAuthor" text="&lt;Author&gt;" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                <TitledPane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                            minWidth="-Infinity" text="%projectLicenseTitle" GridPane.columnSpan="2147483647"
+                            GridPane.rowIndex="3">
+                    <content>
+                        <TextArea fx:id="textAreaProjectLicense" editable="false" maxHeight="-Infinity"
+                                  maxWidth="1.7976931348623157E308" minHeight="181.0" minWidth="478.0"
+                                  promptText="%licenseTextLoading" wrapText="true"/>
+                    </content>
+                </TitledPane>
+                <Label text="%thirdPartyLicensesTitle" GridPane.columnSpan="2147483647" GridPane.rowIndex="4"/>
+                <VBox fx:id="vboxThirdPartyLicenses" maxHeight="-Infinity" maxWidth="1.7976931348623157E308"
+                      minHeight="-Infinity" minWidth="-Infinity" spacing="8.0" GridPane.columnSpan="2147483647"
+                      GridPane.rowIndex="5">
+                    <children>
+                        <Label text="%loadingThirdPartyLicenses"/>
+                    </children>
+                </VBox>
+            </children>
+        </GridPane>
+    </content>
+    <padding>
+        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+    </padding>
+</ScrollPane>

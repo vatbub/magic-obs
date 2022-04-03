@@ -51,6 +51,11 @@
                 <version>${javafx.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-web</artifactId>
+                <version>${javafx.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.controlsfx</groupId>
                 <artifactId>controlsfx</artifactId>
                 <version>11.1.0</version>
@@ -81,6 +86,37 @@
                 <configuration>
                     <skip>true</skip>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>download-license-info</id>
+                        <goals>
+                            <goal>download-licenses</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <includedScopes>compile</includedScopes>
+                            <errorRemedy>failFast</errorRemedy>
+                            <licensesOutputDirectory>${project.build.directory}/classes/${mainPackageFolder}/licenses
+                            </licensesOutputDirectory>
+                            <licensesOutputFile>${project.build.directory}/classes/${mainPackageFolder}/licenses.xml
+                            </licensesOutputFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-project-license</id>
+                        <goals>
+                            <goal>update-project-license</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/classes/${mainPackageFolder}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -87,6 +87,16 @@ class CustomizationSettingsView : Closeable {
     val stage: Stage = Stage(StageStyle.DECORATED)
 
     @FXML
+    fun aboutOnAction() {
+        AboutView.show(
+            appName = "Magic OBS",
+            appVersion = "$appVersion; ${buildTimestamp.uiString}",
+            author = "Frederik Kammel",
+            classToResolveLicenseInfo = App::class.java
+        )
+    }
+
+    @FXML
     fun initialize() {
         backgroundColorPicker.valueProperty().bindBidirectional(DataHolder.backgroundColorProperty)
         healthPointsFontColorPicker.valueProperty().bindBidirectional(DataHolder.healthPointsFontColorProperty)
