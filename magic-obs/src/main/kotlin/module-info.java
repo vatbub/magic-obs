@@ -28,6 +28,7 @@ module magic.obs {
     requires unique4j;
     requires org.jdom2;
     requires javafx.web;
+    requires org.jfxtras.styles.jmetro;
     opens com.github.vatbub.magic.view;
     opens com.github.vatbub.magic;
     opens com.github.vatbub.magic.data to unique4j;

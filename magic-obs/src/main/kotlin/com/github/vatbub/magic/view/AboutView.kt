@@ -19,6 +19,9 @@
  */
 package com.github.vatbub.magic.view
 
+import com.github.vatbub.magic.data.DataHolder
+import com.github.vatbub.magic.data.PreferenceKeys
+import com.github.vatbub.magic.data.preferences
 import com.github.vatbub.magic.util.LicenseInfo
 import com.github.vatbub.magic.util.LicenseReader
 import com.github.vatbub.magic.util.bindAndMap
@@ -40,6 +43,8 @@ import javafx.scene.layout.VBox
 import javafx.scene.web.WebView
 import javafx.stage.Modality
 import javafx.stage.Stage
+import jfxtras.styles.jmetro.JMetro
+import jfxtras.styles.jmetro.JMetroStyleClass
 import java.io.File
 import java.util.*
 
@@ -58,6 +63,8 @@ class AboutView {
             controllerInstance.loadLicenseInfo(classToResolveLicenseInfo)
 
             val scene = Scene(root)
+            val jMetro = JMetro(scene, preferences[PreferenceKeys.UIStyle])
+            jMetro.styleProperty().bind(DataHolder.uiStyle)
             stage.title = resourceBundle["windowTitle"]!!.format(appName)
             stage.icons.add(Image(AboutView::class.java.getResourceAsStream("icon.png")))
 
@@ -102,6 +109,7 @@ class AboutView {
 
     @FXML
     fun initialize() {
+        scrollPane.styleClass.add(JMetroStyleClass.BACKGROUND)
         gridPane.prefWidthProperty().bindAndMap(scrollPane.viewportBoundsProperty()) { it.width }
     }
 

@@ -24,6 +24,7 @@ import com.github.vatbub.magic.appVersion
 import com.github.vatbub.magic.buildTimestamp
 import com.github.vatbub.magic.data.Ability
 import com.github.vatbub.magic.data.DataHolder
+import com.github.vatbub.magic.data.PreferenceKeys
 import com.github.vatbub.magic.data.PreferenceKeys.AbilityKeys.SortMode
 import com.github.vatbub.magic.data.preferences
 import com.github.vatbub.magic.uiString
@@ -39,8 +40,12 @@ import javafx.scene.control.ColorPicker
 import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
 import javafx.scene.image.Image
+import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import javafx.stage.StageStyle
+import jfxtras.styles.jmetro.JMetro
+import jfxtras.styles.jmetro.JMetroStyleClass
+import jfxtras.styles.jmetro.Style
 import java.io.Closeable
 
 
@@ -55,6 +60,8 @@ class CustomizationSettingsView : Closeable {
             val root = fxmlLoader.load<Parent>()
             with(fxmlLoader.getController<CustomizationSettingsView>()) {
                 val scene = Scene(root)
+                val jMetro = JMetro(scene, preferences[PreferenceKeys.UIStyle])
+                jMetro.styleProperty().bind(DataHolder.uiStyle)
 
                 stage.title = App.resourceBundle["customizationView.windowTitle"]
                 stage.icons.add(Image(javaClass.getResourceAsStream("icon.png")))
@@ -68,6 +75,9 @@ class CustomizationSettingsView : Closeable {
             }
         }
     }
+
+    @FXML
+    private lateinit var rootPane: GridPane
 
     @FXML
     private lateinit var backgroundColorPicker: ColorPicker
@@ -84,6 +94,9 @@ class CustomizationSettingsView : Closeable {
     @FXML
     private lateinit var dayNightControlsEnabledCheckbox: CheckBox
 
+    @FXML
+    private lateinit var uiStyleComboBox: ComboBox<Style>
+
     val stage: Stage = Stage(StageStyle.DECORATED)
 
     @FXML
@@ -98,6 +111,7 @@ class CustomizationSettingsView : Closeable {
 
     @FXML
     fun initialize() {
+        rootPane.styleClass.add(JMetroStyleClass.BACKGROUND)
         backgroundColorPicker.valueProperty().bindBidirectional(DataHolder.backgroundColorProperty)
         healthPointsFontColorPicker.valueProperty().bindBidirectional(DataHolder.healthPointsFontColorProperty)
 
@@ -109,6 +123,10 @@ class CustomizationSettingsView : Closeable {
         }
 
         dayNightControlsEnabledCheckbox.selectedProperty().bindBidirectional(DataHolder.dayNightMechanicEnabled)
+
+        uiStyleComboBox.items.addAll(Style.values())
+        uiStyleComboBox.selectionModel.select(DataHolder.uiStyle.value)
+        DataHolder.uiStyle.bind(uiStyleComboBox.selectionModel.selectedItemProperty())
 
         versionLabel.text =
             "${App.resourceBundle["customizationView.label.version"]}: $appVersion; ${buildTimestamp.uiString}"

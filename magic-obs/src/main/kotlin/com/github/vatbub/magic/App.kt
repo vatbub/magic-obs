@@ -19,6 +19,9 @@
  */
 package com.github.vatbub.magic
 
+import com.github.vatbub.magic.data.DataHolder
+import com.github.vatbub.magic.data.PreferenceKeys.UIStyle
+import com.github.vatbub.magic.data.preferences
 import com.github.vatbub.magic.view.*
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
@@ -26,6 +29,7 @@ import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.image.Image
 import javafx.stage.Stage
+import jfxtras.styles.jmetro.JMetro
 import java.io.Closeable
 import java.util.*
 
@@ -77,6 +81,8 @@ class App private constructor(callLaunch: Boolean, vararg args: String?) : Appli
         controllerInstance = fxmlLoader.getController()
 
         val scene = Scene(root)
+        val jMetro = JMetro(scene, preferences[UIStyle])
+        jMetro.styleProperty().bind(DataHolder.uiStyle)
         primaryStage.title = "Magic OBS".appendInstanceNumber()
         primaryStage.icons.add(Image(MainView::class.java.getResourceAsStream("icon.png")))
         primaryStage.minWidth = root.minWidth(0.0) + 70

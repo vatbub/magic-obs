@@ -28,6 +28,7 @@ import com.github.vatbub.magic.data.PreferenceKeys.HealthPoints
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPointsBackgroundImageSpec
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPointsFontColor
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPointsFontSpec
+import com.github.vatbub.magic.data.PreferenceKeys.UIStyle
 import com.github.vatbub.magic.util.PermutatingObservableList
 import com.github.vatbub.magic.view.FontSpec
 import com.github.vatbub.magic.view.ImageSpec
@@ -35,6 +36,7 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.ObjectProperty
 import javafx.scene.paint.Color
+import jfxtras.styles.jmetro.Style
 
 object DataHolder {
     val backgroundColorProperty: ObjectProperty<Color> = preferences.property(BackgroundColor)
@@ -54,6 +56,8 @@ object DataHolder {
     val dayNightState: ObjectProperty<DayNightState> = preferences.property(DayNightStateKey)
 
     val dayNightMechanicEnabled: BooleanProperty = preferences.property(DayNightMechanicEnabledKey)
+
+    val uiStyle: ObjectProperty<Style> = preferences.property(UIStyle)
 
     val cardList = PermutatingObservableList<Card>(mutableListOf())
 

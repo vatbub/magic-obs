@@ -3,9 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<GridPane hgap="8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-          minWidth="-Infinity" vgap="8.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="com.github.vatbub.magic.view.CustomizationSettingsView">
+<GridPane fx:id="rootPane" hgap="8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+          minHeight="-Infinity" minWidth="-Infinity" vgap="8.0" xmlns="http://javafx.com/javafx/17"
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.vatbub.magic.view.CustomizationSettingsView">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity"/>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity"/>
@@ -19,21 +19,22 @@
         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES"/>
         <RowConstraints maxHeight="0.0" minHeight="-Infinity" prefHeight="0.0" vgrow="SOMETIMES"/>
     </rowConstraints>
     <children>
         <ColorPicker fx:id="backgroundColorPicker" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
-                     GridPane.hgrow="ALWAYS"/>
-        <Label text="%customizationView.label.backgroundColor"/>
-        <Label text="%customizationView.label.abilitySortMode" GridPane.rowIndex="4"/>
-        <ComboBox fx:id="dropDownAbilitySortMode" maxWidth="1.7976931348623157E308" prefWidth="150.0"
-                  GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4"/>
-        <Label text="%customizationView.label.healthPointsFontColor" GridPane.rowIndex="1"/>
-        <ColorPicker fx:id="healthPointsFontColorPicker" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
                      GridPane.hgrow="ALWAYS" GridPane.rowIndex="1"/>
-        <Label text="%customizationView.label.fonts" GridPane.rowIndex="3"/>
+        <Label text="%customizationView.label.backgroundColor" GridPane.rowIndex="1"/>
+        <Label text="%customizationView.label.abilitySortMode" GridPane.rowIndex="5"/>
+        <ComboBox fx:id="dropDownAbilitySortMode" maxWidth="1.7976931348623157E308" prefWidth="150.0"
+                  GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5"/>
+        <Label text="%customizationView.label.healthPointsFontColor" GridPane.rowIndex="2"/>
+        <ColorPicker fx:id="healthPointsFontColorPicker" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
+                     GridPane.hgrow="ALWAYS" GridPane.rowIndex="2"/>
+        <Label text="%customizationView.label.fonts" GridPane.rowIndex="4"/>
         <HBox alignment="CENTER_LEFT" minHeight="-Infinity" minWidth="-Infinity" spacing="2.0" GridPane.columnIndex="1"
-              GridPane.hgrow="NEVER" GridPane.rowIndex="3">
+              GridPane.hgrow="NEVER" GridPane.rowIndex="4">
             <children>
                 <Button mnemonicParsing="false" onAction="#healthPointsFontSpecChangeButtonOnAction"
                         text="%customizationView.button.changeHealthPointsFont"/>
@@ -42,11 +43,11 @@
             </children>
         </HBox>
         <Label text="%customizationView.label.autoApplySettings" GridPane.columnSpan="2147483647"
-               GridPane.rowIndex="6"/>
-        <Label text="%customizationView.label.healthPointsBackground" GridPane.rowIndex="2"/>
+               GridPane.rowIndex="7"/>
+        <Label text="%customizationView.label.healthPointsBackground" GridPane.rowIndex="3"/>
         <Button mnemonicParsing="false" onAction="#healthPointsImageSpecChangeButtonOnAction"
-                text="%customizationView.button.healthPointsBackground" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-        <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="7">
+                text="%customizationView.button.healthPointsBackground" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+        <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="8">
             <children>
                 <Label fx:id="versionLabel" text="Version unknown"/>
                 <Hyperlink onAction="#aboutOnAction" text="%customizationView.hyperlink.about"/>
@@ -54,7 +55,9 @@
         </HBox>
         <CheckBox fx:id="dayNightControlsEnabledCheckbox" mnemonicParsing="false"
                   text="%customizationView.checkBox.dayNightControlsEnabled" GridPane.columnSpan="2147483647"
-                  GridPane.rowIndex="5"/>
+                  GridPane.rowIndex="6"/>
+        <Label text="%customizationView.label.uiStyle"/>
+        <ComboBox fx:id="uiStyleComboBox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"/>
     </children>
    <padding>
       <Insets bottom="8.0" left="16.0" right="16.0" top="16.0" />

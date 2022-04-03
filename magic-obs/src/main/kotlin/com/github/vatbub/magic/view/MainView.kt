@@ -38,6 +38,7 @@ import javafx.scene.control.ButtonType.NO
 import javafx.scene.control.ButtonType.YES
 import javafx.scene.layout.GridPane
 import javafx.util.Callback
+import jfxtras.styles.jmetro.JMetroStyleClass
 import kotlinx.coroutines.*
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -78,6 +79,7 @@ class MainView {
     @OptIn(DelicateCoroutinesApi::class, ExperimentalTime::class)
     @FXML
     fun initialize() {
+        rootPane.styleClass.add(JMetroStyleClass.BACKGROUND)
         cardsTableView.placeholder = Label(
             App.resourceBundle["mainView.tableView.cards.placeholder"]!!
                 .format(App.resourceBundle["mainView.button.addCard"])
