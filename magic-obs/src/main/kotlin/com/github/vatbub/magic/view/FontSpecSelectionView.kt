@@ -20,6 +20,9 @@
 package com.github.vatbub.magic.view
 
 import com.github.vatbub.magic.App
+import com.github.vatbub.magic.data.DataHolder
+import com.github.vatbub.magic.data.PreferenceKeys
+import com.github.vatbub.magic.data.preferences
 import com.github.vatbub.magic.util.get
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
@@ -30,12 +33,15 @@ import javafx.scene.control.ComboBox
 import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
 import javafx.scene.image.Image
+import javafx.scene.layout.GridPane
 import javafx.scene.text.FontPosture
 import javafx.scene.text.FontWeight
 import javafx.stage.Modality
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.util.StringConverter
+import jfxtras.styles.jmetro.JMetro
+import jfxtras.styles.jmetro.JMetroStyleClass
 import kotlin.properties.Delegates
 
 
@@ -58,6 +64,8 @@ class FontSpecSelectionView {
             controllerInstance.onFontSelectedCallback = onFontSelectedCallback
 
             val scene = Scene(root)
+            controllerInstance.jMetro = JMetro(scene, preferences[PreferenceKeys.UIStyle])
+            controllerInstance.jMetro.styleProperty().bind(DataHolder.uiStyle)
 
             stage.title = App.resourceBundle["fontSpecSelectionView.title"]
             stage.icons.add(Image(FontSpecSelectionView::class.java.getResourceAsStream("icon.png")))
@@ -70,6 +78,11 @@ class FontSpecSelectionView {
             return controllerInstance
         }
     }
+
+    private lateinit var jMetro: JMetro
+
+    @FXML
+    private lateinit var rootPane: GridPane
 
     @FXML
     private lateinit var systemWeightDropDown: ComboBox<FontWeight>
@@ -113,6 +126,7 @@ class FontSpecSelectionView {
 
     @FXML
     fun initialize() {
+        rootPane.styleClass.add(JMetroStyleClass.BACKGROUND)
         systemWeightDropDown.items = FXCollections.observableArrayList(*FontWeight.values())
         systemPostureDropDown.items = FXCollections.observableArrayList(*FontPosture.values())
         systemFamilyDropDown.items = FXCollections.observableArrayList(FontSpec.systemFonts)

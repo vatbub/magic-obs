@@ -20,6 +20,9 @@
 package com.github.vatbub.magic.view
 
 import com.github.vatbub.magic.App
+import com.github.vatbub.magic.data.DataHolder
+import com.github.vatbub.magic.data.PreferenceKeys
+import com.github.vatbub.magic.data.preferences
 import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.get
 import javafx.beans.property.SimpleObjectProperty
@@ -30,11 +33,14 @@ import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.control.*
 import javafx.scene.image.Image
+import javafx.scene.layout.GridPane
 import javafx.stage.FileChooser
 import javafx.stage.Modality
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.util.StringConverter
+import jfxtras.styles.jmetro.JMetro
+import jfxtras.styles.jmetro.JMetroStyleClass
 import java.io.File
 import kotlin.properties.Delegates
 
@@ -54,6 +60,9 @@ class ImageSpecSelectionView {
                 this.onFontSelectedCallback = onFontSelectedCallback
 
                 val scene = Scene(root)
+                jMetro = JMetro(scene, preferences[PreferenceKeys.UIStyle])
+                jMetro.styleProperty().bind(DataHolder.uiStyle)
+
                 stage.minWidth = root.minWidth(0.0) + 70
                 stage.minHeight = root.minHeight(0.0) + 70
 
@@ -65,6 +74,11 @@ class ImageSpecSelectionView {
             }
         }
     }
+
+    private lateinit var jMetro: JMetro
+
+    @FXML
+    private lateinit var rootPane: GridPane
 
     @FXML
     private lateinit var builtInImageSpecDropDown: ComboBox<BuiltInImageSpecs>
@@ -107,6 +121,7 @@ class ImageSpecSelectionView {
 
     @FXML
     fun initialize() {
+        rootPane.styleClass.add(JMetroStyleClass.BACKGROUND)
         builtInImageSpecDropDown.items = FXCollections.observableArrayList(*BuiltInImageSpecs.values())
 
         builtInImageSpecDropDown.converter = object : StringConverter<BuiltInImageSpecs>() {
