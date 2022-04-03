@@ -60,7 +60,7 @@ class CustomizationSettingsView : Closeable {
             val root = fxmlLoader.load<Parent>()
             with(fxmlLoader.getController<CustomizationSettingsView>()) {
                 val scene = Scene(root)
-                val jMetro = JMetro(scene, preferences[PreferenceKeys.UIStyle])
+                jMetro = JMetro(scene, preferences[PreferenceKeys.UIStyle])
                 jMetro.styleProperty().bind(DataHolder.uiStyle)
 
                 stage.title = App.resourceBundle["customizationView.windowTitle"]
@@ -75,6 +75,8 @@ class CustomizationSettingsView : Closeable {
             }
         }
     }
+
+    private lateinit var jMetro: JMetro
 
     @FXML
     private lateinit var rootPane: GridPane

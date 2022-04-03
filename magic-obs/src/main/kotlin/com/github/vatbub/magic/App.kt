@@ -69,6 +69,7 @@ class App private constructor(callLaunch: Boolean, vararg args: String?) : Appli
         private set
     var controllerInstance: MainView? = null
         private set
+    private lateinit var jMetro: JMetro
 
     val auxiliaryViews: MutableList<Closeable> = mutableListOf()
 
@@ -81,7 +82,7 @@ class App private constructor(callLaunch: Boolean, vararg args: String?) : Appli
         controllerInstance = fxmlLoader.getController()
 
         val scene = Scene(root)
-        val jMetro = JMetro(scene, preferences[UIStyle])
+        jMetro = JMetro(scene, preferences[UIStyle])
         jMetro.styleProperty().bind(DataHolder.uiStyle)
         primaryStage.title = "Magic OBS".appendInstanceNumber()
         primaryStage.icons.add(Image(MainView::class.java.getResourceAsStream("icon.png")))

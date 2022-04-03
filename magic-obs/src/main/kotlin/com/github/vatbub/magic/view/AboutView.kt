@@ -63,8 +63,8 @@ class AboutView {
             controllerInstance.loadLicenseInfo(classToResolveLicenseInfo)
 
             val scene = Scene(root)
-            val jMetro = JMetro(scene, preferences[PreferenceKeys.UIStyle])
-            jMetro.styleProperty().bind(DataHolder.uiStyle)
+            controllerInstance.jMetro = JMetro(scene, preferences[PreferenceKeys.UIStyle])
+            controllerInstance.jMetro.styleProperty().bind(DataHolder.uiStyle)
             stage.title = resourceBundle["windowTitle"]!!.format(appName)
             stage.icons.add(Image(AboutView::class.java.getResourceAsStream("icon.png")))
 
@@ -85,6 +85,8 @@ class AboutView {
 
     lateinit var stage: Stage
         private set
+
+    private lateinit var jMetro: JMetro
 
     @FXML
     private lateinit var labelAppName: Label
