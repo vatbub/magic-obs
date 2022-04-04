@@ -28,8 +28,10 @@ import javafx.concurrent.Worker.State.SUCCEEDED
 import javafx.scene.control.Alert
 import javafx.scene.control.Label
 import javafx.scene.control.TextArea
+import javafx.scene.image.Image
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
+import javafx.stage.Stage
 import jfxtras.styles.jmetro.JMetro
 import jfxtras.styles.jmetro.JMetroStyleClass.BACKGROUND
 import org.apache.maven.shared.invoker.Invoker
@@ -52,8 +54,10 @@ fun main() {
 
     Platform.startup {
         val progressDialog = ProgressDialog(UpdateAndLaunchTask)
-        jMetro.parent = progressDialog.dialogPane
-        progressDialog.dialogPane.styleClass.add(BACKGROUND)
+        jMetro.scene = progressDialog.dialogPane.scene
+        jMetro.scene.root.styleClass.add(BACKGROUND)
+        val stage = progressDialog.dialogPane.scene.window as? Stage
+        stage?.icons?.add(Image(Configuration::class.java.getResourceAsStream("icon.png")))
         progressDialog.show()
 
         UpdateAndLaunchTask.stateProperty().addListener { _, _, newValue ->
