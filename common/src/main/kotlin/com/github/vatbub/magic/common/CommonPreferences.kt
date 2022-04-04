@@ -26,7 +26,7 @@ import jfxtras.styles.jmetro.Style
 import java.io.File
 import kotlin.properties.Delegates
 
-var preferenceFolder by Delegates.observable(File("")) { prop, oldValue, newValue ->
+var preferenceFolder by Delegates.observable(File(System.getProperty("user.home"))) { _, _, newValue ->
     preferences = loadPreferences(newValue)
 }
 
