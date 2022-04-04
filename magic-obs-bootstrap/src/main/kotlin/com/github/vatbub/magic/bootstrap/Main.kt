@@ -58,6 +58,7 @@ fun main() {
         jMetro.scene.root.styleClass.add(BACKGROUND)
         val stage = progressDialog.dialogPane.scene.window as? Stage
         stage?.icons?.add(Image(Configuration::class.java.getResourceAsStream("icon.png")))
+        progressDialog.title = strings["windowTitle"]
         progressDialog.show()
 
         UpdateAndLaunchTask.stateProperty().addListener { _, _, newValue ->
