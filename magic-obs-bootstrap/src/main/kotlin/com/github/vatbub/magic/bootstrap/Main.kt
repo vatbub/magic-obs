@@ -19,6 +19,9 @@
  */
 package com.github.vatbub.magic.bootstrap
 
+import com.github.vatbub.magic.common.CommonPreferenceKeys.UIStyle
+import com.github.vatbub.magic.common.preferenceFolder
+import com.github.vatbub.magic.common.preferences
 import javafx.application.Platform
 import javafx.concurrent.Worker.State.FAILED
 import javafx.concurrent.Worker.State.SUCCEEDED
@@ -27,6 +30,8 @@ import javafx.scene.control.Label
 import javafx.scene.control.TextArea
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
+import jfxtras.styles.jmetro.JMetro
+import jfxtras.styles.jmetro.JMetroStyleClass.BACKGROUND
 import org.apache.maven.shared.invoker.Invoker
 import org.controlsfx.dialog.ProgressDialog
 import java.io.StringWriter
@@ -37,6 +42,9 @@ import java.util.concurrent.Executors
 val strings = ResourceBundle.getBundle("com.github.vatbub.magic.bootstrap.bootstrap_strings")
 
 fun main() {
+    preferenceFolder = FilesAndFolders.appDir
+    val jMetro = JMetro(preferences[UIStyle])
+
     Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
         throwable.printStackTrace()
         showException(throwable)
@@ -44,6 +52,8 @@ fun main() {
 
     Platform.startup {
         val progressDialog = ProgressDialog(UpdateAndLaunchTask)
+        jMetro.parent = progressDialog.dialogPane
+        progressDialog.dialogPane.styleClass.add(BACKGROUND)
         progressDialog.show()
 
         UpdateAndLaunchTask.stateProperty().addListener { _, _, newValue ->
@@ -69,7 +79,10 @@ private fun launchApp(invoker: Invoker) {
 }
 
 fun showException(exception: Throwable) {
+    val jMetro = JMetro(preferences[UIStyle])
     val alert = Alert(Alert.AlertType.ERROR)
+    jMetro.parent = alert.dialogPane
+    alert.dialogPane.styleClass.add(BACKGROUND)
     alert.title = strings["exception_dialog.title"]
     alert.headerText = strings["exception_dialog.header"]
 

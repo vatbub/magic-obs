@@ -19,9 +19,9 @@
  */
 package com.github.vatbub.magic.view
 
+import com.github.vatbub.magic.common.CommonPreferenceKeys.UIStyle
+import com.github.vatbub.magic.common.preferences
 import com.github.vatbub.magic.data.DataHolder
-import com.github.vatbub.magic.data.PreferenceKeys
-import com.github.vatbub.magic.data.preferences
 import com.github.vatbub.magic.util.LicenseInfo
 import com.github.vatbub.magic.util.LicenseReader
 import com.github.vatbub.magic.util.bindAndMap
@@ -63,7 +63,7 @@ class AboutView {
             controllerInstance.loadLicenseInfo(classToResolveLicenseInfo)
 
             val scene = Scene(root)
-            controllerInstance.jMetro = JMetro(scene, preferences[PreferenceKeys.UIStyle])
+            controllerInstance.jMetro = JMetro(scene, preferences[UIStyle])
             controllerInstance.jMetro.styleProperty().bind(DataHolder.uiStyle)
             stage.title = resourceBundle["windowTitle"]!!.format(appName)
             stage.icons.add(Image(AboutView::class.java.getResourceAsStream("icon.png")))

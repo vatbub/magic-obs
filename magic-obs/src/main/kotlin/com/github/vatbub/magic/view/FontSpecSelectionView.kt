@@ -20,9 +20,9 @@
 package com.github.vatbub.magic.view
 
 import com.github.vatbub.magic.App
+import com.github.vatbub.magic.common.CommonPreferenceKeys.UIStyle
+import com.github.vatbub.magic.common.preferences
 import com.github.vatbub.magic.data.DataHolder
-import com.github.vatbub.magic.data.PreferenceKeys
-import com.github.vatbub.magic.data.preferences
 import com.github.vatbub.magic.util.get
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
@@ -64,7 +64,7 @@ class FontSpecSelectionView {
             controllerInstance.onFontSelectedCallback = onFontSelectedCallback
 
             val scene = Scene(root)
-            controllerInstance.jMetro = JMetro(scene, preferences[PreferenceKeys.UIStyle])
+            controllerInstance.jMetro = JMetro(scene, preferences[UIStyle])
             controllerInstance.jMetro.styleProperty().bind(DataHolder.uiStyle)
 
             stage.title = App.resourceBundle["fontSpecSelectionView.title"]

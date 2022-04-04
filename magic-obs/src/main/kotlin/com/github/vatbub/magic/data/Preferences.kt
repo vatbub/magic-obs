@@ -20,8 +20,6 @@
 package com.github.vatbub.magic.data
 
 import com.github.vatbub.kotlin.preferences.Key
-import com.github.vatbub.kotlin.preferences.Preferences
-import com.github.vatbub.kotlin.preferences.PropertiesFileKeyValueProvider
 import com.github.vatbub.magic.data.Ability.SortMode.Usage
 import com.github.vatbub.magic.data.DayNightState.None
 import com.github.vatbub.magic.data.DayNightState.valueOf
@@ -32,11 +30,8 @@ import com.github.vatbub.magic.view.ImageSpec
 import javafx.scene.paint.Color
 import javafx.scene.text.FontPosture
 import javafx.scene.text.FontWeight
-import jfxtras.styles.jmetro.Style
 import java.io.File
 import com.github.vatbub.magic.data.Ability.SortMode as SortModeEnum
-
-val preferences = Preferences(PropertiesFileKeyValueProvider(File("magicObsViewSettings.properties")))
 
 object PreferenceKeys {
     object BackgroundColor : ColorKey("backgroundColor", Color.RED)
@@ -77,8 +72,6 @@ object PreferenceKeys {
         fun historyEntry(ability: Ability) =
             Key("abilityHistory.$ability", 0, { it.toInt() }, { it.toString() })
     }
-
-    object UIStyle : Key<Style>("uiStyle", Style.DARK, { Style.valueOf(it) }, { it.name })
 
     abstract class ColorKey(uniqueName: String, defaultValue: Color) : Key<Color>(uniqueName, defaultValue, {
         val components = it.split(";")

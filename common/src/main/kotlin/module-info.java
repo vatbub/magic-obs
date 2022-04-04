@@ -1,15 +1,15 @@
 /*-
  * #%L
- * magic-obs
+ * magic-obs-common
  * %%
- * Copyright (C) 2016 - 2021 Frederik Kammel
+ * Copyright (C) 2019 - 2022 Frederik Kammel
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,20 +17,10 @@
  * limitations under the License.
  * #L%
  */
-module magic.obs {
-    requires kotlin.stdlib;
-    requires javafx.graphics;
+module magic.obs.common {
     requires kotlinPreferences;
-    requires javafx.controls;
-    requires javafx.fxml;
-    requires org.controlsfx.controls;
-    requires kotlinx.coroutines.core.jvm;
-    requires unique4j;
-    requires org.jdom2;
-    requires javafx.web;
     requires org.jfxtras.styles.jmetro;
-    requires magic.obs.common;
-    opens com.github.vatbub.magic.view;
-    opens com.github.vatbub.magic;
-    opens com.github.vatbub.magic.data to unique4j;
+    requires kotlin.stdlib;
+
+    exports com.github.vatbub.magic.common;
 }

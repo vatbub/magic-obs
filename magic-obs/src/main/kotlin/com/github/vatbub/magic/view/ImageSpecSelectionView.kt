@@ -20,9 +20,9 @@
 package com.github.vatbub.magic.view
 
 import com.github.vatbub.magic.App
+import com.github.vatbub.magic.common.CommonPreferenceKeys.UIStyle
+import com.github.vatbub.magic.common.preferences
 import com.github.vatbub.magic.data.DataHolder
-import com.github.vatbub.magic.data.PreferenceKeys
-import com.github.vatbub.magic.data.preferences
 import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.get
 import javafx.beans.property.SimpleObjectProperty
@@ -60,7 +60,7 @@ class ImageSpecSelectionView {
                 this.onFontSelectedCallback = onFontSelectedCallback
 
                 val scene = Scene(root)
-                jMetro = JMetro(scene, preferences[PreferenceKeys.UIStyle])
+                jMetro = JMetro(scene, preferences[UIStyle])
                 jMetro.styleProperty().bind(DataHolder.uiStyle)
 
                 stage.minWidth = root.minWidth(0.0) + 70

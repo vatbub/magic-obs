@@ -31,6 +31,15 @@
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jfxtras</groupId>
+            <artifactId>jmetro</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.vatbub</groupId>
+            <artifactId>magic-obs-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

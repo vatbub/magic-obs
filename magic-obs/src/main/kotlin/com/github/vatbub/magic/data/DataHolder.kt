@@ -19,6 +19,8 @@
  */
 package com.github.vatbub.magic.data
 
+import com.github.vatbub.magic.common.CommonPreferenceKeys.UIStyle
+import com.github.vatbub.magic.common.preferences
 import com.github.vatbub.magic.data.PreferenceKeys.AbilityKeys
 import com.github.vatbub.magic.data.PreferenceKeys.BackgroundColor
 import com.github.vatbub.magic.data.PreferenceKeys.CardStatisticsFontSpec
@@ -28,7 +30,6 @@ import com.github.vatbub.magic.data.PreferenceKeys.HealthPoints
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPointsBackgroundImageSpec
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPointsFontColor
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPointsFontSpec
-import com.github.vatbub.magic.data.PreferenceKeys.UIStyle
 import com.github.vatbub.magic.util.PermutatingObservableList
 import com.github.vatbub.magic.view.FontSpec
 import com.github.vatbub.magic.view.ImageSpec

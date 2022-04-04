@@ -59,7 +59,7 @@ internal val TemporalAccessor.uiString
 
 internal const val appVersion = "%PROJECT_VERSION%"
 internal val buildTimestamp: LocalDateTime = try {
-    LocalDateTime.parse("%build_timestamp%", mavenDateFormatter)
+    LocalDateTime.parse("2022-04-04 01:45:21", mavenDateFormatter)
 } catch (e: DateTimeParseException) {
     LocalDateTime.now()
 }

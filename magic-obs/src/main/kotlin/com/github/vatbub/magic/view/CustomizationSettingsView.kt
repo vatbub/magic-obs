@@ -22,11 +22,11 @@ package com.github.vatbub.magic.view
 import com.github.vatbub.magic.App
 import com.github.vatbub.magic.appVersion
 import com.github.vatbub.magic.buildTimestamp
+import com.github.vatbub.magic.common.CommonPreferenceKeys.UIStyle
+import com.github.vatbub.magic.common.preferences
 import com.github.vatbub.magic.data.Ability
 import com.github.vatbub.magic.data.DataHolder
-import com.github.vatbub.magic.data.PreferenceKeys
 import com.github.vatbub.magic.data.PreferenceKeys.AbilityKeys.SortMode
-import com.github.vatbub.magic.data.preferences
 import com.github.vatbub.magic.uiString
 import com.github.vatbub.magic.util.EnumStringConverter
 import com.github.vatbub.magic.util.get
@@ -60,7 +60,7 @@ class CustomizationSettingsView : Closeable {
             val root = fxmlLoader.load<Parent>()
             with(fxmlLoader.getController<CustomizationSettingsView>()) {
                 val scene = Scene(root)
-                jMetro = JMetro(scene, preferences[PreferenceKeys.UIStyle])
+                jMetro = JMetro(scene, preferences[UIStyle])
                 jMetro.styleProperty().bind(DataHolder.uiStyle)
 
                 stage.title = App.resourceBundle["customizationView.windowTitle"]

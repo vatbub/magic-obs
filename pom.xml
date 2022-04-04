@@ -10,6 +10,7 @@
     <modules>
         <module>magic-obs</module>
         <module>magic-obs-bootstrap</module>
+        <module>common</module>
     </modules>
 
     <parent>
@@ -59,6 +60,11 @@
                 <groupId>org.controlsfx</groupId>
                 <artifactId>controlsfx</artifactId>
                 <version>11.1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jfxtras</groupId>
+                <artifactId>jmetro</artifactId>
+                <version>11.6.15</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

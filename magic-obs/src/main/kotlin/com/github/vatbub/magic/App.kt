@@ -19,9 +19,9 @@
  */
 package com.github.vatbub.magic
 
+import com.github.vatbub.magic.common.CommonPreferenceKeys.UIStyle
+import com.github.vatbub.magic.common.preferences
 import com.github.vatbub.magic.data.DataHolder
-import com.github.vatbub.magic.data.PreferenceKeys.UIStyle
-import com.github.vatbub.magic.data.preferences
 import com.github.vatbub.magic.view.*
 import javafx.application.Application
 import javafx.fxml.FXMLLoader

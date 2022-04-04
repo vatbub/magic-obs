@@ -19,6 +19,7 @@
  */
 package com.github.vatbub.magic.data
 
+import com.github.vatbub.magic.common.preferences
 import com.github.vatbub.magic.data.Ability.SortMode
 import com.github.vatbub.magic.data.Ability.SortMode.*
 import com.github.vatbub.magic.data.PreferenceKeys.AbilityKeys

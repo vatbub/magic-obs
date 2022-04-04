@@ -19,8 +19,8 @@
  */
 package com.github.vatbub.magic
 
+import com.github.vatbub.magic.common.preferences
 import com.github.vatbub.magic.data.PreferenceKeys.RunningInstances
-import com.github.vatbub.magic.data.preferences
 import tk.pratanumandal.unique4j.Unique4j
 
 
