@@ -31,7 +31,7 @@ https://user-images.githubusercontent.com/13379225/142775132-8925aa86-174b-4e34-
 1. Before downloading, you will need to install Java 15 or
    later ([Download link](https://adoptium.net/?variant=openjdk17&jvmVariant=hotspot))
 2. Download the
-   launcher [here](https://oss.sonatype.org/content/repositories/snapshots/com/github/vatbub/magic-obs-bootstrap/1.0-SNAPSHOT/magic-obs-bootstrap-1.0-20220404.002830-35-jar-with-dependencies.jar)
+   launcher [here](https://oss.sonatype.org/content/repositories/snapshots/com/github/vatbub/magic-obs-bootstrap/1.0-SNAPSHOT/magic-obs-bootstrap-1.0-20220404.010957-38-jar-with-dependencies.jar)
    .
 3. Double-click the launcher. It will download more necessary files and launch the application. Also, it will check for
    updates every time you start the app.
