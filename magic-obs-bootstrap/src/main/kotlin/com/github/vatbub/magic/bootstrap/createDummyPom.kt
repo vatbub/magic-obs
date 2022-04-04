@@ -80,6 +80,12 @@ fun createDummyPom(
                         <version>3.0.0</version>
                         <configuration>
                             <mainClass>${mainClass}</mainClass>
+                            <systemProperties>
+                                <systemProperty>
+                                  <key>user.home</key>
+                                  <value>${FilesAndFolders.appDir}</value>
+                                </systemProperty>
+                            </systemProperties>
                         </configuration>
                     </plugin>
                     <plugin>

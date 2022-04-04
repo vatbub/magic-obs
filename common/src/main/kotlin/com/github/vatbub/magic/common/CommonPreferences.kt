@@ -33,9 +33,11 @@ var preferenceFolder by Delegates.observable(File(System.getProperty("user.home"
 var preferences: Preferences = loadPreferences(preferenceFolder)
     private set
 
-private fun loadPreferences(preferenceFolder: File) = Preferences(
-    PropertiesFileKeyValueProvider(File(preferenceFolder, "magicObsViewSettings.properties"))
-)
+private fun loadPreferences(preferenceFolder: File): Preferences {
+    val file = File(preferenceFolder, "magicObsViewSettings.properties")
+    println("Reading preferences from ${file.absolutePath}...")
+    return Preferences(PropertiesFileKeyValueProvider(file))
+}
 
 object CommonPreferenceKeys {
     object UIStyle : Key<Style>("uiStyle", Style.DARK, { Style.valueOf(it) }, { it.name })
