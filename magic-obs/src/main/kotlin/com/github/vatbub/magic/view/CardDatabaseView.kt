@@ -42,10 +42,12 @@ import javafx.scene.Scene
 import javafx.scene.control.*
 import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.image.Image
+import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.util.Callback
 import jfxtras.styles.jmetro.JMetro
+import jfxtras.styles.jmetro.JMetroStyleClass
 import jfxtras.styles.jmetro.JMetroStyleClass.TABLE_GRID_LINES
 import java.util.concurrent.Executors
 
@@ -101,6 +103,9 @@ class CardDatabaseView {
     @FXML
     private lateinit var nameColumn: TableColumn<CardObjectNoNullables, String>
 
+    @FXML
+    private lateinit var rootPane: GridPane
+
     private val searchResults: ObservableList<CardObjectNoNullables> = FXCollections.observableArrayList()
 
     private val searchExecutor = Executors.newSingleThreadExecutor()
@@ -125,6 +130,7 @@ class CardDatabaseView {
 
     @FXML
     fun initialize() {
+        rootPane.styleClass.add(JMetroStyleClass.BACKGROUND)
         resultsTable.placeholder = Label(
             App.resourceBundle["cardDatabaseView.resultView.placeholder"]!!
         )
