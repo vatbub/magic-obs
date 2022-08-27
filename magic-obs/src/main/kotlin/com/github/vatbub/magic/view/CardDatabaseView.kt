@@ -9,6 +9,7 @@ import com.github.vatbub.magic.data.Ability
 import com.github.vatbub.magic.data.CardDatabase
 import com.github.vatbub.magic.data.CardObjectNoNullables
 import com.github.vatbub.magic.data.DataHolder
+import com.github.vatbub.magic.data.ManaColor.*
 import com.github.vatbub.magic.util.get
 import com.github.vatbub.magic.util.map
 import javafx.application.Platform
@@ -26,7 +27,7 @@ import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.util.Callback
 import jfxtras.styles.jmetro.JMetro
-import jfxtras.styles.jmetro.JMetroStyleClass
+import jfxtras.styles.jmetro.JMetroStyleClass.TABLE_GRID_LINES
 import java.util.concurrent.Executors
 
 class CardDatabaseView {
@@ -108,7 +109,7 @@ class CardDatabaseView {
         resultsTable.placeholder = Label(
             App.resourceBundle["cardDatabaseView.resultView.placeholder"]!!
         )
-        resultsTable.styleClass.addAll(JMetroStyleClass.TABLE_GRID_LINES, JMetroStyleClass.ALTERNATING_ROW_COLORS)
+        resultsTable.styleClass.addAll(TABLE_GRID_LINES)
         resultsTable.items = searchResults
         refreshCardTableFactories()
         addButton.disableProperty().bind(
@@ -125,6 +126,26 @@ class CardDatabaseView {
         nameColumn.cellValueFactory = PropertyValueFactory("name")
         abilitiesColumn.cellValueFactory = PropertyValueFactory("abilities")
         abilitiesColumn.cellFactory = Callback { AbilityImageCell() }
+        resultsTable.setRowFactory {
+            object : TableRow<CardObjectNoNullables>() {
+                override fun updateItem(item: CardObjectNoNullables?, empty: Boolean) {
+                    super.updateItem(item, empty)
+                    if (item == null || item.colors.isEmpty()) {
+                        style = ""
+                        return
+                    }
+
+                    val color = when (item.colors.first()) {
+                        White -> "ffffff"
+                        Blue -> "9999ff"
+                        Black -> "aaaaaa"
+                        Red -> "ff9999"
+                        Green -> "99ff99"
+                    }
+                    style = "-fx-background-color: #$color;"
+                }
+            }
+        }
     }
 
     private fun search(searchText: String) {
