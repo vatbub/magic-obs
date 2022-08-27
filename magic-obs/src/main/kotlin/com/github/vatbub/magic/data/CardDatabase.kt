@@ -68,11 +68,13 @@ data class CardObjectNoNullables(
     val color_identity: List<ManaColor>,
     val keywords: List<String>
 ) {
+    val abilities = keywords.mapNotNull { it.toAbility() }
+
     fun toOverlayCard() = Card(
         attack = power.toDoubleOrNull() ?: 1.0,
         defense = toughness.toDoubleOrNull() ?: 1.0,
         counter = 0,
-        abilities = keywords.mapNotNull { it.toAbility() }.toSet()
+        abilities = abilities.toSet()
     )
 }
 

@@ -17,6 +17,8 @@
  * limitations under the License.
  * #L%
  */
+@file:Suppress("DuplicatedCode")
+
 package com.github.vatbub.magic.view
 
 import com.github.vatbub.magic.App

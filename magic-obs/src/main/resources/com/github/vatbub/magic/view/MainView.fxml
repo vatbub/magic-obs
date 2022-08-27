@@ -50,6 +50,8 @@
                     <children>
                         <Button mnemonicParsing="false" onAction="#addCardButtonOnAction"
                                 text="%mainView.button.addCard" GridPane.columnSpan="2147483647" GridPane.rowIndex="3"/>
+                        <Button mnemonicParsing="false" onAction="#showDatabaseOnAction"
+                                text="%mainView.button.searchDatabase"/>
                         <Button mnemonicParsing="false" onAction="#resetGameButtonOnAction"
                                 text="%mainView.button.reset"/>
                     </children>

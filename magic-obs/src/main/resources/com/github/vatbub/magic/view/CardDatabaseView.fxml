@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane hgap="8.0" prefHeight="400.0" prefWidth="600.0" vgap="8.0" xmlns="http://javafx.com/javafx/17"
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.vatbub.magic.view.CardDatabaseView">
+    <columnConstraints>
+        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity"/>
+        <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="-Infinity"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity"/>
+        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" vgrow="ALWAYS"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0"/>
+    </rowConstraints>
+    <children>
+        <Label text="%cardDatabaseView.searchLabel"/>
+        <TextField fx:id="searchTextField" GridPane.columnIndex="1"/>
+        <Label text="%cardDatabaseView.resultsLabel" GridPane.columnSpan="2147483647" GridPane.rowIndex="1"/>
+        <TableView fx:id="resultsTable" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2147483647"
+                   GridPane.rowIndex="2">
+            <columns>
+                <TableColumn fx:id="nameColumn" editable="false" minWidth="200.0" prefWidth="-1.0" text="Name"/>
+                <TableColumn fx:id="attackColumn" editable="false" minWidth="75.0" prefWidth="-1.0" text="Attack"/>
+                <TableColumn fx:id="defenseColumn" minWidth="75.0" prefWidth="-1.0" text="Defense"/>
+                <TableColumn fx:id="abilitiesColumn" editable="false" minWidth="200.0" prefWidth="-1.0"
+                             text="Abilities"/>
+            </columns>
+        </TableView>
+        <ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+            <buttons>
+                <Button fx:id="addButton" defaultButton="true" mnemonicParsing="false" onAction="#addOnAction"
+                        text="Add"/>
+                <Button cancelButton="true" mnemonicParsing="false" onAction="#cancelOnAction" text="Cancel"/>
+            </buttons>
+        </ButtonBar>
+    </children>
+    <padding>
+        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+    </padding>
+</GridPane>

@@ -79,6 +79,11 @@ class MainView {
 
     private var healthPointUpdateJob: Job? = null
 
+    @FXML
+    fun showDatabaseOnAction() {
+        CardDatabaseView.show()
+    }
+
     @OptIn(DelicateCoroutinesApi::class, ExperimentalTime::class)
     @FXML
     fun initialize() {
