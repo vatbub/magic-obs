@@ -30,6 +30,7 @@ object CardDatabase {
             .filter { it.power != null }
             .filter { it.toughness != null }
             .map { it.fixNulls() }
+            .distinct()
     }
 }
 
