@@ -18,10 +18,11 @@
     </rowConstraints>
     <children>
         <Label text="%cardDatabaseView.searchLabel"/>
-        <TextField fx:id="searchTextField" GridPane.columnIndex="1"/>
+        <TextField fx:id="searchTextField" onKeyPressed="#searchTextFieldOnKeyPressed" GridPane.columnIndex="1"/>
         <Label text="%cardDatabaseView.resultsLabel" GridPane.columnSpan="2147483647" GridPane.rowIndex="1"/>
-        <TableView fx:id="resultsTable" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2147483647"
-                   GridPane.rowIndex="2">
+        <TableView fx:id="resultsTable" onKeyPressed="#resultsTableOnKeyPressed"
+                   onMouseClicked="#resultsTableOnMouseClicked" prefHeight="200.0" prefWidth="200.0"
+                   GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
             <columns>
                 <TableColumn fx:id="nameColumn" editable="false" minWidth="200.0" prefWidth="-1.0" text="Name"/>
                 <TableColumn fx:id="attackColumn" editable="false" minWidth="75.0" prefWidth="-1.0" text="Attack"/>

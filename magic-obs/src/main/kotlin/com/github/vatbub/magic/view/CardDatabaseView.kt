@@ -42,6 +42,9 @@ import javafx.scene.Scene
 import javafx.scene.control.*
 import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.image.Image
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
+import javafx.scene.input.MouseEvent
 import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import javafx.stage.StageStyle
@@ -127,6 +130,27 @@ class CardDatabaseView {
     fun cancelOnAction() {
         searchExecutor.shutdownNow()
         stage.hide()
+    }
+
+    @FXML
+    fun resultsTableOnMouseClicked(event: MouseEvent) {
+        if (event.clickCount < 2) return
+        if (resultsTable.selectionModel.selectedItem == null) return
+        addOnAction()
+    }
+
+    @FXML
+    fun resultsTableOnKeyPressed(event: KeyEvent) {
+        if (event.code in listOf(KeyCode.UP, KeyCode.DOWN, KeyCode.ENTER)) return
+        event.consume()
+        searchTextField.requestFocus()
+    }
+
+    @FXML
+    fun searchTextFieldOnKeyPressed(event: KeyEvent) {
+        if (event.code !in listOf(KeyCode.UP, KeyCode.DOWN)) return
+        event.consume()
+        resultsTable.requestFocus()
     }
 
     @FXML
