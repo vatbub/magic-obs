@@ -49,6 +49,7 @@ import javafx.util.Callback
 import jfxtras.styles.jmetro.JMetro
 import jfxtras.styles.jmetro.JMetroStyleClass
 import jfxtras.styles.jmetro.JMetroStyleClass.TABLE_GRID_LINES
+import jfxtras.styles.jmetro.Style.LIGHT
 import java.util.concurrent.Executors
 
 class CardDatabaseView {
@@ -161,11 +162,11 @@ class CardDatabaseView {
                     }
 
                     val color = when (item.colors.first()) {
-                        White -> "ffffff"
-                        Blue -> "9999ff"
-                        Black -> "aaaaaa"
-                        Red -> "ff9999"
-                        Green -> "99ff99"
+                        White -> if (DataHolder.uiStyle.value == LIGHT) "ffffff" else "555555"
+                        Blue -> if (DataHolder.uiStyle.value == LIGHT) "9999ff" else "0000ff"
+                        Black -> if (DataHolder.uiStyle.value == LIGHT) "aaaaaa" else "000000"
+                        Red -> if (DataHolder.uiStyle.value == LIGHT) "ff9999" else "ff0000"
+                        Green -> if (DataHolder.uiStyle.value == LIGHT) "99ff99" else "00aa00"
                     }
                     style = "-fx-background-color: #$color;"
                 }
