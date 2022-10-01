@@ -168,6 +168,10 @@ class CardDatabaseView {
         )
         searchTextField.textProperty().addListener { _, _, newValue -> search(newValue) }
         Platform.runLater { search("") }
+
+        stage.setOnCloseRequest {
+            searchExecutor.shutdownNow()
+        }
     }
 
     private fun refreshCardTableFactories() {
