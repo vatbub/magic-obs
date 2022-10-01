@@ -19,10 +19,18 @@
  */
 package com.github.vatbub.magic.data
 
+import com.github.vatbub.magic.common.preferenceFolder
+import javafx.concurrent.Task
+import java.io.File
+import java.io.IOException
+import java.net.URI
+import java.net.URL
+import java.util.concurrent.Executors
+
 object CardDatabase {
     @Suppress("SENSELESS_COMPARISON")
     val cardObjects by lazy {
-        CardDatabaseParser
+        getParserToUse()
             .parse()
             // Might actually be nullable (Instants, Sorcery have no power or toughness),
             // but we don't want them in our list
@@ -32,7 +40,79 @@ object CardDatabase {
             .map { it.fixNulls() }
             .distinct()
     }
+
+    private var parser: CardDatabaseParser? = null
+    private fun getParserToUse() = parser
+        ?: if (destinationFile.exists()) CardDatabaseParser(destinationFile)
+        else CardDatabaseParser()
+
+    private val destinationFile get() = preferenceFolder.resolve("mtg-card-database.json")
+
+    private fun downloadUpdate(): File {
+        println("Getting bulk data download location from the Scyfall API...")
+        val downloadUrl = URL("https://api.scryfall.com/bulk-data")
+        val bulkDataApiJson = downloadUrl.openStream().bufferedReader().use { it.readText() }
+        val parsedApiResponse = gson.fromJson(bulkDataApiJson, BulkDataApiResult::class.java)
+
+        val jsonFileUri = parsedApiResponse.data.first { it.type == "default_cards" }.download_uri
+        println("Download uri is ${jsonFileUri.toURL().toExternalForm()}, downloading now...")
+        val downloadedJson = jsonFileUri.toURL().openStream().bufferedReader().use { it.readText() }
+
+        println("Writing updated database to ${destinationFile.absolutePath}...")
+        destinationFile.writeText(downloadedJson)
+        println("Update complete")
+        return destinationFile
+    }
+
+    val downloadAndParseTask = object : Task<Unit>() {
+        init {
+            updateTitle("Loading the card database...")
+            updateProgress(-1L, 1L)
+        }
+
+        override fun call() {
+            updateMessage("Downloading card database updates...")
+            try {
+                val downloadedFile = downloadUpdate()
+                parser = CardDatabaseParser(downloadedFile)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+            updateMessage("Parsing the database...")
+            @Suppress("UNUSED_VARIABLE")
+            val dummy = cardObjects
+        }
+    }
+
+    fun downloadUpdateAsyncWithGui() {
+        with(Executors.newSingleThreadExecutor()) {
+            downloadAndParseTask.setOnFailed { (downloadAndParseTask.exception as? Exception)?.printStackTrace() }
+            submit(downloadAndParseTask)
+            shutdown()
+        }
+    }
 }
+
+data class BulkDataApiResult(
+    val `object`: String,
+    val has_more: Boolean,
+    val data: List<BulkDataApiObject>
+)
+
+data class BulkDataApiObject(
+    val `object`: String,
+    val id: String,
+    val type: String,
+    val updated_at: String,
+    val uri: URI,
+    val name: String,
+    val description: String,
+    val compressed_size: Long,
+    val download_uri: URI,
+    val content_type: String,
+    val content_encoding: String
+)
 
 data class CardObject(
     val name: String,

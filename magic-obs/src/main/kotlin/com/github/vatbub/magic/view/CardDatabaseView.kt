@@ -28,24 +28,37 @@ import com.github.vatbub.magic.data.Ability
 import com.github.vatbub.magic.data.CardDatabase
 import com.github.vatbub.magic.data.CardObjectNoNullables
 import com.github.vatbub.magic.data.DataHolder
-import com.github.vatbub.magic.data.ManaColor.*
+import com.github.vatbub.magic.data.ManaColor.Black
+import com.github.vatbub.magic.data.ManaColor.Blue
+import com.github.vatbub.magic.data.ManaColor.Green
+import com.github.vatbub.magic.data.ManaColor.Red
+import com.github.vatbub.magic.data.ManaColor.White
 import com.github.vatbub.magic.util.get
 import com.github.vatbub.magic.util.map
 import javafx.application.Platform
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.concurrent.Task
+import javafx.concurrent.Worker.State.CANCELLED
+import javafx.concurrent.Worker.State.FAILED
+import javafx.concurrent.Worker.State.SUCCEEDED
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
-import javafx.scene.control.*
+import javafx.scene.control.Button
+import javafx.scene.control.Label
+import javafx.scene.control.TableColumn
+import javafx.scene.control.TableRow
+import javafx.scene.control.TableView
+import javafx.scene.control.TextField
 import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.image.Image
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.GridPane
+import javafx.stage.Modality
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.util.Callback
@@ -53,6 +66,7 @@ import jfxtras.styles.jmetro.JMetro
 import jfxtras.styles.jmetro.JMetroStyleClass
 import jfxtras.styles.jmetro.JMetroStyleClass.TABLE_GRID_LINES
 import jfxtras.styles.jmetro.Style.LIGHT
+import org.controlsfx.dialog.ProgressDialog
 import java.util.concurrent.Executors
 
 class CardDatabaseView {
@@ -75,6 +89,17 @@ class CardDatabaseView {
                 stage.minHeight = root.minHeight(0.0) + 70
 
                 stage.scene = scene
+
+                if (CardDatabase.downloadAndParseTask.state !in listOf(SUCCEEDED, CANCELLED, FAILED)) {
+                    ProgressDialog(CardDatabase.downloadAndParseTask).apply {
+                        val jMetro = JMetro(preferences[CommonPreferenceKeys.UIStyle])
+                        initOwner(App.instance.currentStage)
+                        initModality(Modality.APPLICATION_MODAL)
+                        jMetro.scene = dialogPane.scene
+                        jMetro.scene.root.styleClass.add(JMetroStyleClass.BACKGROUND)
+                        showAndWait()
+                    }
+                }
 
                 stage.show()
                 return this

@@ -23,19 +23,24 @@ import com.google.gson.Gson
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
+import java.io.File
 import java.lang.reflect.Type
 
-object CardDatabaseParser {
-    private val gson by lazy {
-        Gson().newBuilder()
-            .registerTypeAdapter(ManaColor::class.java, ManaColorDeserializer)
-            .create()
-    }
+class CardDatabaseParser(val inputFile: File? = null) {
+    fun parse(): List<CardObject> {
+        val stream = inputFile?.inputStream()?.reader()
+            ?: javaClass.getResourceAsStream("card-database.json")!!.reader()
 
-    fun parse(): List<CardObject> = gson.fromJson(
-        javaClass.getResourceAsStream("card-database.json")!!.reader(),
-        arrayOf<CardObject>().javaClass
-    ).toList()
+        return stream.use {
+            gson.fromJson(it, arrayOf<CardObject>().javaClass).toList()
+        }
+    }
+}
+
+val gson by lazy {
+    Gson().newBuilder()
+        .registerTypeAdapter(ManaColor::class.java, ManaColorDeserializer)
+        .create()
 }
 
 object ManaColorDeserializer : JsonDeserializer<ManaColor> {

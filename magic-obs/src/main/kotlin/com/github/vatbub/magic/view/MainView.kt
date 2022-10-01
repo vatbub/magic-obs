@@ -21,25 +21,43 @@ package com.github.vatbub.magic.view
 
 import com.github.vatbub.magic.App
 import com.github.vatbub.magic.data.Card
+import com.github.vatbub.magic.data.CardDatabase
 import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.data.DayNightState
 import com.github.vatbub.magic.data.PreferenceKeys.HealthPoints
-import com.github.vatbub.magic.util.*
+import com.github.vatbub.magic.util.EnumStringConverter
+import com.github.vatbub.magic.util.asNullable
+import com.github.vatbub.magic.util.get
+import com.github.vatbub.magic.util.invertIfDarkMode
+import com.github.vatbub.magic.util.map
+import javafx.application.Platform
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.IntegerProperty
 import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
-import javafx.scene.control.*
+import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType.CONFIRMATION
+import javafx.scene.control.Button
 import javafx.scene.control.ButtonType.NO
 import javafx.scene.control.ButtonType.YES
+import javafx.scene.control.ComboBox
+import javafx.scene.control.Label
+import javafx.scene.control.TableColumn
+import javafx.scene.control.TableView
+import javafx.scene.control.TextField
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
 import javafx.util.Callback
-import jfxtras.styles.jmetro.JMetroStyleClass.*
-import kotlinx.coroutines.*
+import jfxtras.styles.jmetro.JMetroStyleClass.ALTERNATING_ROW_COLORS
+import jfxtras.styles.jmetro.JMetroStyleClass.BACKGROUND
+import jfxtras.styles.jmetro.JMetroStyleClass.TABLE_GRID_LINES
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -152,6 +170,8 @@ class MainView {
                 it.managedProperty().bind(DataHolder.dayNightMechanicEnabled)
                 it.visibleProperty().bind(DataHolder.dayNightMechanicEnabled)
             }
+
+        Platform.runLater { CardDatabase.downloadUpdateAsyncWithGui() }
     }
 
     private fun refreshCardTableFactories() {
