@@ -64,24 +64,26 @@ object CardDatabase {
         return destinationFile
     }
 
-    val downloadAndParseTask = object : Task<Unit>() {
-        init {
-            updateTitle("Loading the card database...")
-            updateProgress(-1L, 1L)
-        }
-
-        override fun call() {
-            updateMessage("Downloading card database updates...")
-            try {
-                val downloadedFile = downloadUpdate()
-                parser = CardDatabaseParser(downloadedFile)
-            } catch (e: IOException) {
-                e.printStackTrace()
+    val downloadAndParseTask by lazy {
+        object : Task<Unit>() {
+            init {
+                updateTitle("Loading the card database...")
+                updateProgress(-1L, 1L)
             }
 
-            updateMessage("Parsing the database...")
-            @Suppress("UNUSED_VARIABLE")
-            val dummy = cardObjects
+            override fun call() {
+                updateMessage("Downloading card database updates...")
+                try {
+                    val downloadedFile = downloadUpdate()
+                    parser = CardDatabaseParser(downloadedFile)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+
+                updateMessage("Parsing the database...")
+                @Suppress("UNUSED_VARIABLE")
+                val dummy = cardObjects
+            }
         }
     }
 
