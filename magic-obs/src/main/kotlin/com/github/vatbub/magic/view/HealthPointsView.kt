@@ -19,6 +19,7 @@
  */
 package com.github.vatbub.magic.view
 
+import com.github.vatbub.magic.ThreadScheduler
 import com.github.vatbub.magic.animation.queue.AnimationQueue
 import com.github.vatbub.magic.animation.queue.toQueueItem
 import com.github.vatbub.magic.data.DataHolder
@@ -43,10 +44,10 @@ import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.util.Duration
-import kotlinx.coroutines.*
 import java.io.Closeable
+import java.util.concurrent.Future
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 
 class HealthPointsView : Closeable {
@@ -90,7 +91,7 @@ class HealthPointsView : Closeable {
 
     private val animationQueue = AnimationQueue()
 
-    private var loadBackgroundImageDelayJob: Job? = null
+    private var loadBackgroundImageDelayJob: Future<*>? = null
 
     @FXML
     fun initialize() {
@@ -132,15 +133,14 @@ class HealthPointsView : Closeable {
         healthPointsLabel.text = DataHolder.healthPointsProperty.value.toString()
     }
 
-    @OptIn(DelicateCoroutinesApi::class, kotlin.time.ExperimentalTime::class)
     private fun loadBackgroundImageWithDelay(
         imageSpec: ImageSpec = DataHolder.healthPointsImageSpecProperty.value,
         requestedWidth: Double = backgroundImageView.fitWidth,
         requestedHeight: Double = backgroundImageView.fitHeight
     ) {
-        loadBackgroundImageDelayJob?.cancel()
-        loadBackgroundImageDelayJob = GlobalScope.launch {
-            delay(1.0.toDuration(DurationUnit.SECONDS))
+        loadBackgroundImageDelayJob?.cancel(false)
+        loadBackgroundImageDelayJob = ThreadScheduler.executor.submit {
+            Thread.sleep(1.0.seconds.toLong(DurationUnit.MILLISECONDS))
             loadBackgroundImage(imageSpec, requestedWidth, requestedHeight)
         }
     }

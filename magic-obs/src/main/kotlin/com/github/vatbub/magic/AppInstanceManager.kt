@@ -44,6 +44,7 @@ object AppInstanceManager {
     }
 
     fun beforeExit() {
+        ThreadScheduler.close()
         unique.freeLock()
         runningInstanceCount--
     }

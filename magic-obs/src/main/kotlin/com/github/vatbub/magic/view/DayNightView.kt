@@ -19,11 +19,14 @@
  */
 package com.github.vatbub.magic.view
 
+import com.github.vatbub.magic.ThreadScheduler
 import com.github.vatbub.magic.animation.queue.AnimationQueue
 import com.github.vatbub.magic.animation.queue.toQueueItem
 import com.github.vatbub.magic.data.DataHolder
 import com.github.vatbub.magic.data.DayNightState
-import com.github.vatbub.magic.data.DayNightState.*
+import com.github.vatbub.magic.data.DayNightState.Day
+import com.github.vatbub.magic.data.DayNightState.Night
+import com.github.vatbub.magic.data.DayNightState.None
 import com.github.vatbub.magic.util.asBackgroundStyle
 import com.github.vatbub.magic.util.bindAndMap
 import com.github.vatbub.magic.util.runOnUiThread
@@ -43,10 +46,10 @@ import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.util.Duration
-import kotlinx.coroutines.*
 import java.io.Closeable
+import java.util.concurrent.Future
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 
 class DayNightView : Closeable {
@@ -93,7 +96,7 @@ class DayNightView : Closeable {
 
     private val animationQueue = AnimationQueue()
 
-    private val loadBackgroundImageDelayJobs = mutableMapOf<(Double, Double) -> Unit, Job>()
+    private val loadBackgroundImageDelayJobs = mutableMapOf<(Double, Double) -> Unit, Future<*>>()
 
     @FXML
     fun initialize() {
@@ -144,15 +147,15 @@ class DayNightView : Closeable {
         }
 
 
-    @OptIn(DelicateCoroutinesApi::class, kotlin.time.ExperimentalTime::class)
+    @OptIn(kotlin.time.ExperimentalTime::class)
     private fun loadImageWithDelay(
         requestedWidth: Double = dayView.fitWidth,
         requestedHeight: Double = dayView.fitHeight,
         loadMethod: (Double, Double) -> Unit
     ) {
-        loadBackgroundImageDelayJobs[loadMethod]?.cancel()
-        loadBackgroundImageDelayJobs[loadMethod] = GlobalScope.launch {
-            delay(1.0.toDuration(DurationUnit.SECONDS))
+        loadBackgroundImageDelayJobs[loadMethod]?.cancel(false)
+        loadBackgroundImageDelayJobs[loadMethod] = ThreadScheduler.executor.submit {
+            Thread.sleep(1.0.seconds.toLong(DurationUnit.MILLISECONDS))
             loadMethod(requestedWidth, requestedHeight)
         }
     }

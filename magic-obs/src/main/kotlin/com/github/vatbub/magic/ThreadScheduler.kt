@@ -2,7 +2,7 @@
  * #%L
  * magic-obs
  * %%
- * Copyright (C) 2016 - 2021 Frederik Kammel
+ * Copyright (C) 2019 - 2023 Frederik Kammel
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,15 @@
  * limitations under the License.
  * #L%
  */
-module magic.obs {
-    requires kotlin.stdlib;
-    requires javafx.graphics;
-    requires kotlinPreferences;
-    requires javafx.controls;
-    requires javafx.fxml;
-    requires org.controlsfx.controls;
-    requires unique4j;
-    requires org.jdom2;
-    requires javafx.web;
-    requires org.jfxtras.styles.jmetro;
-    requires magic.obs.common;
-    opens com.github.vatbub.magic.view;
-    opens com.github.vatbub.magic;
-    opens com.github.vatbub.magic.data to unique4j;
+package com.github.vatbub.magic
+
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+
+object ThreadScheduler : AutoCloseable {
+    val executor: ExecutorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
+
+    override fun close() {
+        executor.shutdownNow()
+    }
 }

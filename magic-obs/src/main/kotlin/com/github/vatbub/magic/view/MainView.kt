@@ -20,6 +20,7 @@
 package com.github.vatbub.magic.view
 
 import com.github.vatbub.magic.App
+import com.github.vatbub.magic.ThreadScheduler
 import com.github.vatbub.magic.data.Card
 import com.github.vatbub.magic.data.CardDatabase
 import com.github.vatbub.magic.data.DataHolder
@@ -29,7 +30,6 @@ import com.github.vatbub.magic.util.EnumStringConverter
 import com.github.vatbub.magic.util.asNullable
 import com.github.vatbub.magic.util.get
 import com.github.vatbub.magic.util.invertIfDarkMode
-import com.github.vatbub.magic.util.map
 import javafx.application.Platform
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.IntegerProperty
@@ -53,13 +53,9 @@ import javafx.util.Callback
 import jfxtras.styles.jmetro.JMetroStyleClass.ALTERNATING_ROW_COLORS
 import jfxtras.styles.jmetro.JMetroStyleClass.BACKGROUND
 import jfxtras.styles.jmetro.JMetroStyleClass.TABLE_GRID_LINES
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import java.util.concurrent.Future
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
 
 class MainView {
@@ -95,14 +91,13 @@ class MainView {
 
     private var healthPointUpdateInProgress = false
 
-    private var healthPointUpdateJob: Job? = null
+    private var healthPointUpdateJob: Future<*>? = null
 
     @FXML
     fun showDatabaseOnAction() {
         CardDatabaseView.show()
     }
 
-    @OptIn(DelicateCoroutinesApi::class, ExperimentalTime::class)
     @FXML
     fun initialize() {
         rootPane.styleClass.add(BACKGROUND)
@@ -119,19 +114,19 @@ class MainView {
         )
 
         healthPointsBox.textProperty().addListener { _, oldValue, newValue ->
-            healthPointUpdateJob?.cancel()
-            healthPointUpdateJob = GlobalScope.launch {
-                delay(Duration.seconds(1))
+            healthPointUpdateJob?.cancel(true)
+            healthPointUpdateJob = ThreadScheduler.executor.submit {
+                Thread.sleep(1.seconds.toLong(DurationUnit.MILLISECONDS))
                 val newIntValue = newValue.toIntOrNull()
 
                 if (newIntValue == null) {
                     DataHolder.healthPointsProperty.set(oldValue.toInt())
-                    return@launch
+                    return@submit
                 }
 
                 if (newIntValue < 0) {
                     DataHolder.healthPointsProperty.set(0)
-                    return@launch
+                    return@submit
                 }
 
 
